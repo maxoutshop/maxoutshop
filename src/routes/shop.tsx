@@ -1,14 +1,14 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { PRODUCTS } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search as SearchIcon, SlidersHorizontal, X } from "lucide-react";
 
-type Search = { category?: string; collection?: string; q?: string; sort?: string };
+type ShopSearch = { category?: string; collection?: string; q?: string; sort?: string };
 
 export const Route = createFileRoute("/shop")({
-  validateSearch: (s: Record<string, unknown>): Search => ({
+  validateSearch: (s: Record<string, unknown>): ShopSearch => ({
     category: typeof s.category === "string" ? s.category : undefined,
     collection: typeof s.collection === "string" ? s.collection : undefined,
     q: typeof s.q === "string" ? s.q : undefined,
