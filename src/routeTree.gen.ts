@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrackRouteImport } from './routes/track'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as CommunityRouteImport } from './routes/community'
@@ -20,6 +21,11 @@ import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
   path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopRoute = ShopRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/product/$slug': typeof ProductSlugRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/product/$slug': typeof ProductSlugRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/profile': typeof ProfileRoute
   '/shop': typeof ShopRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/product/$slug': typeof ProductSlugRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/profile'
     | '/shop'
+    | '/sitemap.xml'
     | '/track'
     | '/product/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/profile'
     | '/shop'
+    | '/sitemap.xml'
     | '/track'
     | '/product/$slug'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/profile'
     | '/shop'
+    | '/sitemap.xml'
     | '/track'
     | '/product/$slug'
   fileRoutesById: FileRoutesById
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   ProfileRoute: typeof ProfileRoute
   ShopRoute: typeof ShopRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrackRoute: typeof TrackRoute
   ProductSlugRoute: typeof ProductSlugRoute
 }
@@ -128,6 +141,13 @@ declare module '@tanstack/react-router' {
       path: '/track'
       fullPath: '/track'
       preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shop': {
@@ -181,19 +201,10 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   ProfileRoute: ProfileRoute,
   ShopRoute: ShopRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrackRoute: TrackRoute,
   ProductSlugRoute: ProductSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
