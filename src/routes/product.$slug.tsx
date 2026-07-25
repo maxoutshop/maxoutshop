@@ -1,6 +1,6 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { getProduct, related } from "@/lib/products";
+import { getProduct, related, type Product } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
 import { useEffect, useState } from "react";
 import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/store";
