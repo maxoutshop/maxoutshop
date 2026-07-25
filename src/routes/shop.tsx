@@ -81,7 +81,7 @@ function Shop() {
         </div>
 
         <div className="mt-3 flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2.5">
-          <Search className="h-4 w-4 text-muted-foreground" />
+          <SearchIcon className="h-4 w-4 text-muted-foreground" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -96,7 +96,7 @@ function Shop() {
             return (
               <button
                 key={c.label}
-                onClick={() => navigate({ search: (prev: Search) => ({ ...prev, category: c.key }) })}
+                onClick={() => navigate({ search: (prev: ShopSearch) => ({ ...prev, category: c.key }) })}
                 className={`shrink-0 rounded-full border px-4 py-2 text-xs font-medium transition ${
                   active ? "border-foreground bg-foreground text-background" : "border-border text-muted-foreground hover:text-foreground"
                 }`}
@@ -111,7 +111,7 @@ function Shop() {
           <span>{filtered.length} products</span>
           <select
             value={search.sort ?? "featured"}
-            onChange={(e) => navigate({ search: (prev: Search) => ({ ...prev, sort: e.target.value }) })}
+            onChange={(e) => navigate({ search: (prev: ShopSearch) => ({ ...prev, sort: e.target.value }) })}
             className="rounded-full border border-border bg-background px-3 py-1.5 text-xs outline-none"
           >
             {SORTS.map((s) => <option key={s.key} value={s.key}>{s.label}</option>)}
