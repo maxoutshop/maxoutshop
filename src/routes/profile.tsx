@@ -180,3 +180,126 @@ function Row({ icon, label, hint, to }: { icon: React.ReactNode; label: string; 
   const cls = "flex w-full items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5 text-left transition hover:bg-secondary/60";
   return to ? <Link to={to} className={cls}>{inner}</Link> : <button className={cls}>{inner}</button>;
 }
+
+function AvatarPicker({ userId, name, url }: { userId: string; name: string; url: string | null }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const qc = useQueryClient();
+
+  async function onPick(file?: File) {
+    if (!file) return;
+    setBusy(true);
+    try {
+      await uploadAvatar(userId, file);
+      await qc.invalidateQueries({ queryKey: ["profile"] });
+      await qc.invalidateQueries({ queryKey: ["athletes"] });
+      await qc.invalidateQueries({ queryKey: ["posts"] });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <button
+      onClick={() => inputRef.current?.click()}
+      className="relative shrink-0"
+      aria-label="Change profile picture"
+    >
+      <div className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-secondary to-surface text-lg font-semibold">
+        {url ? <img src={url} alt={name} className="h-full w-full object-cover" /> : initials(name)}
+      </div>
+      <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 place-items-center rounded-full bg-accent text-accent-foreground ring-2 ring-background">
+        <Camera className="h-3 w-3" />
+      </span>
+      {busy && <span className="absolute inset-0 grid place-items-center rounded-full bg-background/70 text-[10px]">…</span>}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => void onPick(e.target.files?.[0])}
+      />
+    </button>
+  );
+}
+
+type ProfileRow = { username: string | null; display_name: string | null; bio: string | null } | null | undefined;
+
+function EditProfileSheet({ userId, profile, onClose }: { userId: string; profile: ProfileRow; onClose: () => void }) {
+  const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
+  const [username, setUsername] = useState(profile?.username ?? "");
+  const [bio, setBio] = useState(profile?.bio ?? "");
+  const [error, setError] = useState("");
+
+  const save = useMutate(async () => {
+    const handle = username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, "");
+    const { error: err } = await supabase
+      .from("profiles")
+      .update({
+        display_name: displayName.trim() || null,
+        username: handle || null,
+        bio: bio.trim() || null,
+      })
+      .eq("id", userId);
+    if (err) throw err;
+  }, ["profile", "athletes", "posts", "profile-by-username"]);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end bg-background/80 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="animate-in w-full rounded-t-3xl border-t border-border bg-surface p-5 pb-10 slide-in-from-bottom duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Edit profile</h3>
+          <button onClick={onClose} aria-label="Close"><X className="h-5 w-5 text-muted-foreground" /></button>
+        </div>
+
+        <label className="mt-4 block text-[11px] uppercase tracking-widest text-muted-foreground">Display name</label>
+        <input
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value.slice(0, 40))}
+          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
+        />
+
+        <label className="mt-3 block text-[11px] uppercase tracking-widest text-muted-foreground">Username</label>
+        <input
+          value={username}
+          onChange={(e) => setUsername(e.target.value.slice(0, 24))}
+          placeholder="handle"
+          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
+        />
+
+        <label className="mt-3 block text-[11px] uppercase tracking-widest text-muted-foreground">Bio</label>
+        <textarea
+          value={bio}
+          onChange={(e) => setBio(e.target.value.slice(0, 160))}
+          rows={3}
+          placeholder="Powerlifter. 5am club. MAXOUT athlete."
+          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
+        />
+
+        {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+
+        <button
+          disabled={save.isPending}
+          onClick={() =>
+            save.mutate(undefined as never, {
+              onSuccess: onClose,
+              onError: (e: unknown) =>
+                setError(
+                  (e as { message?: string })?.message?.includes("duplicate")
+                    ? "That username is taken."
+                    : "Could not save. Try again.",
+                ),
+            })
+          }
+          className="mt-4 w-full rounded-full bg-accent py-3.5 text-sm font-semibold text-accent-foreground disabled:opacity-50"
+        >
+          {save.isPending ? "Saving…" : "Save"}
+        </button>
+      </div>
+    </div>
+  );
+}
