@@ -125,12 +125,8 @@ function Profile() {
             <Megaphone className="h-5 w-5 text-accent" />
             <h2 className="text-lg font-semibold">Ambassador dashboard</h2>
           </div>
-          <div className="mt-4 grid grid-cols-3 gap-3 text-center">
-            <div><p className="text-xl font-semibold">{Math.round(pts / 10)}</p><p className="text-[11px] text-muted-foreground">Referrals</p></div>
-            <div><p className="text-xl font-semibold">${(pts / 4).toFixed(0)}</p><p className="text-[11px] text-muted-foreground">Commission</p></div>
-            <div><p className="text-xl font-semibold">15%</p><p className="text-[11px] text-muted-foreground">Code discount</p></div>
-          </div>
-          <p className="mt-4 rounded-2xl bg-background/60 px-4 py-3 text-center text-sm font-semibold tracking-widest">
+          <p className="mt-3 text-xs text-muted-foreground">Your personal discount code — 15% off for your followers.</p>
+          <p className="mt-3 rounded-2xl bg-background/60 px-4 py-3 text-center text-sm font-semibold tracking-widest">
             {(profile.data.username ?? name).toUpperCase().slice(0, 10)}15
           </p>
         </div>
