@@ -121,7 +121,13 @@ function Community() {
               {(athletes.data ?? []).map((a) => {
                 const n = a.display_name ?? a.username ?? "Athlete";
                 return (
-                  <div key={a.id} className="flex w-16 shrink-0 flex-col items-center gap-1.5">
+                  <Link
+                    key={a.id}
+                    to="/u/$handle"
+                    params={{ handle: a.username ?? "" }}
+                    disabled={!a.username}
+                    className="flex w-16 shrink-0 flex-col items-center gap-1.5"
+                  >
                     <div className="rounded-full bg-gradient-to-br from-accent to-destructive p-[2px]">
                       <div className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-surface text-sm font-semibold ring-2 ring-background">
                         {a.avatar_url ? (
@@ -132,9 +138,10 @@ function Community() {
                       </div>
                     </div>
                     <span className="w-full truncate text-center text-[10px] text-muted-foreground">{n}</span>
-                  </div>
+                  </Link>
                 );
               })}
+
             </div>
           )}
 

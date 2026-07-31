@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+
 import { Heart, MessageCircle, Share2, Flame, Dumbbell, Camera, TrendingUp, Trophy, BadgeCheck, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { initials } from "@/lib/auth";
