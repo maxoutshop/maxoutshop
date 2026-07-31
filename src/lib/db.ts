@@ -15,6 +15,18 @@ export function useProfile(userId?: string) {
   });
 }
 
+export function useRoles(userId?: string) {
+  return useQuery({
+    queryKey: ["roles", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("user_roles").select("role").eq("user_id", userId!);
+      if (error) throw error;
+      return (data ?? []).map((r) => r.role);
+    },
+  });
+}
+
 export function useTodayMeals(userId?: string) {
   return useQuery({
     queryKey: ["meals", userId, today()],
