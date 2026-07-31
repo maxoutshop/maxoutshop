@@ -65,6 +65,7 @@ export function useWorkouts(userId?: string) {
       const { data, error } = await supabase
         .from("workouts")
         .select("*, workout_sets(*)")
+        .eq("user_id", userId!)
         .order("performed_at", { ascending: false })
         .limit(20);
       if (error) throw error;
@@ -81,6 +82,7 @@ export function usePRs(userId?: string) {
       const { data, error } = await supabase
         .from("personal_records")
         .select("*")
+        .eq("user_id", userId!)
         .order("achieved_at", { ascending: false })
         .limit(20);
       if (error) throw error;
@@ -88,6 +90,7 @@ export function usePRs(userId?: string) {
     },
   });
 }
+
 
 export function useWeights(userId?: string) {
   return useQuery({
