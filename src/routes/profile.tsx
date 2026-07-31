@@ -71,19 +71,41 @@ function Profile() {
     <AppShell>
       <div className="pt-2">
         <div className="flex items-center gap-4">
-          <div className="grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-secondary to-surface text-lg font-semibold">{initials(name)}</div>
-          <div>
-            <h1 className="text-xl font-semibold">{name}</h1>
-            <p className="text-xs text-muted-foreground">{user.email}</p>
+          <AvatarPicker userId={user.id} name={name} url={profile.data?.avatar_url ?? null} />
+          <div className="min-w-0">
+            <h1 className="truncate text-xl font-semibold">{name}</h1>
+            <p className="truncate text-xs text-muted-foreground">
+              {profile.data?.username ? `@${profile.data.username}` : user.email}
+            </p>
+            <div className="mt-2 flex gap-2">
+              <button
+                onClick={() => setEditing(true)}
+                className="rounded-full border border-border px-3 py-1 text-[11px] font-semibold"
+              >
+                Edit profile
+              </button>
+              {profile.data?.username && (
+                <Link
+                  to="/u/$handle"
+                  params={{ handle: profile.data.username }}
+                  className="rounded-full border border-border px-3 py-1 text-[11px] font-semibold"
+                >
+                  View public profile
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
+
+      {editing && <EditProfileSheet userId={user.id} profile={profile.data} onClose={() => setEditing(false)} />}
 
       <div className="mt-6 grid grid-cols-3 gap-3">
         <Stat value={String((workouts.data ?? []).length)} label="Workouts" />
         <Stat value={String((prs.data ?? []).length)} label="PRs" />
         <Stat value={String((challenges.data ?? []).length)} label="Challenges" />
       </div>
+
 
       <Link
         to="/elite"
