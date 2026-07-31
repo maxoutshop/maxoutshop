@@ -150,6 +150,10 @@ export function MealSheet({
     setError(null);
     try {
       const res = await parseFood({ data: payload });
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
       if (!res.items.length) setError("Couldn't read that — try adding a bit more detail.");
       setItems((prev) => [...prev, ...res.items]);
       setText("");

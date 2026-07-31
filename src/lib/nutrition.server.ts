@@ -1,11 +1,6 @@
-export type ParsedFoodItem = {
-  name: string;
-  quantity: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-};
+import type { ParsedFoodItem } from "./nutrition.types";
+
+export type { ParsedFoodItem };
 
 const SYSTEM = `You are a precise nutrition estimator for a fitness app.
 Given a description or photo of food, break it into individual food items.
