@@ -26,6 +26,9 @@ export const Route = createFileRoute("/track")({
 
 const CATEGORIES = ["Chest", "Back", "Shoulders", "Arms", "Legs", "Core", "Full Body", "Cardio", "Sports", "Custom"];
 
+const COMMON_LIFTS = ["Bench press", "Back squat", "Deadlift", "Overhead press", "Barbell row", "Pull-up", "Incline dumbbell press", "Romanian deadlift"];
+
+
 function Track() {
   const { user } = useSession();
   const uid = user?.id;
