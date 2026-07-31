@@ -204,11 +204,21 @@ export function MealSheet({
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
             {busy ? "Reading…" : "Estimate macros"}
           </button>
-          <button onClick={() => fileRef.current?.click()} disabled={busy}
-            className="grid h-11 w-11 place-items-center rounded-full border border-border active:scale-90 transition disabled:opacity-40">
+          <button
+            onClick={() => (isElite ? fileRef.current?.click() : onUpgrade?.())}
+            disabled={busy}
+            aria-label={isElite ? "Log food by photo" : "Unlock photo logging with MAXOUT ELITE"}
+            className="relative grid h-11 w-11 place-items-center rounded-full border border-border active:scale-90 transition disabled:opacity-40"
+          >
             <Camera className="h-4 w-4" />
+            {!isElite && (
+              <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full bg-accent">
+                <Lock className="h-2.5 w-2.5 text-background" />
+              </span>
+            )}
           </button>
           <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={onPhoto} className="hidden" />
+
         </div>
       </div>
 
