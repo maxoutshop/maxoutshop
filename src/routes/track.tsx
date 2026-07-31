@@ -63,14 +63,12 @@ function Track() {
   const addMeal = useMutate(async (v: { name: string; meal_type: string; calories: number; protein: number; carbs: number; fat: number }) => {
     const { error } = await supabase.from("meals").insert({ ...v, user_id: uid! });
     if (error) throw error;
-    await supabase.from("points_ledger").insert({ user_id: uid!, delta: 5, reason: "Logged a meal" });
-  }, ["meals", "profile", "points"]);
+  }, ["meals", "profile"]);
 
   const addPR = useMutate(async (v: { exercise: string; value: number; unit: string }) => {
     const { error } = await supabase.from("personal_records").insert({ ...v, user_id: uid! });
     if (error) throw error;
-    await supabase.from("points_ledger").insert({ user_id: uid!, delta: 50, reason: `New PR: ${v.exercise}` });
-  }, ["prs", "profile", "points"]);
+  }, ["prs", "profile"]);
 
   const addWeight = useMutate(async (v: { weight: number }) => {
     const { error } = await supabase.from("body_metrics").insert({ weight: v.weight, unit: "lb", user_id: uid! });
