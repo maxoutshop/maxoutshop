@@ -88,7 +88,7 @@ function Community() {
                   <Trophy className="h-5 w-5 text-accent" />
                 </div>
                 <div className="mt-3 flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">{c.goal_label} · {c.reward_points} pts</span>
+                  <span className="text-muted-foreground">{c.goal_label}</span>
                   {user ? (
                     <button
                       disabled={joined}
