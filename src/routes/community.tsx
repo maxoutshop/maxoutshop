@@ -1,3 +1,4 @@
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { FeedPost } from "@/components/FeedPost";
@@ -137,7 +138,10 @@ function Community() {
                         )}
                       </div>
                     </div>
-                    <span className="w-full truncate text-center text-[10px] text-muted-foreground">{n}</span>
+                    <span className="flex w-full items-center justify-center gap-0.5 truncate text-center text-[10px] text-muted-foreground">
+                      <span className="truncate">{n}</span>
+                      {a.verified && <VerifiedBadge className="h-3 w-3" />}
+                    </span>
                   </Link>
                 );
               })}

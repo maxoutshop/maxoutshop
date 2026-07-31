@@ -1,3 +1,4 @@
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
@@ -81,6 +82,7 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
           <div className="min-w-0">
             <p className="flex items-center gap-1 text-sm font-semibold">
               <span className="truncate">{name}</span>
+              {author?.verified && <VerifiedBadge className="h-3.5 w-3.5" />}
               {author?.is_ambassador && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
             </p>
             <p className="truncate text-[11px] text-muted-foreground">

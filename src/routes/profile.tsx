@@ -1,3 +1,5 @@
+import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { ShieldCheck } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -77,7 +79,10 @@ function Profile() {
         <div className="flex items-center gap-4">
           <AvatarPicker userId={user.id} name={name} url={profile.data?.avatar_url ?? null} />
           <div className="min-w-0">
-            <h1 className="truncate text-xl font-semibold">{name}</h1>
+            <h1 className="flex items-center gap-1.5 text-xl font-semibold">
+              <span className="truncate">{name}</span>
+              {profile.data?.verified && <VerifiedBadge className="h-4 w-4" />}
+            </h1>
             <p className="truncate text-xs text-muted-foreground">
               {profile.data?.username ? `@${profile.data.username}` : user.email}
             </p>
@@ -142,6 +147,9 @@ function Profile() {
       <div className="mt-6 space-y-2">
         {isAdmin && (
           <Row icon={<Settings className="h-4 w-4" />} label="Admin: product tags" to="/admin/products" />
+        )}
+        {isAdmin && (
+          <Row icon={<ShieldCheck className="h-4 w-4" />} label="Admin: verification" to="/admin/verify" />
         )}
         <Row icon={<Package className="h-4 w-4" />} label="Orders" hint="On maxoutshop.com" />
         <Row icon={<Heart className="h-4 w-4" />} label="Wishlist" hint={String(wishlistCount)} to="/shop" />

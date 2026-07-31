@@ -426,6 +426,7 @@ export type Database = {
           points: number
           updated_at: string
           username: string | null
+          verified: boolean
         }
         Insert: {
           avatar_url?: string | null
@@ -441,6 +442,7 @@ export type Database = {
           points?: number
           updated_at?: string
           username?: string | null
+          verified?: boolean
         }
         Update: {
           avatar_url?: string | null
@@ -456,6 +458,7 @@ export type Database = {
           points?: number
           updated_at?: string
           username?: string | null
+          verified?: boolean
         }
         Relationships: []
       }
