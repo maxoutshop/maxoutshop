@@ -129,11 +129,13 @@ function guessMealType() {
 }
 
 export function MealSheet({
-  onClose, onSave, recent,
+  onClose, onSave, recent, isElite = false, onUpgrade,
 }: {
   onClose: () => void;
   onSave: (items: MealDraft[], mealType: string) => void;
   recent: MealDraft[];
+  isElite?: boolean;
+  onUpgrade?: () => void;
 }) {
   const [text, setText] = useState("");
   const [mealType, setMealType] = useState<string>(guessMealType());

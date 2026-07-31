@@ -14,6 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as EliteRouteImport } from './routes/elite'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -44,6 +45,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EliteRoute = EliteRouteImport.update({
+  id: '/elite',
+  path: '/elite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CommunityRoute = CommunityRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
+  '/elite': typeof EliteRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
+  '/elite': typeof EliteRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
+  '/elite': typeof EliteRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/community'
+    | '/elite'
     | '/profile'
     | '/reset-password'
     | '/shop'
@@ -138,6 +148,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/community'
+    | '/elite'
     | '/profile'
     | '/reset-password'
     | '/shop'
@@ -151,6 +162,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/cart'
     | '/community'
+    | '/elite'
     | '/profile'
     | '/reset-password'
     | '/shop'
@@ -165,6 +177,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CartRoute: typeof CartRoute
   CommunityRoute: typeof CommunityRoute
+  EliteRoute: typeof EliteRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ShopRoute: typeof ShopRoute
@@ -209,6 +222,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/elite': {
+      id: '/elite'
+      path: '/elite'
+      fullPath: '/elite'
+      preLoaderRoute: typeof EliteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/community': {
@@ -261,6 +281,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CartRoute: CartRoute,
   CommunityRoute: CommunityRoute,
+  EliteRoute: EliteRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ShopRoute: ShopRoute,
