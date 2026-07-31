@@ -50,9 +50,10 @@ function Auth() {
         });
         if (err) throw err;
         if (data.user && (data.user.identities?.length ?? 0) === 0) {
-          setMessage("That email already has an account. Sign in with Google, or use Set a password below.");
+          setMessage("That email already has an account. Sign in, or use Set or reset password below.");
         } else if (!data.session) {
-          setMessage("Check your email to confirm your account, then sign in.");
+          setMessage("Account created. Sign in with your email and password.");
+
         } else {
           navigate({ to: "/profile", replace: true });
         }
