@@ -101,7 +101,10 @@ function ProductPage() {
             <span className="text-xl font-semibold">${product.price.toFixed(2)}</span>
           )}
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">In stock · Ships within 3–5 business days</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {soldOut ? "Sold out in this combination" : "In stock · Ships within 3–5 business days"}
+        </p>
+
 
         {/* Colors */}
         <div className="mt-6">
