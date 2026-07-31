@@ -5,6 +5,7 @@ import { findVariant, useCatalog } from "@/lib/catalog";
 import { createCheckout } from "@/lib/wix.functions";
 import { Minus, Plus, Trash2, ShoppingBag, ExternalLink, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/cart")({
   head: () => ({ meta: [{ title: "Cart — MAXOUT" }, { name: "description", content: "Your MAXOUT cart." }] }),
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/cart")({
 function Cart() {
   const cart = useStore((s) => s.cart);
   const { products } = useCatalog();
+  const { user } = useSession();
   const [promo, setPromo] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +42,7 @@ function Cart() {
       if (lines.some((l) => !l.productId)) {
         throw new Error("Some items need to be re-added before checkout.");
       }
-      const { url } = await createCheckout({ data: { lines } });
+      const { url } = await createCheckout({ data: { lines, email: user?.email ?? undefined } });
       window.open(url, "_blank", "noopener");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not start checkout. Please try again.");

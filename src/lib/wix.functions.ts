@@ -15,12 +15,25 @@ export const createCheckout = createServerFn({ method: "POST" })
         quantity: number;
         options?: Record<string, string>;
       }>;
+      email?: string;
     }) => input,
   )
   .handler(async ({ data }) => {
     const { createWixCheckoutUrl } = await import("./wix.server");
-    const url = await createWixCheckoutUrl(data.lines);
+    const url = await createWixCheckoutUrl(data.lines, data.email);
     return { url };
+  });
+
+/** Order history for the signed-in member, matched on the email used at checkout. */
+export const getMyOrders = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const {
+      data: { user },
+    } = await context.supabase.auth.getUser();
+    if (!user?.email) return { orders: [], configured: true };
+    const { fetchOrdersByEmail } = await import("./wix.server");
+    return await fetchOrdersByEmail(user.email);
   });
 
 export const getAdminCatalog = createServerFn({ method: "GET" })

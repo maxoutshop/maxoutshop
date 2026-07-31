@@ -1,91 +1,67 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createClient } from "@supabase/supabase-js";
 import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
-
-let _supabase: ReturnType<typeof createClient> | null = null;
-function getSupabase() {
-  if (!_supabase) {
-    _supabase = createClient(process.env["SUPABASE_URL"]!, process.env["SUPABASE_SERVICE_ROLE_KEY"]!);
-  }
-  return _supabase as any;
-}
-
-
-function priceIdOf(item: any) {
-  return item?.price?.lookup_key || item?.price?.metadata?.lovable_external_id || item?.price?.id;
-}
-
-async function handleSubscriptionCreated(subscription: any, env: StripeEnv) {
-  const userId = subscription.metadata?.userId;
-  if (!userId) {
-    console.error("No userId in subscription metadata");
-    return;
-  }
-  const item = subscription.items?.data?.[0];
-  const periodStart = item?.current_period_start ?? subscription.current_period_start;
-  const periodEnd = item?.current_period_end ?? subscription.current_period_end;
-
-  await getSupabase()
-    .from("subscriptions")
-    .upsert(
-      {
-        user_id: userId,
-        stripe_subscription_id: subscription.id,
-        stripe_customer_id: subscription.customer,
-        product_id: item?.price?.product,
-        price_id: priceIdOf(item),
-        status: subscription.status,
-        current_period_start: periodStart ? new Date(periodStart * 1000).toISOString() : null,
-        current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
-        cancel_at_period_end: subscription.cancel_at_period_end || false,
-        environment: env,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "stripe_subscription_id" },
-    );
-}
-
-async function handleSubscriptionUpdated(subscription: any, env: StripeEnv) {
-  const item = subscription.items?.data?.[0];
-  const periodStart = item?.current_period_start ?? subscription.current_period_start;
-  const periodEnd = item?.current_period_end ?? subscription.current_period_end;
-
-  await getSupabase()
-    .from("subscriptions")
-    .update({
-      status: subscription.status,
-      product_id: item?.price?.product,
-      price_id: priceIdOf(item),
-      current_period_start: periodStart ? new Date(periodStart * 1000).toISOString() : null,
-      current_period_end: periodEnd ? new Date(periodEnd * 1000).toISOString() : null,
-      cancel_at_period_end: subscription.cancel_at_period_end || false,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("stripe_subscription_id", subscription.id)
-    .eq("environment", env);
-}
-
-async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
-  await getSupabase()
-    .from("subscriptions")
-    .update({ status: "canceled", updated_at: new Date().toISOString() })
-    .eq("stripe_subscription_id", subscription.id)
-    .eq("environment", env);
-}
 
 async function handleWebhook(req: Request, env: StripeEnv) {
   const event = await verifyWebhook(req, env);
+  const { upsertSubscription, adminDb, refreshEliteFlag } = await import("@/lib/membership.server");
 
   switch (event.type) {
     case "customer.subscription.created":
-      await handleSubscriptionCreated(event.data.object, env);
-      break;
     case "customer.subscription.updated":
-      await handleSubscriptionUpdated(event.data.object, env);
+    case "customer.subscription.paused":
+    case "customer.subscription.resumed":
+      await upsertSubscription(event.data.object, env);
       break;
-    case "customer.subscription.deleted":
-      await handleSubscriptionDeleted(event.data.object, env);
+
+    case "customer.subscription.deleted": {
+      const sub = event.data.object;
+      const db = adminDb();
+      const { data: row } = await db
+        .from("subscriptions")
+        .update({ status: "canceled", updated_at: new Date().toISOString() })
+        .eq("stripe_subscription_id", sub.id)
+        .eq("environment", env)
+        .select("user_id")
+        .maybeSingle();
+      if (row?.user_id) await refreshEliteFlag(row.user_id);
       break;
+    }
+
+    case "checkout.session.completed": {
+      // Subscription state arrives via customer.subscription.created, but this
+      // event confirms the userId ↔ customer link even for delayed payments.
+      const session = event.data.object;
+      if (session.payment_status !== "unpaid" && session.metadata?.userId && session.subscription) {
+        const db = adminDb();
+        await db
+          .from("subscriptions")
+          .update({ user_id: session.metadata.userId })
+          .eq("stripe_subscription_id", session.subscription)
+          .eq("environment", env);
+        await refreshEliteFlag(session.metadata.userId);
+      }
+      break;
+    }
+
+    case "invoice.paid":
+    case "invoice.payment_failed": {
+      // Status itself is carried by customer.subscription.updated; recompute
+      // the member's access flag so a failed renewal locks ELITE immediately.
+      const invoice = event.data.object;
+      const customer = typeof invoice.customer === "string" ? invoice.customer : invoice.customer?.id;
+      if (customer) {
+        const db = adminDb();
+        const { data: row } = await db
+          .from("subscriptions")
+          .select("user_id")
+          .eq("stripe_customer_id", customer)
+          .limit(1)
+          .maybeSingle();
+        if (row?.user_id) await refreshEliteFlag(row.user_id);
+      }
+      break;
+    }
+
     default:
       console.log("Unhandled event:", event.type);
   }

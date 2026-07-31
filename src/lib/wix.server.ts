@@ -229,7 +229,7 @@ export type CheckoutLine = {
   options?: Record<string, string>;
 };
 
-export async function createWixCheckoutUrl(lines: CheckoutLine[]): Promise<string> {
+export async function createWixCheckoutUrl(lines: CheckoutLine[], buyerEmail?: string): Promise<string> {
   const client = wixClient();
 
   const lineItems = lines
@@ -253,6 +253,16 @@ export async function createWixCheckoutUrl(lines: CheckoutLine[]): Promise<strin
     throw new Error("Wix rejected the cart items");
   }
 
+  if (buyerEmail) {
+    try {
+      await client.currentCart.updateCurrentCart({
+        cartInfo: { buyerInfo: { email: buyerEmail } },
+      } as never);
+    } catch {
+      // buyer email is a convenience for order matching; never block checkout
+    }
+  }
+
   const checkout = await client.currentCart.createCheckoutFromCurrentCart({
     channelType: "WEB" as any,
   });
@@ -269,4 +279,65 @@ export async function createWixCheckoutUrl(lines: CheckoutLine[]): Promise<strin
   const url = redirectSession?.fullUrl;
   if (!url) throw new Error("Could not create Wix checkout session");
   return url;
+}
+
+export type MemberOrder = {
+  id: string;
+  number: string;
+  createdAt: string | null;
+  status: string;
+  paymentStatus: string;
+  total: string;
+  items: Array<{ name: string; quantity: number; image?: string }>;
+};
+
+/**
+ * Wix eCom orders are account-level data, so they come through the Lovable
+ * connector gateway (API-key auth) rather than the visitor OAuth client.
+ * Returns `configured: false` until the Wix connection is linked.
+ */
+export async function fetchOrdersByEmail(
+  email: string,
+): Promise<{ orders: MemberOrder[]; configured: boolean }> {
+  const lovableApiKey = process.env["LOVABLE_API_KEY"];
+  const connectionApiKey = process.env["WIX_API_KEY"];
+  if (!lovableApiKey || !connectionApiKey) return { orders: [], configured: false };
+
+  const res = await fetch("https://connector-gateway.lovable.dev/wix/ecom/v1/orders/search", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${lovableApiKey}`,
+      "X-Connection-Api-Key": connectionApiKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      search: {
+        filter: { "buyerInfo.email": email },
+        cursorPaging: { limit: 25 },
+      },
+    }),
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    console.error(`Wix orders request failed [${res.status}]: ${body}`);
+    throw new Error(`Could not load orders [${res.status}]`);
+  }
+
+  const json = (await res.json()) as { orders?: any[] };
+  const orders: MemberOrder[] = (json.orders ?? []).map((o) => ({
+    id: String(o.id ?? ""),
+    number: String(o.number ?? ""),
+    createdAt: o.createdDate ?? null,
+    status: String(o.status ?? "").toLowerCase(),
+    paymentStatus: String(o.paymentStatus ?? "").toLowerCase(),
+    total: o.priceSummary?.total?.formattedAmount ?? "",
+    items: (o.lineItems ?? []).map((li: any) => ({
+      name: li.productName?.original ?? li.productName?.translated ?? "Item",
+      quantity: Number(li.quantity ?? 1),
+      image: li.image?.url ?? undefined,
+    })),
+  }));
+
+  return { orders, configured: true };
 }

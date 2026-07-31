@@ -1,4 +1,5 @@
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { EliteBadge } from "@/components/EliteBadge";
 import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 
@@ -83,6 +84,7 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
             <p className="flex items-center gap-1 text-sm font-semibold">
               <span className="truncate">{name}</span>
               {author?.verified && <VerifiedBadge className="h-3.5 w-3.5" />}
+              {(author as { is_elite?: boolean } | undefined)?.is_elite && <EliteBadge className="h-3 w-3" />}
               {author?.is_ambassador && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
             </p>
             <p className="truncate text-[11px] text-muted-foreground">

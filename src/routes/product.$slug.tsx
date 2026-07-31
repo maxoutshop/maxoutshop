@@ -6,7 +6,10 @@ import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/sto
 import { getCatalog } from "@/lib/wix.functions";
 import { FALLBACK_CATALOG, type CatalogProduct } from "@/lib/catalog-meta";
 import { findVariant, relatedFrom } from "@/lib/catalog";
-import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler } from "lucide-react";
+import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler, Lock } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { useSession } from "@/lib/auth";
+import { useElite } from "@/lib/subscription";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: async ({ params }) => {
@@ -59,7 +62,10 @@ function ProductPage() {
     [product, size, color],
   );
   const soldOut = !!variant && !variant.inStock;
-  const canAdd = !!size && !!color && !soldOut;
+  const { user } = useSession();
+  const { isElite } = useElite(user?.id);
+  const eliteLocked = !!product.earlyAccess && !isElite;
+  const canAdd = !!size && !!color && !soldOut && !eliteLocked;
 
 
 
@@ -158,24 +164,35 @@ function ProductPage() {
         </div>
 
         {/* Add */}
-        <button
-          disabled={!canAdd}
-          onClick={() => {
-            cartActions.add({
-              slug: product.slug,
-              size: size!,
-              color: color!,
-              qty,
-              productId: product.id,
-              variantId: variant?.id,
-            });
-            setAdded(true);
-            setTimeout(() => setAdded(false), 1400);
-          }}
-          className="mt-6 w-full rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:bg-secondary disabled:text-muted-foreground transition"
-        >
-          {soldOut ? "Sold out" : !canAdd ? "Select size & color" : added ? "Added to cart" : `Add to cart · $${((variant?.price ?? product.salePrice ?? product.price) * qty).toFixed(2)}`}
-        </button>
+        {eliteLocked ? (
+          <Link
+            to="/elite"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground"
+          >
+            <Lock className="h-4 w-4" /> ELITE early access — unlock
+          </Link>
+        ) : (
+          <button
+            disabled={!canAdd}
+            onClick={() => {
+              cartActions.add({
+                slug: product.slug,
+                size: size!,
+                color: color!,
+                qty,
+                productId: product.id,
+                variantId: variant?.id,
+              });
+              setAdded(true);
+              setTimeout(() => setAdded(false), 1400);
+            }}
+            className="mt-6 w-full rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:bg-secondary disabled:text-muted-foreground transition"
+          >
+            {soldOut ? "Sold out" : !canAdd ? "Select size & color" : added ? "Added to cart" : `Add to cart · $${((variant?.price ?? product.salePrice ?? product.price) * qty).toFixed(2)}`}
+          </button>
+        )}
+
+
 
 
         {/* Description */}

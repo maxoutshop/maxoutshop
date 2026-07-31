@@ -1,4 +1,5 @@
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { EliteBadge } from "@/components/EliteBadge";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -96,6 +97,7 @@ function AthleteProfile() {
           <h1 className="flex items-center gap-1.5 text-xl font-semibold">
             <span className="truncate">{name}</span>
             {profile.data?.verified && <VerifiedBadge className="h-4 w-4" />}
+            {(profile.data as { is_elite?: boolean } | undefined)?.is_elite && <EliteBadge className="h-3.5 w-3.5" />}
             {profile.data?.is_ambassador && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
           </h1>
           {profile.data?.bio && <p className="mt-1 text-xs text-muted-foreground">{profile.data.bio}</p>}

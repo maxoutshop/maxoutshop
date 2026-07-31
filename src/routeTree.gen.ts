@@ -14,6 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as EliteRouteImport } from './routes/elite'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CartRouteImport } from './routes/cart'
@@ -22,6 +23,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UHandleRouteImport } from './routes/u.$handle'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedAdminVerifyRouteImport } from './routes/_authenticated/admin.verify'
 import { Route as AuthenticatedAdminProductsRouteImport } from './routes/_authenticated/admin.products'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -49,6 +51,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersRoute = OrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EliteRoute = EliteRouteImport.update({
@@ -90,6 +97,11 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
   path: '/product/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
+  id: '/checkout/return',
+  path: '/checkout/return',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminVerifyRoute =
   AuthenticatedAdminVerifyRouteImport.update({
     id: '/admin/verify',
@@ -115,11 +127,13 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
+  '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/admin/products': typeof AuthenticatedAdminProductsRoute
@@ -132,11 +146,13 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
+  '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/admin/products': typeof AuthenticatedAdminProductsRoute
@@ -151,11 +167,13 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
+  '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/_authenticated/admin/products': typeof AuthenticatedAdminProductsRoute
@@ -170,11 +188,13 @@ export interface FileRouteTypes {
     | '/cart'
     | '/community'
     | '/elite'
+    | '/orders'
     | '/profile'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
     | '/admin/products'
@@ -187,11 +207,13 @@ export interface FileRouteTypes {
     | '/cart'
     | '/community'
     | '/elite'
+    | '/orders'
     | '/profile'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
     | '/admin/products'
@@ -205,11 +227,13 @@ export interface FileRouteTypes {
     | '/cart'
     | '/community'
     | '/elite'
+    | '/orders'
     | '/profile'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
     | '/_authenticated/admin/products'
@@ -224,11 +248,13 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CommunityRoute: typeof CommunityRoute
   EliteRoute: typeof EliteRoute
+  OrdersRoute: typeof OrdersRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrackRoute: typeof TrackRoute
+  CheckoutReturnRoute: typeof CheckoutReturnRoute
   ProductSlugRoute: typeof ProductSlugRoute
   UHandleRoute: typeof UHandleRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -269,6 +295,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders': {
+      id: '/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof OrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/elite': {
@@ -327,6 +360,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/return': {
+      id: '/checkout/return'
+      path: '/checkout/return'
+      fullPath: '/checkout/return'
+      preLoaderRoute: typeof CheckoutReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/verify': {
       id: '/_authenticated/admin/verify'
       path: '/admin/verify'
@@ -371,11 +411,13 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CommunityRoute: CommunityRoute,
   EliteRoute: EliteRoute,
+  OrdersRoute: OrdersRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrackRoute: TrackRoute,
+  CheckoutReturnRoute: CheckoutReturnRoute,
   ProductSlugRoute: ProductSlugRoute,
   UHandleRoute: UHandleRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
@@ -383,13 +425,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
