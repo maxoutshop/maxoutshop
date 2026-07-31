@@ -118,8 +118,7 @@ function Composer({ uid, onClose }: { uid: string; onClose: () => void }) {
   const create = useMutate(async () => {
     const { error } = await supabase.from("posts").insert({ user_id: uid, body, tag });
     if (error) throw error;
-    await supabase.from("points_ledger").insert({ user_id: uid, delta: 10, reason: "Shared a post" });
-  }, ["posts", "profile", "points"]);
+  }, ["posts", "profile"]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-background/80 backdrop-blur-sm" onClick={onClose}>
