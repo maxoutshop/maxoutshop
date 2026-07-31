@@ -7,8 +7,9 @@ function getSupabase() {
   if (!_supabase) {
     _supabase = createClient(process.env["SUPABASE_URL"]!, process.env["SUPABASE_SERVICE_ROLE_KEY"]!);
   }
-  return _supabase;
+  return _supabase as any;
 }
+
 
 function priceIdOf(item: any) {
   return item?.price?.lookup_key || item?.price?.metadata?.lovable_external_id || item?.price?.id;
