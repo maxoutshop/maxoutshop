@@ -135,7 +135,7 @@ export function usePosts(userId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("*, profiles(display_name, username, avatar_url), post_likes(user_id)")
+        .select("*, profiles(display_name, username, avatar_url, is_ambassador), post_likes(user_id), post_comments(id)")
         .order("created_at", { ascending: false })
         .limit(50);
       if (error) throw error;
@@ -143,6 +143,23 @@ export function usePosts(userId?: string) {
     },
   });
 }
+
+export function useComments(postId?: string, enabled = true) {
+  return useQuery({
+    queryKey: ["comments", postId],
+    enabled: !!postId && enabled,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("post_comments")
+        .select("*, profiles(display_name, username, avatar_url)")
+        .eq("post_id", postId!)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
 
 export function usePoints(userId?: string) {
   return useQuery({
