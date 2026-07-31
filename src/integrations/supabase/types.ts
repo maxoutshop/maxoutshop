@@ -295,6 +295,48 @@ export type Database = {
           },
         ]
       }
+      product_meta: {
+        Row: {
+          best_seller: boolean
+          category: string | null
+          collection: string | null
+          created_at: string
+          drop_date: string | null
+          early_access: boolean
+          hidden: boolean
+          id: string
+          new_arrival: boolean
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          best_seller?: boolean
+          category?: string | null
+          collection?: string | null
+          created_at?: string
+          drop_date?: string | null
+          early_access?: boolean
+          hidden?: boolean
+          id?: string
+          new_arrival?: boolean
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          best_seller?: boolean
+          category?: string | null
+          collection?: string | null
+          created_at?: string
+          drop_date?: string | null
+          early_access?: boolean
+          hidden?: boolean
+          id?: string
+          new_arrival?: boolean
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
