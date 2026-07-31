@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone } from "lucide-react";
+import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone, Settings } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, initials } from "@/lib/auth";
-import { useProfile, useMyChallenges, usePRs, useWorkouts } from "@/lib/db";
+import { useProfile, useMyChallenges, usePRs, useWorkouts, useRoles } from "@/lib/db";
 import { useElite } from "@/lib/subscription";
 
 export const Route = createFileRoute("/profile")({
@@ -29,6 +29,8 @@ function Profile() {
   const wishlistCount = useStore((s) => s.wishlist.length);
   const profile = useProfile(user?.id);
   const { isElite } = useElite(user?.id);
+  const roles = useRoles(user?.id);
+  const isAdmin = (roles.data ?? []).includes("admin");
   const challenges = useMyChallenges(user?.id);
   const prs = usePRs(user?.id);
   const workouts = useWorkouts(user?.id);
@@ -112,6 +114,9 @@ function Profile() {
       )}
 
       <div className="mt-6 space-y-2">
+        {isAdmin && (
+          <Row icon={<Settings className="h-4 w-4" />} label="Admin: product tags" to="/admin/products" />
+        )}
         <Row icon={<Package className="h-4 w-4" />} label="Orders" hint="On maxoutshop.com" />
         <Row icon={<Heart className="h-4 w-4" />} label="Wishlist" hint={String(wishlistCount)} to="/shop" />
         <Row icon={<Activity className="h-4 w-4" />} label="Fitness progress" to="/track" />

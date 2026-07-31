@@ -2,6 +2,8 @@ import { createClient, OAuthStrategy } from "@wix/sdk";
 import { products } from "@wix/stores";
 import { currentCart } from "@wix/ecom";
 import { redirects } from "@wix/redirects";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 import {
   PRODUCT_META,
   colorHex,
@@ -20,6 +22,36 @@ export function wixClient() {
   return createClient({
     modules: { products, currentCart, redirects },
     auth: OAuthStrategy({ clientId: WIX_CLIENT_ID }),
+  });
+}
+
+function isNewSupabaseApiKey(value: string): boolean {
+  return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");
+}
+
+function publishableClient() {
+  const url = process.env["SUPABASE_URL"];
+  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+  if (!url || !key) {
+    throw new Error("Missing Supabase publishable credentials for catalog metadata");
+  }
+
+  return createSupabaseClient<Database>(url, key, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+      storage: undefined,
+    },
+    global: {
+      fetch: (input, init) => {
+        const headers = new Headers(init?.headers);
+        if (isNewSupabaseApiKey(key) && headers.get("Authorization") === `Bearer ${key}`) {
+          headers.delete("Authorization");
+        }
+        headers.set("apikey", key);
+        return fetch(input, { ...init, headers });
+      },
+    },
   });
 }
 
@@ -71,63 +103,123 @@ function parseDescription(html = "") {
 }
 
 function imagesOf(p: Record<string, any>): string[] {
-  const items = (p['media']?.items ?? []) as Array<{ image?: { url?: string } }>;
+  const items = (p["media"]?.items ?? []) as Array<{ image?: { url?: string } }>;
   const urls = items.map((i) => i.image?.url).filter((u): u is string => !!u);
-  const main = p['media']?.mainMedia?.image?.url as string | undefined;
+  const main = p["media"]?.mainMedia?.image?.url as string | undefined;
   const all = main ? [main, ...urls.filter((u) => u !== main)] : urls;
   return all.slice(0, 6);
+}
+
+function isNewByDate(date?: string | null): boolean {
+  if (!date) return false;
+  const drop = new Date(date);
+  const now = new Date();
+  const diff = (now.getTime() - drop.getTime()) / (1000 * 60 * 60 * 24);
+  return diff >= -1 && diff <= 14;
+}
+
+function normalizeMeta(
+  slug: string,
+  row?: Database["public"]["Tables"]["product_meta"]["Row"] | null,
+) {
+  const fallback = PRODUCT_META[slug];
+  const category = row ? row.category : (fallback?.category ?? null);
+  const collection = row ? row.collection : (fallback?.collection ?? null);
+  const bestSeller = row ? row.best_seller : (fallback?.bestSeller ?? false);
+  const newArrival = row
+    ? row.new_arrival || isNewByDate(row.drop_date)
+    : (fallback?.newArrival ?? false);
+  const earlyAccess = row ? row.early_access : (fallback?.earlyAccess ?? false);
+  const dropDate = row ? row.drop_date : null;
+  const hidden = row ? row.hidden : false;
+  return { category, collection, bestSeller, newArrival, earlyAccess, dropDate, hidden };
+}
+
+function mapProduct(
+  p: any,
+  row?: Database["public"]["Tables"]["product_meta"]["Row"] | null,
+): CatalogProduct {
+  const name: string = p.name ?? "";
+  const slug: string = p.slug ?? "";
+  const meta = normalizeMeta(slug, row);
+  const price: number = p.priceData?.price ?? p.price?.price ?? 0;
+  const discounted: number = p.priceData?.discountedPrice ?? price;
+  const opts: any[] = p.productOptions ?? [];
+  const sizeOpt = opts.find((o) => /size/i.test(o.name ?? ""));
+  const colorOpt = opts.find((o) => /colou?r/i.test(o.name ?? ""));
+  const parsed = parseDescription(p.description ?? "");
+
+  const variants: WixVariant[] = (p.variants ?? []).map((v: any) => ({
+    id: v._id as string,
+    choices: (v.choices ?? {}) as Record<string, string>,
+    inStock: v.stock?.inStock !== false,
+    price: v.variant?.priceData?.discountedPrice ?? v.variant?.priceData?.price ?? discounted,
+  }));
+
+  return {
+    id: p._id as string,
+    slug,
+    name,
+    price,
+    salePrice: discounted < price ? discounted : undefined,
+    saleTag: discounted < price ? "Sale" : undefined,
+    images: imagesOf(p),
+    category: (meta.category ?? guessCategory(name)) as CatalogProduct["category"],
+    collection: meta.collection ?? guessCollection(name),
+    sizes: (sizeOpt?.choices ?? []).map((c: any) => c.description ?? c.value),
+    colors: (colorOpt?.choices ?? []).map((c: any) => ({
+      name: (c.description ?? c.value) as string,
+      hex: colorHex((c.description ?? c.value) as string),
+    })),
+    description: parsed.description,
+    specs: parsed.specs,
+    care: parsed.care,
+    bestSeller: meta.bestSeller,
+    newArrival: meta.newArrival,
+    earlyAccess: meta.earlyAccess,
+    dropDate: meta.dropDate,
+    hidden: meta.hidden,
+    inStock: p.stock?.inStock !== false,
+    variants,
+    sourceUrl: `${STORE_URL}/product-page/${slug}`,
+  };
 }
 
 export async function fetchCatalog(): Promise<CatalogProduct[]> {
   const client = wixClient();
   const res = await client.products.queryProducts().limit(100).find();
 
+  let metaRows: Database["public"]["Tables"]["product_meta"]["Row"][] = [];
+  try {
+    const { data } = await publishableClient().from("product_meta").select("*");
+    metaRows = data ?? [];
+  } catch (err) {
+    console.warn("Failed to load product metadata", err);
+  }
+
+  const metaMap = new Map(metaRows.map((m) => [m.slug, m]));
+
   return res.items
     .filter((p: any) => p.visible !== false)
-    .map((p: any): CatalogProduct => {
-      const name: string = p.name ?? "";
-      const slug: string = p.slug ?? "";
-      const meta = PRODUCT_META[slug];
-      const price: number = p.priceData?.price ?? p.price?.price ?? 0;
-      const discounted: number = p.priceData?.discountedPrice ?? price;
-      const opts: any[] = p.productOptions ?? [];
-      const sizeOpt = opts.find((o) => /size/i.test(o.name ?? ""));
-      const colorOpt = opts.find((o) => /colou?r/i.test(o.name ?? ""));
-      const parsed = parseDescription(p.description ?? "");
+    .map((p: any) => mapProduct(p, metaMap.get(p.slug)))
+    .filter((p) => !p.hidden);
+}
 
-      const variants: WixVariant[] = (p.variants ?? []).map((v: any) => ({
-        id: v._id as string,
-        choices: (v.choices ?? {}) as Record<string, string>,
-        inStock: v.stock?.inStock !== false,
-        price: v.variant?.priceData?.discountedPrice ?? v.variant?.priceData?.price ?? discounted,
-      }));
+export async function fetchAdminCatalog(): Promise<CatalogProduct[]> {
+  const client = wixClient();
+  const res = await client.products.queryProducts().limit(100).find();
 
-      return {
-        id: p._id as string,
-        slug,
-        name,
-        price,
-        salePrice: discounted < price ? discounted : undefined,
-        saleTag: discounted < price ? "Sale" : undefined,
-        images: imagesOf(p),
-        category: meta?.category ?? guessCategory(name),
-        collection: meta?.collection ?? guessCollection(name),
-        sizes: (sizeOpt?.choices ?? []).map((c: any) => c.description ?? c.value),
-        colors: (colorOpt?.choices ?? []).map((c: any) => ({
-          name: (c.description ?? c.value) as string,
-          hex: colorHex((c.description ?? c.value) as string),
-        })),
-        description: parsed.description,
-        specs: parsed.specs,
-        care: parsed.care,
-        bestSeller: meta?.bestSeller,
-        newArrival: meta?.newArrival,
-        earlyAccess: meta?.earlyAccess,
-        inStock: p.stock?.inStock !== false,
-        variants,
-        sourceUrl: `${STORE_URL}/product-page/${slug}`,
-      };
-    });
+  let metaRows: Database["public"]["Tables"]["product_meta"]["Row"][] = [];
+  try {
+    const { data } = await publishableClient().from("product_meta").select("*");
+    metaRows = data ?? [];
+  } catch (err) {
+    console.warn("Failed to load product metadata", err);
+  }
+
+  const metaMap = new Map(metaRows.map((m) => [m.slug, m]));
+
+  return res.items.map((p: any) => mapProduct(p, metaMap.get(p.slug)));
 }
 
 export type CheckoutLine = {

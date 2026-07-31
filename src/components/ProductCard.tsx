@@ -18,8 +18,13 @@ export function ProductCard({ product }: { product: Product }) {
           loading="lazy"
           className="aspect-[3/4] w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
-        {product.salePrice && (
-          <span className="absolute left-3 top-3 rounded-full bg-background/80 px-2 py-1 text-[10px] font-semibold tracking-wider uppercase backdrop-blur">
+        {product.newArrival && (
+          <span className="absolute left-3 top-3 rounded-full bg-primary px-2 py-1 text-[10px] font-semibold tracking-wider text-primary-foreground uppercase">
+            New
+          </span>
+        )}
+        {product.salePrice && !product.newArrival && (
+          <span className="absolute left-3 bottom-3 rounded-full bg-background/80 px-2 py-1 text-[10px] font-semibold tracking-wider uppercase backdrop-blur">
             Sale
           </span>
         )}
