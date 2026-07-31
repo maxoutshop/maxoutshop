@@ -132,7 +132,7 @@ function Home() {
                 {topPr ? `${topPr.exercise} PR` : "Top PR"}
               </p>
               <p className="display text-2xl leading-none">
-                {topPr ? `${topPr.weight} ${topPr.unit ?? "lbs"}` : "Log your first"}
+                {topPr ? `${topPr.value} ${topPr.unit ?? "lbs"}` : "Log your first"}
               </p>
             </Link>
           </div>
@@ -154,9 +154,9 @@ function Home() {
           </div>
           <div className="shrink-0 text-right">
             <p className="display text-2xl leading-none">
-              {(challenge?.participant_count ?? 482).toLocaleString()}
+              {challenge?.goal_label ?? "20 workouts"}
             </p>
-            <p className="text-[8px] font-bold uppercase tracking-[0.2em] opacity-60">Athletes</p>
+            <p className="text-[8px] font-bold uppercase tracking-[0.2em] opacity-60">Goal</p>
           </div>
         </Link>
 
