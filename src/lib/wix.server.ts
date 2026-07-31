@@ -253,6 +253,16 @@ export async function createWixCheckoutUrl(lines: CheckoutLine[]): Promise<strin
     throw new Error("Wix rejected the cart items");
   }
 
+  if (buyerEmail) {
+    try {
+      await client.currentCart.updateCurrentCart({
+        cartInfo: { buyerInfo: { email: buyerEmail } },
+      } as never);
+    } catch {
+      // buyer email is a convenience for order matching; never block checkout
+    }
+  }
+
   const checkout = await client.currentCart.createCheckoutFromCurrentCart({
     channelType: "WEB" as any,
   });
