@@ -109,18 +109,9 @@ function Auth() {
           : "Create your account for tracking, challenges and member rewards."}
       </p>
 
-      <Button
-        type="button"
-        onClick={google}
-        variant="outline"
-        className="mt-7 h-auto w-full rounded-full bg-surface py-3.5"
-      >
-        Continue with Google
-      </Button>
+      <div className="mt-7" />
 
-      <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-widest text-muted-foreground">
-        <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
-      </div>
+
 
       <form onSubmit={submit} className="space-y-3">
         {mode === "signup" && (
