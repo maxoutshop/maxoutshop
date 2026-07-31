@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
+
 import { useSession } from "@/lib/auth";
 import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -50,9 +50,10 @@ function Auth() {
         });
         if (err) throw err;
         if (data.user && (data.user.identities?.length ?? 0) === 0) {
-          setMessage("That email already has an account. Sign in with Google, or use Set a password below.");
+          setMessage("That email already has an account. Sign in, or use Set or reset password below.");
         } else if (!data.session) {
-          setMessage("Check your email to confirm your account, then sign in.");
+          setMessage("Account created. Sign in with your email and password.");
+
         } else {
           navigate({ to: "/profile", replace: true });
         }
@@ -62,10 +63,8 @@ function Auth() {
       }
     } catch (e) {
       const raw = e instanceof Error ? e.message : "Something went wrong.";
-      if (/email not confirmed/i.test(raw)) {
-        setError("Your email isn't confirmed yet. Check your inbox for the confirmation link.");
-      } else if (/invalid login credentials/i.test(raw)) {
-        setError("Wrong email or password. If this email was created with Google, use Google or set a password below.");
+      if (/invalid login credentials/i.test(raw)) {
+        setError("Wrong email or password. If you've never set one, use Set or reset password below.");
       } else {
         setError(raw);
       }
@@ -74,11 +73,7 @@ function Auth() {
     }
   }
 
-  async function google() {
-    setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) setError("Google sign-in failed. Try again.");
-  }
+
 
   async function resetPassword() {
     setError(null);
@@ -115,18 +110,9 @@ function Auth() {
           : "Create your account for tracking, challenges and member rewards."}
       </p>
 
-      <Button
-        type="button"
-        onClick={google}
-        variant="outline"
-        className="mt-7 h-auto w-full rounded-full bg-surface py-3.5"
-      >
-        Continue with Google
-      </Button>
+      <div className="mt-7" />
 
-      <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-widest text-muted-foreground">
-        <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
-      </div>
+
 
       <form onSubmit={submit} className="space-y-3">
         {mode === "signup" && (
