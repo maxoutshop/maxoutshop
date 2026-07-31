@@ -86,8 +86,7 @@ function Track() {
     const { data, error } = await supabase.from("workouts").insert({ user_id: uid!, category, title: `${category} session` }).select().single();
     if (error) throw error;
     setActiveWorkout(data.id);
-    await supabase.from("points_ledger").insert({ user_id: uid!, delta: 25, reason: "Completed a workout" });
-  }, ["workouts", "profile", "points"]);
+  }, ["workouts", "profile"]);
 
   const addSet = useMutate(async (v: { exercise: string; weight: number; reps: number }) => {
     const idx = (workouts.data ?? []).find((w) => w.id === activeWorkout)?.workout_sets?.length ?? 0;
