@@ -137,7 +137,7 @@ export const syncMembership = createServerFn({ method: "POST" })
   .inputValidator((data: { environment: StripeEnv }) => data)
   .handler(async ({ data, context }): Promise<SyncResult> => {
     const { userId, supabase } = context;
-    const { upsertSubscription, refreshEliteFlag, statusGrantsAccess } = await import("@/lib/membership.server");
+    const { upsertSubscription, refreshEliteFlag } = await import("@/lib/membership.server");
 
     try {
       const stripe = createStripeClient(data.environment);
@@ -164,8 +164,7 @@ export const syncMembership = createServerFn({ method: "POST" })
         isElite,
         status: newest?.status ?? null,
         currentPeriodEnd: end ? new Date(end * 1000).toISOString() : null,
-        ...(newest ? { _ok: statusGrantsAccess(newest.status, end ? new Date(end * 1000).toISOString() : null) } : {}),
-      } as SyncResult;
+      };
     } catch (error) {
       return { error: getStripeErrorMessage(error) };
     }
