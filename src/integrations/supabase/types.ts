@@ -423,6 +423,7 @@ export type Database = {
           goal_protein: number
           id: string
           is_ambassador: boolean
+          is_elite: boolean
           points: number
           updated_at: string
           username: string | null
@@ -439,6 +440,7 @@ export type Database = {
           goal_protein?: number
           id: string
           is_ambassador?: boolean
+          is_elite?: boolean
           points?: number
           updated_at?: string
           username?: string | null
@@ -455,6 +457,7 @@ export type Database = {
           goal_protein?: number
           id?: string
           is_ambassador?: boolean
+          is_elite?: boolean
           points?: number
           updated_at?: string
           username?: string | null
