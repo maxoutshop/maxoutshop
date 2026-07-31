@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
+
 import { Heart, MessageCircle, Share2, Flame, Dumbbell, Camera, TrendingUp, Trophy, BadgeCheck, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { initials } from "@/lib/auth";
@@ -61,29 +63,37 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
   return (
     <article className="overflow-hidden rounded-3xl border border-border bg-surface">
       <header className="flex items-center gap-3 px-4 pt-4">
-        <div className={`rounded-full bg-gradient-to-br ${meta.ring} p-[2px]`}>
-          <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-surface text-xs font-semibold ring-2 ring-surface">
-            {author?.avatar_url ? (
-              <img src={author.avatar_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
-            ) : (
-              initials(name)
-            )}
+        <Link
+          to="/u/$handle"
+          params={{ handle: author?.username ?? "" }}
+          disabled={!author?.username}
+          className="flex min-w-0 items-center gap-3"
+        >
+          <div className={`rounded-full bg-gradient-to-br ${meta.ring} p-[2px]`}>
+            <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-surface text-xs font-semibold ring-2 ring-surface">
+              {author?.avatar_url ? (
+                <img src={author.avatar_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
+              ) : (
+                initials(name)
+              )}
+            </div>
           </div>
-        </div>
-        <div className="min-w-0">
-          <p className="flex items-center gap-1 text-sm font-semibold">
-            <span className="truncate">{name}</span>
-            {author?.is_ambassador && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
-          </p>
-          <p className="truncate text-[11px] text-muted-foreground">
-            {author?.username ? `@${author.username} · ` : ""}
-            {timeAgo(post.created_at)}
-          </p>
-        </div>
+          <div className="min-w-0">
+            <p className="flex items-center gap-1 text-sm font-semibold">
+              <span className="truncate">{name}</span>
+              {author?.is_ambassador && <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-accent" />}
+            </p>
+            <p className="truncate text-[11px] text-muted-foreground">
+              {author?.username ? `@${author.username} · ` : ""}
+              {timeAgo(post.created_at)}
+            </p>
+          </div>
+        </Link>
         <span className={`ml-auto inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${meta.chip}`}>
           <Icon className="h-3 w-3" /> {post.tag ?? "Log"}
         </span>
       </header>
+
 
       <div className="relative select-none px-4 pt-3" onClick={onBodyTap}>
         <p className="text-[15px] leading-relaxed">{post.body}</p>

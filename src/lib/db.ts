@@ -65,6 +65,7 @@ export function useWorkouts(userId?: string) {
       const { data, error } = await supabase
         .from("workouts")
         .select("*, workout_sets(*)")
+        .eq("user_id", userId!)
         .order("performed_at", { ascending: false })
         .limit(20);
       if (error) throw error;
@@ -81,6 +82,7 @@ export function usePRs(userId?: string) {
       const { data, error } = await supabase
         .from("personal_records")
         .select("*")
+        .eq("user_id", userId!)
         .order("achieved_at", { ascending: false })
         .limit(20);
       if (error) throw error;
@@ -88,6 +90,7 @@ export function usePRs(userId?: string) {
     },
   });
 }
+
 
 export function useWeights(userId?: string) {
   return useQuery({
@@ -208,4 +211,72 @@ export function useAthletes(userId?: string) {
       return data ?? [];
     },
   });
+}
+
+/* ---------- Public athlete profiles ---------- */
+
+export function useProfileByUsername(username?: string) {
+  return useQuery({
+    queryKey: ["profile-by-username", username],
+    enabled: !!username,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, username, display_name, avatar_url, bio, is_ambassador, created_at")
+        .eq("username", username!)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+
+export function useUserPosts(userId?: string) {
+  return useQuery({
+    queryKey: ["user-posts", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("posts")
+        .select("*, profiles(display_name, username, avatar_url, is_ambassador), post_likes(user_id), post_comments(id)")
+        .eq("user_id", userId!)
+        .order("created_at", { ascending: false })
+        .limit(30);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export function useCheers(userId?: string) {
+  return useQuery({
+    queryKey: ["cheers", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("cheers")
+        .select("*, profiles(display_name, username, avatar_url)")
+        .eq("to_user_id", userId!)
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+export async function uploadAvatar(userId: string, file: File) {
+  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const path = `${userId}/avatar-${Date.now()}.${ext}`;
+  const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, {
+    upsert: true,
+    contentType: file.type || "image/jpeg",
+  });
+  if (upErr) throw upErr;
+  const { data, error } = await supabase.storage.from("avatars").createSignedUrl(path, 60 * 60 * 24 * 3650);
+  if (error) throw error;
+  const url = data.signedUrl;
+  const { error: pErr } = await supabase.from("profiles").update({ avatar_url: url }).eq("id", userId);
+  if (pErr) throw pErr;
+  return url;
 }
