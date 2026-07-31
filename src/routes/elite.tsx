@@ -40,7 +40,7 @@ const PERKS = [
 function ElitePage() {
   const { user } = useSession();
   const navigate = useNavigate();
-  const { isElite, subscription } = useElite(user?.id);
+  const { isElite, subscription, comped, grant, lockedForPayment } = useElite(user?.id);
   const [plan, setPlan] = useState<"monthly" | "yearly">("monthly");
   const [checkout, setCheckout] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -132,18 +132,40 @@ function ElitePage() {
               <Check className="h-4 w-4" /> You're ELITE
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {subscription?.cancel_at_period_end
+              {comped
+                ? grant?.expires_at
+                  ? `Comped membership — active until ${new Date(grant.expires_at).toLocaleDateString()}.`
+                  : "Comped membership — no billing on this account."
+                : subscription?.cancel_at_period_end
                 ? `Access ends ${new Date(subscription.current_period_end!).toLocaleDateString()}.`
                 : subscription?.current_period_end
                   ? `Renews ${new Date(subscription.current_period_end).toLocaleDateString()}.`
                   : "Membership active."}
             </p>
+            {!comped && (
+              <button
+                onClick={manage}
+                disabled={busy}
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-xs font-semibold disabled:opacity-50"
+              >
+                {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Manage membership
+              </button>
+            )}
+          </div>
+        )}
+
+        {user && lockedForPayment && (
+          <div className="mt-7 rounded-3xl border border-destructive/40 bg-destructive/10 p-5">
+            <p className="text-sm font-semibold">Payment failed — ELITE is paused</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              We couldn't charge your card, so premium features are locked. Update your payment method to restore access instantly.
+            </p>
             <button
               onClick={manage}
               disabled={busy}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-xs font-semibold disabled:opacity-50"
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-xs font-semibold text-primary-foreground disabled:opacity-50"
             >
-              {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Manage membership
+              {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Update payment method
             </button>
           </div>
         )}
@@ -208,7 +230,7 @@ function ElitePage() {
           <div className="mt-7 overflow-hidden rounded-3xl bg-white">
             <StripeEmbeddedCheckout
               priceId={ELITE_PRICES[plan].id}
-              returnUrl={`${window.location.origin}/elite?checkout=success`}
+              returnUrl={`${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`}
             />
           </div>
         )}

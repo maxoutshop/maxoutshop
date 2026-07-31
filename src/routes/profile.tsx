@@ -34,7 +34,7 @@ function Profile() {
 
   const wishlistCount = useStore((s) => s.wishlist.length);
   const profile = useProfile(user?.id);
-  const { isElite } = useElite(user?.id);
+  const { isElite, comped } = useElite(user?.id);
   const roles = useRoles(user?.id);
   const isAdmin = (roles.data ?? []).includes("admin");
   const challenges = useMyChallenges(user?.id);
@@ -135,11 +135,11 @@ function Profile() {
         <div>
           <p className="text-sm font-semibold tracking-tight">MAXOUT ELITE</p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            {isElite ? "Membership active — manage billing" : "Unlock photo food logging with AI macros"}
+            {isElite ? (comped ? "Comped membership — active" : "Membership active — manage billing") : "Unlock photo food logging with AI macros"}
           </p>
         </div>
         <span className="rounded-full bg-foreground px-3 py-1.5 text-[11px] font-semibold text-background">
-          {isElite ? "Manage" : "Join"}
+          {isElite ? (comped ? "View" : "Manage") : "Join"}
         </span>
       </Link>
 
