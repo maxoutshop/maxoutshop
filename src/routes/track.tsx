@@ -40,7 +40,7 @@ function Track() {
   const weights = useWeights(uid);
 
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<null | "meal" | "pr" | "weight" | "set">(null);
+  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "set" | "workout">(null);
 
   const totals = useMemo(() => {
     const list = meals.data ?? [];
