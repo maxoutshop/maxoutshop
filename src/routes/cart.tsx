@@ -121,35 +121,23 @@ function Cart() {
         <Row label={<span className="text-base font-semibold text-foreground">Total</span>} value={<span className="text-base font-semibold text-foreground">${(subtotal + shipping).toFixed(2)}</span>} />
       </div>
 
-      <div className="mt-5 rounded-2xl border border-border bg-surface p-4">
-        <p className="text-xs text-muted-foreground">
-          Checkout happens on maxoutshop.com. The store can’t receive this cart yet, so open each item below and add it there.
+      {error && (
+        <p className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
+          {error}
         </p>
-        <div className="mt-3 space-y-2">
-          {items.map((i, idx) => (
-            <a
-              key={idx}
-              href={i.product.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2.5 text-sm"
-            >
-              <span className="min-w-0 truncate">{i.product.name} · {i.size} · ×{i.qty}</span>
-              <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
-            </a>
-          ))}
-        </div>
-      </div>
+      )}
 
-      <a
-        href="https://www.maxoutshop.com/category/all-products"
-        target="_blank"
-        rel="noreferrer"
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground"
+      <button
+        onClick={goToCheckout}
+        disabled={busy}
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground disabled:opacity-60"
       >
-        Continue on maxoutshop.com <ExternalLink className="h-4 w-4" />
-      </a>
-      <p className="mt-2 text-center text-[11px] text-muted-foreground">In-app payments aren’t connected yet — that comes with the backend phase.</p>
+        {busy ? (<><Loader2 className="h-4 w-4 animate-spin" /> Preparing checkout…</>) : (<>Checkout <ExternalLink className="h-4 w-4" /></>)}
+      </button>
+      <p className="mt-2 text-center text-[11px] text-muted-foreground">
+        Your full cart carries over to maxoutshop.com — no need to re-add anything.
+      </p>
+
     </AppShell>
   );
 }
