@@ -193,3 +193,19 @@ export function useMutate<TVars>(fn: (vars: TVars) => Promise<unknown>, keys: st
     onSuccess: () => invalidate(...keys),
   });
 }
+
+export function useAthletes(userId?: string) {
+  return useQuery({
+    queryKey: ["athletes", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, display_name, username, avatar_url, is_ambassador")
+        .order("updated_at", { ascending: false })
+        .limit(15);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
