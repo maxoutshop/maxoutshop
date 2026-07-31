@@ -114,6 +114,9 @@ function Profile() {
       )}
 
       <div className="mt-6 space-y-2">
+        {isAdmin && (
+          <Row icon={<Settings className="h-4 w-4" />} label="Admin: product tags" to="/admin/products" />
+        )}
         <Row icon={<Package className="h-4 w-4" />} label="Orders" hint="On maxoutshop.com" />
         <Row icon={<Heart className="h-4 w-4" />} label="Wishlist" hint={String(wishlistCount)} to="/shop" />
         <Row icon={<Activity className="h-4 w-4" />} label="Fitness progress" to="/track" />
