@@ -62,10 +62,8 @@ function Auth() {
       }
     } catch (e) {
       const raw = e instanceof Error ? e.message : "Something went wrong.";
-      if (/email not confirmed/i.test(raw)) {
-        setError("Your email isn't confirmed yet. Check your inbox for the confirmation link.");
-      } else if (/invalid login credentials/i.test(raw)) {
-        setError("Wrong email or password. If this email was created with Google, use Google or set a password below.");
+      if (/invalid login credentials/i.test(raw)) {
+        setError("Wrong email or password. If you've never set one, use Set or reset password below.");
       } else {
         setError(raw);
       }
@@ -74,11 +72,7 @@ function Auth() {
     }
   }
 
-  async function google() {
-    setError(null);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) setError("Google sign-in failed. Try again.");
-  }
+
 
   async function resetPassword() {
     setError(null);
