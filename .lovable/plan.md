@@ -1,48 +1,45 @@
-MAXOUT is a very large app (ecommerce + fitness + nutrition + community + challenges + rewards + ambassador + admin + backend). Trying to ship everything in one pass would leave every surface half-built. Here's how I'd like to build it in phases so each layer is real and polished.
+# Carry the app cart into maxoutshop.com checkout
 
-## Design foundation (always first)
-- Dark, near-black premium design system in `src/styles.css` (oklch tokens, editorial typography pairing, rounded cards, subtle motion).
-- Mobile-first shell with fixed bottom nav (Home, Shop, Track, Community, Profile) and a top bar with logo + cart icon.
-- Responsive desktop layout that keeps the same aesthetic.
+Right now "Checkout" just opens the store, so the cart is lost. This wires the app cart directly into your Wix store cart using your Wix Headless client ID (`45f1c242-…`), so tapping checkout drops the shopper into a maxoutshop.com checkout page that already contains their exact items, sizes and quantities.
 
-## Phase 1 — Shoppable brand app (frontend, demo/local state)
-- Home: hero (America Drop), collection tiles (Men / Women / Accessories), best sellers, new arrivals, teaser cards for Track / Community / Rewards.
-- Shop: product grid, category filters, size/color/price filters, search, sort, wishlist, recently viewed.
-- Product page: gallery, size/color selectors (Add to Cart disabled until selected), description, specs, care, shipping, related.
-- Cart: full cart UI with quantity, subtotal, promo field, "Checkout on maxoutshop.com" handoff (no fake purchases).
-- Product data: structured `products.ts` seeded from maxoutshop.com (real names, images, prices, categories). Easy to extend later.
+## How it will work
 
-## Phase 2 — Backend + accounts (Lovable Cloud)
-- Enable Lovable Cloud, add email/password + Google auth.
-- Schemas: profiles, products, variants, cart_items, wishlists, orders (stub), workouts, exercises, sets, PRs, meals, foods, nutrition_logs, water_logs, posts, comments, likes, follows, challenges, participations, points, transactions, notifications, early_access, ambassadors, referrals, reports. RLS on every user-owned table.
-- `user_roles` table + `has_role()` for admin/ambassador gating.
+```text
+App cart  →  create Wix cart (line items + variants)  →  Wix checkout URL  →  maxoutshop.com pays
+```
 
-## Phase 3 — Fitness (Track tab)
-- Dashboard (streak, weekly workouts, PRs, macros, challenge progress, weight goal).
-- Workout tracker (categories, exercises, sets/reps/weight, templates, rest timer, history + charts).
-- PR tracker with animated celebration + shareable card.
-- Progress: weight, measurements, private progress photos with date compare.
+1. On checkout, the app sends the cart to a server function.
+2. That function authenticates as a Wix visitor with your Headless client ID, creates a cart via the Wix eCommerce API, and generates a checkout URL.
+3. The app opens that URL — the shopper sees their real cart on maxoutshop.com and pays there. Orders, inventory and fulfilment stay in Wix.
 
-## Phase 4 — Nutrition
-- Fast meal logging (breakfast/lunch/dinner/snack/water), macro rings, custom foods, favorites, one-tap re-log, photo upload, dietary prefs. Barcode placeholder clearly labeled.
+## Real catalog, real variants
 
-## Phase 5 — Community + Challenges + Rewards
-- Feed (posts, likes, comments, follow, save, report/block, moderation).
-- Challenges (individual + team, progress, leaderboard, badges).
-- Rewards points ledger, tiers (Member/Athlete/Elite/MAXOUT), redemption UI (real discounts labeled as requiring ecommerce integration).
+Wix needs real product IDs and variant IDs (size/colour) — the current `products.ts` was scraped from the storefront and has none. So:
 
-## Phase 6 — Early Access, Notifications, Ambassador, Admin
-- Early Access locked screen + gated drops.
-- In-app notification center + per-category preferences (push labeled as requiring native integration).
-- Ambassador dashboard (role-gated).
-- Admin dashboard (role-gated): products, drops, challenges, notifications, reports, analytics.
+- Add a server function that pulls the live catalog from Wix Stores (products, prices, images, options like Size/Colour, variant IDs, stock).
+- The Shop, product page, and cards read from that live catalog instead of the hardcoded file, with the current data kept as an offline fallback so the app never renders empty.
+- Product pages show real stock status, and out-of-stock sizes get disabled.
+- Side benefit: your invented/removed products problem disappears — the app can only ever show what's actually in your Wix store.
 
-## Honesty guardrails
-- No fake purchases — checkout hands off to maxoutshop.com.
-- Barcode scanner, push notifications, real payments, and payout processing will be clearly labeled as requiring external integration until those are wired.
-- Real MAXOUT product data only; no invented copy or renamed products.
+## Behaviour details
 
-## What I'll ship this turn
-Phase 1 in full: design system, bottom nav shell, home, shop with filters, product page, cart with maxoutshop.com handoff, plus placeholder screens for Track / Community / Profile that preview what's coming. This gives you a real, premium, browsable app immediately, and a clean base for the backend + fitness phases.
+- Checkout button states: idle → "Creating your checkout…" → opens Wix checkout in a new tab.
+- If Wix is unreachable or an item is unavailable, show a clear inline error and the per-item fallback links (no silent failure, no fake order).
+- Promo code: hand it through to Wix rather than pretending to apply it in-app; the app-side promo field becomes a note that codes are applied at checkout (or is removed if you prefer).
+- The rewards-points checkbox in the cart is demo-only today; it will be labelled as coming with the rewards backend so it isn't mistaken for a real discount.
 
-Approve this and I'll start on Phase 1 right away. If you'd rather reorder (e.g. do backend + accounts before shop polish), tell me and I'll adjust.
+## Technical notes
+
+- Connect the Wix connector so credentials are stored securely; the Headless client ID is used for visitor-token auth, and any secret key stays server-side only. Nothing sensitive ships to the browser.
+- New `src/lib/wix.functions.ts` server functions: `getCatalog`, `createCheckout({ items })`.
+- Wix APIs used: Stores catalog query (products + variants), eCommerce carts create, and checkout creation from cart.
+- Product identity switches from hand-written slugs to Wix product IDs, with slugs kept for pretty URLs.
+- Catalog responses cached briefly so browsing stays fast.
+
+## Order of work
+
+1. Connect Wix and verify the store + catalog come back through the connector.
+2. Live catalog powering shop / product pages, with fallback.
+3. Cart → Wix cart → checkout URL handoff, with proper loading and error states.
+
+Approve and I'll start with step 1 — I'll need you to confirm the Wix connection when the connect card appears.
