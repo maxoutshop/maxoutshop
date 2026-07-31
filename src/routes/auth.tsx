@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useSession } from "@/lib/auth";
 import { Loader2, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -27,6 +28,7 @@ function Auth() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [resetBusy, setResetBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,9 +50,11 @@ function Auth() {
         });
         if (err) throw err;
         if (data.user && (data.user.identities?.length ?? 0) === 0) {
-          setMessage("That email already has an account. Try signing in, or use Continue with Google.");
+          setMessage("That email already has an account. Sign in with Google, or use Set a password below.");
         } else if (!data.session) {
           setMessage("Check your email to confirm your account, then sign in.");
+        } else {
+          navigate({ to: "/profile", replace: true });
         }
       } else {
         const { error: err } = await supabase.auth.signInWithPassword({ email, password });
@@ -61,7 +65,7 @@ function Auth() {
       if (/email not confirmed/i.test(raw)) {
         setError("Your email isn't confirmed yet. Check your inbox for the confirmation link.");
       } else if (/invalid login credentials/i.test(raw)) {
-        setError("Wrong email or password. If you signed up with Google, use Continue with Google. If you just signed up, confirm your email first.");
+        setError("Wrong email or password. If this email was created with Google, use Google or set a password below.");
       } else {
         setError(raw);
       }
@@ -74,6 +78,25 @@ function Auth() {
     setError(null);
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) setError("Google sign-in failed. Try again.");
+  }
+
+  async function resetPassword() {
+    setError(null);
+    setMessage(null);
+    if (!email) {
+      setError("Enter your email first, then tap Set a password.");
+      return;
+    }
+    setResetBusy(true);
+    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setResetBusy(false);
+    if (resetError) {
+      setError(resetError.message);
+      return;
+    }
+    setMessage("Password setup link sent. Open the email, choose a password, then sign in here.");
   }
 
 
@@ -92,12 +115,14 @@ function Auth() {
           : "Create your account for tracking, challenges and member rewards."}
       </p>
 
-      <button
+      <Button
+        type="button"
         onClick={google}
-        className="mt-7 w-full rounded-full border border-border bg-surface py-3.5 text-sm font-semibold"
+        variant="outline"
+        className="mt-7 h-auto w-full rounded-full bg-surface py-3.5"
       >
         Continue with Google
-      </button>
+      </Button>
 
       <div className="my-5 flex items-center gap-3 text-[11px] uppercase tracking-widest text-muted-foreground">
         <span className="h-px flex-1 bg-border" /> or <span className="h-px flex-1 bg-border" />
@@ -129,25 +154,40 @@ function Auth() {
           placeholder="Password"
           className="w-full rounded-2xl border border-border bg-surface px-4 py-3.5 text-sm outline-none"
         />
-        <button
+        <Button
           type="submit"
           disabled={busy}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+          className="h-auto w-full rounded-full py-3.5"
         >
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
           {mode === "signin" ? "Sign in" : "Create account"}
-        </button>
+        </Button>
       </form>
+
+      {mode === "signin" && (
+        <Button
+          type="button"
+          variant="link"
+          disabled={resetBusy}
+          onClick={resetPassword}
+          className="mt-2 h-auto w-full py-2 text-xs text-muted-foreground"
+        >
+          {resetBusy && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+          Set or reset password
+        </Button>
+      )}
 
       {error && <p className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">{error}</p>}
       {message && <p className="mt-4 rounded-2xl border border-border bg-surface px-4 py-3 text-xs text-muted-foreground">{message}</p>}
 
-      <button
+      <Button
+        type="button"
+        variant="link"
         onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(null); setMessage(null); }}
-        className="mt-6 text-center text-xs text-muted-foreground"
+        className="mt-4 h-auto text-center text-xs text-muted-foreground"
       >
         {mode === "signin" ? "New here? Create an account" : "Already a member? Sign in"}
-      </button>
+      </Button>
     </main>
   );
 }
