@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, X, Check } from "lucide-react";
+import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, Check, Utensils, Scale, Repeat } from "lucide-react";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
 import {
   useProfile, useTodayMeals, useWater, useWorkouts, usePRs, useWeights, useMutate,
 } from "@/lib/db";
+import { BottomSheet, MealSheet, Stepper, BigInput, PrimaryButton, type MealDraft } from "@/components/LogSheet";
+
 
 export const Route = createFileRoute("/track")({
   head: () => ({
