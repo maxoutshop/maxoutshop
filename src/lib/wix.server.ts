@@ -164,7 +164,7 @@ function mapProduct(
     salePrice: discounted < price ? discounted : undefined,
     saleTag: discounted < price ? "Sale" : undefined,
     images: imagesOf(p),
-    category: meta.category ?? guessCategory(name),
+    category: (meta.category ?? guessCategory(name)) as CatalogProduct["category"],
     collection: meta.collection ?? guessCollection(name),
     sizes: (sizeOpt?.choices ?? []).map((c: any) => c.description ?? c.value),
     colors: (colorOpt?.choices ?? []).map((c: any) => ({
