@@ -81,6 +81,21 @@ function Profile() {
         <Stat value={String((challenges.data ?? []).length)} label="Challenges" />
       </div>
 
+      <Link
+        to="/elite"
+        className="mt-4 flex items-center justify-between rounded-3xl border border-accent/40 bg-accent/5 p-5"
+      >
+        <div>
+          <p className="text-sm font-semibold tracking-tight">MAXOUT ELITE</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            {isElite ? "Membership active — manage billing" : "Unlock photo food logging with AI macros"}
+          </p>
+        </div>
+        <span className="rounded-full bg-foreground px-3 py-1.5 text-[11px] font-semibold text-background">
+          {isElite ? "Manage" : "Join"}
+        </span>
+      </Link>
+
       {profile.data?.is_ambassador && (
         <div className="mt-4 rounded-3xl border border-accent/40 bg-accent/5 p-5">
           <div className="flex items-center gap-2">
