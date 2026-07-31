@@ -47,13 +47,24 @@ function Auth() {
           options: { emailRedirectTo: window.location.origin, data: { display_name: name || email.split("@")[0] } },
         });
         if (err) throw err;
-        if (!data.session) setMessage("Check your email to confirm your account, then sign in.");
+        if (data.user && (data.user.identities?.length ?? 0) === 0) {
+          setMessage("That email already has an account. Try signing in, or use Continue with Google.");
+        } else if (!data.session) {
+          setMessage("Check your email to confirm your account, then sign in.");
+        }
       } else {
         const { error: err } = await supabase.auth.signInWithPassword({ email, password });
         if (err) throw err;
       }
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong.");
+      const raw = e instanceof Error ? e.message : "Something went wrong.";
+      if (/email not confirmed/i.test(raw)) {
+        setError("Your email isn't confirmed yet. Check your inbox for the confirmation link.");
+      } else if (/invalid login credentials/i.test(raw)) {
+        setError("Wrong email or password. If you signed up with Google, use Continue with Google. If you just signed up, confirm your email first.");
+      } else {
+        setError(raw);
+      }
     } finally {
       setBusy(false);
     }
@@ -64,6 +75,7 @@ function Auth() {
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) setError("Google sign-in failed. Try again.");
   }
+
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-5 py-10">
