@@ -34,8 +34,7 @@ function Community() {
   const join = useMutate(async (challengeId: string) => {
     const { error } = await supabase.from("challenge_participants").insert({ challenge_id: challengeId, user_id: uid! });
     if (error) throw error;
-    await supabase.from("points_ledger").insert({ user_id: uid!, delta: 10, reason: "Joined a challenge" });
-  }, ["my-challenges", "profile", "points"]);
+  }, ["my-challenges", "profile"]);
 
   const joinedIds = new Set((mine.data ?? []).map((m) => m.challenge_id));
 
