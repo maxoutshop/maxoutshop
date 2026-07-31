@@ -158,14 +158,22 @@ function ProductPage() {
         <button
           disabled={!canAdd}
           onClick={() => {
-            cartActions.add({ slug: product.slug, size: size!, color: color!, qty });
+            cartActions.add({
+              slug: product.slug,
+              size: size!,
+              color: color!,
+              qty,
+              productId: product.id,
+              variantId: variant?.id,
+            });
             setAdded(true);
             setTimeout(() => setAdded(false), 1400);
           }}
           className="mt-6 w-full rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:bg-secondary disabled:text-muted-foreground transition"
         >
-          {!canAdd ? "Select size & color" : added ? "Added to cart" : `Add to cart · $${((product.salePrice ?? product.price) * qty).toFixed(2)}`}
+          {soldOut ? "Sold out" : !canAdd ? "Select size & color" : added ? "Added to cart" : `Add to cart · $${((variant?.price ?? product.salePrice ?? product.price) * qty).toFixed(2)}`}
         </button>
+
 
         {/* Description */}
         <div className="mt-8">
