@@ -1,7 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { ParsedFoodItem } from "./nutrition.types";
 
-type ParseResult = { items: Array<Record<string, unknown>>; error?: string };
+type ParseResult = { items: ParsedFoodItem[]; error?: string };
+
 
 export const parseFood = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
