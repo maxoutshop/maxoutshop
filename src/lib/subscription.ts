@@ -10,6 +10,8 @@ function env() {
   }
 }
 
+/** Access rules: active/trialing grant access; a canceled sub keeps access until
+ *  the period ends; a failed payment (past_due/unpaid) revokes access immediately. */
 export function useElite(userId?: string) {
   const environment = env();
   const query = useQuery({
@@ -46,18 +48,27 @@ export function useElite(userId?: string) {
   });
 
   const sub = query.data;
-  const periodOk = !sub?.current_period_end || new Date(sub.current_period_end) > new Date();
-  const paid = !!sub && periodOk && ["active", "trialing", "past_due", "canceled"].includes(sub.status);
+  const future = !sub?.current_period_end || new Date(sub.current_period_end) > new Date();
+  const paid =
+    !!sub &&
+    ((["active", "trialing"].includes(sub.status) && future) ||
+      (sub.status === "canceled" && !!sub.current_period_end && new Date(sub.current_period_end) > new Date()));
 
   const comp = grant.data;
   const compActive = !!comp && (!comp.expires_at || new Date(comp.expires_at) > new Date());
 
+  const paymentFailed = !!sub && ["past_due", "unpaid", "incomplete"].includes(sub.status);
+
   return {
     ...query,
+    loading: query.isLoading || grant.isLoading,
     subscription: sub,
     grant: compActive ? comp : null,
+    /** Comped via promo code and not paying — hide billing management. */
+    comped: compActive && !paid,
     isElite: paid || compActive,
-    pastDue: sub?.status === "past_due",
+    paymentFailed,
+    /** Access was cut because the renewal payment failed. */
+    lockedForPayment: paymentFailed && !compActive,
   };
 }
-

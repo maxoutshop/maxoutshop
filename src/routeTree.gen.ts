@@ -22,6 +22,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as UHandleRouteImport } from './routes/u.$handle'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedAdminVerifyRouteImport } from './routes/_authenticated/admin.verify'
 import { Route as AuthenticatedAdminProductsRouteImport } from './routes/_authenticated/admin.products'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -90,6 +91,11 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
   path: '/product/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
+  id: '/checkout/return',
+  path: '/checkout/return',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminVerifyRoute =
   AuthenticatedAdminVerifyRouteImport.update({
     id: '/admin/verify',
@@ -120,6 +126,7 @@ export interface FileRoutesByFullPath {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/admin/products': typeof AuthenticatedAdminProductsRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/admin/products': typeof AuthenticatedAdminProductsRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/_authenticated/admin/products': typeof AuthenticatedAdminProductsRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
     | '/admin/products'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
     | '/admin/products'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
     | '/_authenticated/admin/products'
@@ -229,6 +241,7 @@ export interface RootRouteChildren {
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrackRoute: typeof TrackRoute
+  CheckoutReturnRoute: typeof CheckoutReturnRoute
   ProductSlugRoute: typeof ProductSlugRoute
   UHandleRoute: typeof UHandleRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -327,6 +340,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/return': {
+      id: '/checkout/return'
+      path: '/checkout/return'
+      fullPath: '/checkout/return'
+      preLoaderRoute: typeof CheckoutReturnRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/verify': {
       id: '/_authenticated/admin/verify'
       path: '/admin/verify'
@@ -376,6 +396,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrackRoute: TrackRoute,
+  CheckoutReturnRoute: CheckoutReturnRoute,
   ProductSlugRoute: ProductSlugRoute,
   UHandleRoute: UHandleRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
