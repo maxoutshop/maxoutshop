@@ -1,11 +1,11 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone } from "lucide-react";
+import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone, Settings } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, initials } from "@/lib/auth";
-import { useProfile, useMyChallenges, usePRs, useWorkouts } from "@/lib/db";
+import { useProfile, useMyChallenges, usePRs, useWorkouts, useRoles } from "@/lib/db";
 import { useElite } from "@/lib/subscription";
 
 export const Route = createFileRoute("/profile")({
