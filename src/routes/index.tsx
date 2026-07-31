@@ -128,14 +128,16 @@ function Home() {
         </Link>
       </section>
 
-      {/* New arrivals */}
-      <Section title="New Arrivals" href="/shop">
-        <div className="grid grid-cols-2 gap-3 px-4">
-          {newArrivals.slice(0, 4).map((p) => (
-            <ProductCard key={p.slug} product={p} />
-          ))}
-        </div>
-      </Section>
+      {/* Latest Drop */}
+      {hasDrop && (
+        <Section title="Latest Drop" href={`/shop?collection=${encodeURIComponent(latestDrops[0]?.collection ?? "")}`}>
+          <div className="grid grid-cols-2 gap-3 px-4">
+            {latestDrops.map((p) => (
+              <ProductCard key={p.slug} product={p} />
+            ))}
+          </div>
+        </Section>
+      )}
 
       {/* Early access */}
       <section className="mt-8 px-4">
