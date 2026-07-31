@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, Sparkles, Camera, Loader2, Minus, Plus, Trash2, Pencil } from "lucide-react";
+import { X, Sparkles, Camera, Loader2, Minus, Plus, Trash2, Pencil, Lock } from "lucide-react";
 import { parseFood } from "@/lib/nutrition.functions";
 
 export type MealDraft = {
