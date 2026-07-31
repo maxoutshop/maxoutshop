@@ -28,6 +28,7 @@ function Profile() {
   const { user } = useSession();
   const wishlistCount = useStore((s) => s.wishlist.length);
   const profile = useProfile(user?.id);
+  const { isElite } = useElite(user?.id);
   const challenges = useMyChallenges(user?.id);
   const prs = usePRs(user?.id);
   const workouts = useWorkouts(user?.id);
