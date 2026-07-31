@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { PRODUCTS } from "@/lib/products";
+import { useCatalog } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { ArrowRight, Flame, Trophy, Users, Sparkles } from "lucide-react";
 
@@ -19,8 +19,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const bestSellers = PRODUCTS.filter((p) => p.bestSeller);
-  const newArrivals = PRODUCTS.filter((p) => p.newArrival);
+  const { products } = useCatalog();
+  const bestSellers = products.filter((p) => p.bestSeller).slice(0, 6);
+  const newArrivals = products.filter((p) => p.newArrival).slice(0, 6);
 
   return (
     <AppShell>
