@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Camera, Check, Crown, Loader2, Sparkles, ArrowLeft } from "lucide-react";
+import { Camera, Check, Crown, Loader2, Sparkles, ArrowLeft, Ticket } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { redeemPromoCode } from "@/lib/promo.functions";
 import { useSession } from "@/lib/auth";
 import { useElite } from "@/lib/subscription";
 import { ELITE_PRICES, getStripeEnvironment } from "@/lib/stripe";
