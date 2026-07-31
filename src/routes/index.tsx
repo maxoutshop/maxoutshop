@@ -21,7 +21,16 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { products } = useCatalog();
   const bestSellers = products.filter((p) => p.bestSeller).slice(0, 6);
-  const newArrivals = products.filter((p) => p.newArrival).slice(0, 6);
+  const latestDrops = products
+    .filter((p) => p.newArrival || p.dropDate)
+    .sort((a, b) => {
+      const da = a.dropDate ? new Date(a.dropDate).getTime() : 0;
+      const db = b.dropDate ? new Date(b.dropDate).getTime() : 0;
+      return db - da || Number(!!b.newArrival) - Number(!!a.newArrival);
+    })
+    .slice(0, 4);
+
+  const hasDrop = latestDrops.length > 0;
 
   return (
     <AppShell>
