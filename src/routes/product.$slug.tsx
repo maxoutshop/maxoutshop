@@ -6,7 +6,10 @@ import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/sto
 import { getCatalog } from "@/lib/wix.functions";
 import { FALLBACK_CATALOG, type CatalogProduct } from "@/lib/catalog-meta";
 import { findVariant, relatedFrom } from "@/lib/catalog";
-import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler } from "lucide-react";
+import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler, Lock } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { useSession } from "@/lib/auth";
+import { useElite } from "@/lib/subscription";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: async ({ params }) => {
@@ -59,7 +62,10 @@ function ProductPage() {
     [product, size, color],
   );
   const soldOut = !!variant && !variant.inStock;
-  const canAdd = !!size && !!color && !soldOut;
+  const { user } = useSession();
+  const { isElite } = useElite(user?.id);
+  const eliteLocked = !!product.earlyAccess && !isElite;
+  const canAdd = !!size && !!color && !soldOut && !eliteLocked;
 
 
 

@@ -1,10 +1,15 @@
 import { Link } from "@tanstack/react-router";
 import type { Product } from "@/lib/products";
-import { Heart } from "lucide-react";
+import { Heart, Lock } from "lucide-react";
 import { useStore, wishlistActions } from "@/lib/store";
+import { useSession } from "@/lib/auth";
+import { useElite } from "@/lib/subscription";
 
 export function ProductCard({ product }: { product: Product }) {
   const wished = useStore((s) => s.wishlist.includes(product.slug));
+  const { user } = useSession();
+  const { isElite } = useElite(user?.id);
+  const locked = !!product.earlyAccess && !isElite;
   return (
     <Link
       to="/product/$slug"
@@ -29,9 +34,16 @@ export function ProductCard({ product }: { product: Product }) {
           </span>
         )}
         {product.earlyAccess && (
-          <span className="absolute right-3 top-3 rounded-full bg-accent px-2 py-1 text-[10px] font-semibold tracking-wider text-accent-foreground uppercase">
-            Early
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-accent px-2 py-1 text-[10px] font-semibold tracking-wider text-accent-foreground uppercase">
+            {locked && <Lock className="h-2.5 w-2.5" />} Early
           </span>
+        )}
+        {locked && (
+          <div className="pointer-events-none absolute inset-0 grid place-items-center bg-background/55 backdrop-blur-[2px]">
+            <span className="rounded-full border border-border bg-background/80 px-3 py-1 text-[10px] font-semibold uppercase tracking-wider">
+              ELITE early access
+            </span>
+          </div>
         )}
         <button
           type="button"
