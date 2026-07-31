@@ -45,6 +45,31 @@ function ElitePage() {
   const [checkout, setCheckout] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const qc = useQueryClient();
+  const [code, setCode] = useState("");
+  const [redeeming, setRedeeming] = useState(false);
+  const [codeMsg, setCodeMsg] = useState<string | null>(null);
+
+  async function redeem() {
+    setRedeeming(true);
+    setCodeMsg(null);
+    try {
+      const res = await redeemPromoCode({ data: { code } });
+      if (!res.ok) {
+        setCodeMsg(res.error);
+        return;
+      }
+      setCodeMsg("Code applied — welcome to ELITE.");
+      setCode("");
+      await qc.invalidateQueries({ queryKey: ["elite-grant"] });
+    } catch {
+      setCodeMsg("Could not redeem that code. Try again.");
+    } finally {
+      setRedeeming(false);
+    }
+  }
+
+
 
   async function manage() {
     setBusy(true);
