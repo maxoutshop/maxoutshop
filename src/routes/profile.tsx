@@ -144,24 +144,6 @@ function Profile() {
         <Row icon={<Flag className="h-4 w-4" />} label="Challenges" to="/community" />
       </div>
 
-      <div className="mt-6 rounded-3xl border border-border bg-surface p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Points activity</h2>
-          <Trophy className="h-5 w-5 text-accent" />
-        </div>
-        <div className="mt-3 divide-y divide-border">
-          {(points.data ?? []).map((p) => (
-            <div key={p.id} className="flex items-center justify-between py-2.5 text-sm">
-              <div>
-                <p className="font-medium">{p.reason}</p>
-                <p className="text-xs text-muted-foreground">{new Date(p.created_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
-              </div>
-              <span className={p.delta >= 0 ? "font-semibold text-accent" : "font-semibold text-muted-foreground"}>{p.delta > 0 ? "+" : ""}{p.delta}</span>
-            </div>
-          ))}
-          {(points.data ?? []).length === 0 && <p className="py-3 text-xs text-muted-foreground">Log a workout or meal to start earning.</p>}
-        </div>
-      </div>
 
       <button onClick={signOut} className="mt-6 flex w-full items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5 text-left">
         <span className="grid h-8 w-8 place-items-center rounded-full bg-background/60"><LogOut className="h-4 w-4 text-destructive" /></span>
