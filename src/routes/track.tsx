@@ -119,6 +119,19 @@ function Track() {
   const first = weights.data?.[0]?.weight;
   const live = (workouts.data ?? []).find((w) => w.id === activeWorkout);
 
+  const recentMeals: MealDraft[] = Array.from(
+    new Map((meals.data ?? []).map((m) => [m.name, {
+      name: m.name, calories: m.calories ?? 0, protein: m.protein ?? 0, carbs: m.carbs ?? 0, fat: m.fat ?? 0,
+    } as MealDraft])).values(),
+  ).slice(0, 6);
+
+  const allSets = (workouts.data ?? []).flatMap((w) => w.workout_sets ?? []);
+  const exerciseNames = Array.from(new Set(allSets.map((s) => s.exercise))).slice(0, 8);
+  const liveSets = (live?.workout_sets ?? []).slice().sort((a, b) => a.set_index - b.set_index);
+  const lastRaw = liveSets.at(-1) ?? allSets.at(-1);
+  const lastSet = lastRaw ? { exercise: lastRaw.exercise, weight: lastRaw.weight, reps: lastRaw.reps } : null;
+
+
   return (
     <AppShell>
       <div className="pt-2">
