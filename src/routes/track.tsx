@@ -338,6 +338,30 @@ function Track() {
   );
 }
 
+function SignedOut() {
+  return (
+    <AppShell>
+      <div className="pt-2">
+        <p className="text-[11px] font-semibold tracking-[0.3em] text-muted-foreground uppercase">Today</p>
+        <h1 className="mt-1 text-3xl font-semibold">Your Track</h1>
+      </div>
+      <div className="mt-6 rounded-3xl border border-border bg-surface p-6 text-center">
+        <Lock className="mx-auto h-6 w-6 text-accent" />
+        <h2 className="mt-3 text-lg font-semibold">Unlock your tracker</h2>
+        <p className="mt-1 text-sm text-muted-foreground">Workouts, PRs, macros, water and bodyweight — private to you and synced across devices.</p>
+        <Link to="/auth" className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground">
+          Create your free account
+        </Link>
+      </div>
+      <div className="mt-5 grid grid-cols-2 gap-3 opacity-40">
+        <BigStat icon={<Flame className="h-5 w-5 text-accent" />} value="12" label="Day streak" hint="Preview" />
+        <BigStat icon={<Dumbbell className="h-5 w-5" />} value="4/5" label="Workouts this week" hint="Preview" />
+      </div>
+    </AppShell>
+  );
+}
+
+
 function QuickTile({ icon, label, hint, onClick }: { icon: React.ReactNode; label: string; hint: string; onClick: () => void }) {
   return (
     <button onClick={onClick} className="rounded-3xl border border-border bg-background p-4 text-left transition active:scale-95">
