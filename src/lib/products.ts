@@ -30,22 +30,6 @@ const HEATHER = { name: "Heather Grey", hex: "#8a8a8a" };
 
 export const PRODUCTS: Product[] = [
   {
-    slug: "maxout-america-hoodie",
-    name: "MAXOUT America Hoodie",
-    price: 65,
-    images: ["https://static.wixstatic.com/media/8255de_06d4a17a72a54f378299eefd86b5f5ff~mv2.png/v1/fill/w_1200,h_1400,al_c,q_95,enc_auto/hoodie.png"],
-    category: "unisex",
-    collection: "MAXOUT America",
-    sizes: CORE_SIZES,
-    colors: [BLACK],
-    description: "Heavyweight oversized hoodie built for the long haul. Brushed fleece interior, dropped shoulders, and a boxy fit that layers effortlessly. Part of the MAXOUT America drop — limited stock.",
-    specs: ["Heavyweight 400 GSM cotton blend", "Oversized fit", "Dropped shoulder", "Ribbed cuffs and hem"],
-    care: ["Machine wash cold with like colors", "Tumble dry low", "Do not bleach"],
-    earlyAccess: true,
-    newArrival: true,
-    sourceUrl: "https://www.maxoutshop.com/category/maxout-america",
-  },
-  {
     slug: "maxout-core-leggings",
     name: "MAXOUT Core Leggings",
     price: 30,
