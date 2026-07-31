@@ -138,7 +138,7 @@ export function usePosts(userId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("*, profiles(display_name, username, avatar_url, is_ambassador, verified), post_likes(user_id), post_comments(id)")
+        .select("*, profiles(display_name, username, avatar_url, is_ambassador, verified, is_elite), post_likes(user_id), post_comments(id)")
         .order("created_at", { ascending: false })
         .limit(50);
       if (error) throw error;
@@ -204,7 +204,7 @@ export function useAthletes(userId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, display_name, username, avatar_url, is_ambassador, verified")
+        .select("id, display_name, username, avatar_url, is_ambassador, verified, is_elite")
         .order("updated_at", { ascending: false })
         .limit(15);
       if (error) throw error;
@@ -222,7 +222,7 @@ export function useProfileByUsername(username?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, username, display_name, avatar_url, bio, is_ambassador, verified, created_at")
+        .select("id, username, display_name, avatar_url, bio, is_ambassador, verified, is_elite, created_at")
         .eq("username", username!)
         .maybeSingle();
       if (error) throw error;
@@ -238,7 +238,7 @@ export function useUserPosts(userId?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("posts")
-        .select("*, profiles(display_name, username, avatar_url, is_ambassador, verified), post_likes(user_id), post_comments(id)")
+        .select("*, profiles(display_name, username, avatar_url, is_ambassador, verified, is_elite), post_likes(user_id), post_comments(id)")
         .eq("user_id", userId!)
         .order("created_at", { ascending: false })
         .limit(30);
