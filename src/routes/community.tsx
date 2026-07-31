@@ -34,8 +34,7 @@ function Community() {
   const join = useMutate(async (challengeId: string) => {
     const { error } = await supabase.from("challenge_participants").insert({ challenge_id: challengeId, user_id: uid! });
     if (error) throw error;
-    await supabase.from("points_ledger").insert({ user_id: uid!, delta: 10, reason: "Joined a challenge" });
-  }, ["my-challenges", "profile", "points"]);
+  }, ["my-challenges", "profile"]);
 
   const joinedIds = new Set((mine.data ?? []).map((m) => m.challenge_id));
 
@@ -89,7 +88,7 @@ function Community() {
                   <Trophy className="h-5 w-5 text-accent" />
                 </div>
                 <div className="mt-3 flex items-center justify-between text-xs">
-                  <span className="text-muted-foreground">{c.goal_label} · {c.reward_points} pts</span>
+                  <span className="text-muted-foreground">{c.goal_label}</span>
                   {user ? (
                     <button
                       disabled={joined}
@@ -119,8 +118,7 @@ function Composer({ uid, onClose }: { uid: string; onClose: () => void }) {
   const create = useMutate(async () => {
     const { error } = await supabase.from("posts").insert({ user_id: uid, body, tag });
     if (error) throw error;
-    await supabase.from("points_ledger").insert({ user_id: uid, delta: 10, reason: "Shared a post" });
-  }, ["posts", "profile", "points"]);
+  }, ["posts", "profile"]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-background/80 backdrop-blur-sm" onClick={onClose}>
