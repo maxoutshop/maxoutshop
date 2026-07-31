@@ -29,9 +29,35 @@ export function useElite(userId?: string) {
     },
   });
 
+  const grant = useQuery({
+    queryKey: ["elite-grant", userId],
+    enabled: !!userId,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("elite_grants")
+        .select("*")
+        .eq("user_id", userId!)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const sub = query.data;
   const periodOk = !sub?.current_period_end || new Date(sub.current_period_end) > new Date();
-  const isElite = !!sub && periodOk && ["active", "trialing", "past_due", "canceled"].includes(sub.status);
+  const paid = !!sub && periodOk && ["active", "trialing", "past_due", "canceled"].includes(sub.status);
 
-  return { ...query, subscription: sub, isElite, pastDue: sub?.status === "past_due" };
+  const comp = grant.data;
+  const compActive = !!comp && (!comp.expires_at || new Date(comp.expires_at) > new Date());
+
+  return {
+    ...query,
+    subscription: sub,
+    grant: compActive ? comp : null,
+    isElite: paid || compActive,
+    pastDue: sub?.status === "past_due",
+  };
 }
+

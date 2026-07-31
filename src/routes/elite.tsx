@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Camera, Check, Crown, Loader2, Sparkles, ArrowLeft } from "lucide-react";
+import { Camera, Check, Crown, Loader2, Sparkles, ArrowLeft, Ticket } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { redeemPromoCode } from "@/lib/promo.functions";
 import { useSession } from "@/lib/auth";
 import { useElite } from "@/lib/subscription";
 import { ELITE_PRICES, getStripeEnvironment } from "@/lib/stripe";
@@ -43,6 +45,31 @@ function ElitePage() {
   const [checkout, setCheckout] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const qc = useQueryClient();
+  const [code, setCode] = useState("");
+  const [redeeming, setRedeeming] = useState(false);
+  const [codeMsg, setCodeMsg] = useState<string | null>(null);
+
+  async function redeem() {
+    setRedeeming(true);
+    setCodeMsg(null);
+    try {
+      const res = await redeemPromoCode({ data: { code } });
+      if (!res.ok) {
+        setCodeMsg(res.error);
+        return;
+      }
+      setCodeMsg("Code applied — welcome to ELITE.");
+      setCode("");
+      await qc.invalidateQueries({ queryKey: ["elite-grant"] });
+    } catch {
+      setCodeMsg("Could not redeem that code. Try again.");
+    } finally {
+      setRedeeming(false);
+    }
+  }
+
+
 
   async function manage() {
     setBusy(true);
@@ -148,8 +175,34 @@ function ElitePage() {
               Go ELITE
             </button>
             <p className="mt-3 text-center text-[11px] text-muted-foreground">Cancel anytime — access runs to the end of your billing period.</p>
+
+            <div className="mt-6 rounded-3xl border border-border bg-surface p-4">
+              <p className="inline-flex items-center gap-1.5 text-xs font-semibold">
+                <Ticket className="h-3.5 w-3.5" /> Have a promo code?
+              </p>
+              <div className="mt-3 flex gap-2">
+                <input
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.toUpperCase())}
+                  placeholder="MAXOUT-XXXXX-XXXXX"
+                  autoCapitalize="characters"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  className="min-w-0 flex-1 rounded-full border border-border bg-background px-4 py-3 text-xs tracking-widest outline-none placeholder:tracking-normal placeholder:text-muted-foreground focus:border-foreground"
+                />
+                <button
+                  onClick={redeem}
+                  disabled={redeeming || code.trim().length < 4}
+                  className="rounded-full bg-foreground px-5 text-xs font-semibold text-background disabled:opacity-40"
+                >
+                  {redeeming ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Apply"}
+                </button>
+              </div>
+              {codeMsg && <p className="mt-3 text-[11px] text-muted-foreground">{codeMsg}</p>}
+            </div>
           </div>
         )}
+
 
         {user && !isElite && checkout && (
           <div className="mt-7 overflow-hidden rounded-3xl bg-white">

@@ -109,6 +109,38 @@ export type Database = {
         }
         Relationships: []
       }
+      elite_grants: {
+        Row: {
+          code: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "elite_grants_code_fkey"
+            columns: ["code"]
+            isOneToOne: false
+            referencedRelation: "promo_codes"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
       meals: {
         Row: {
           calories: number
@@ -308,6 +340,39 @@ export type Database = {
           points?: number
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      promo_codes: {
+        Row: {
+          active: boolean
+          code: string
+          created_at: string
+          expires_at: string | null
+          grant_months: number
+          label: string | null
+          max_redemptions: number
+          redeemed_count: number
+        }
+        Insert: {
+          active?: boolean
+          code: string
+          created_at?: string
+          expires_at?: string | null
+          grant_months?: number
+          label?: string | null
+          max_redemptions?: number
+          redeemed_count?: number
+        }
+        Update: {
+          active?: boolean
+          code?: string
+          created_at?: string
+          expires_at?: string | null
+          grant_months?: number
+          label?: string | null
+          max_redemptions?: number
+          redeemed_count?: number
         }
         Relationships: []
       }
