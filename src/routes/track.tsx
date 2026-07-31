@@ -32,7 +32,7 @@ const COMMON_LIFTS = ["Bench press", "Back squat", "Deadlift", "Overhead press",
 
 
 function Track() {
-  const { user } = useSession();
+  const { user, loading: sessionLoading } = useSession();
   const uid = user?.id;
   const navigate = useNavigate();
   const { isElite } = useElite(uid);
@@ -111,6 +111,7 @@ function Track() {
     if (error) throw error;
   }, ["workouts"]);
 
+  if (sessionLoading) return <SessionLoading />;
   if (!user) return <SignedOut />;
 
   const glasses = water.data?.glasses ?? 0;
@@ -492,5 +493,17 @@ function MiniChart({ points }: { points: number[] }) {
       <path d={path} fill="none" stroke="var(--color-foreground)" strokeWidth="1.5" />
       <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor="var(--color-foreground)" /><stop offset="100%" stopColor="transparent" /></linearGradient></defs>
     </svg>
+  );
+}
+
+function SessionLoading() {
+  return (
+    <AppShell>
+      <div className="space-y-3 pt-10">
+        <div className="h-24 animate-pulse rounded-3xl bg-surface" />
+        <div className="h-40 animate-pulse rounded-3xl bg-surface" />
+        <div className="h-40 animate-pulse rounded-3xl bg-surface" />
+      </div>
+    </AppShell>
   );
 }

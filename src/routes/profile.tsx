@@ -29,7 +29,7 @@ export const Route = createFileRoute("/profile")({
 function Profile() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { user } = useSession();
+  const { user, loading: sessionLoading } = useSession();
   const [editing, setEditing] = useState(false);
 
   const wishlistCount = useStore((s) => s.wishlist.length);
@@ -46,6 +46,18 @@ function Profile() {
     qc.clear();
     await supabase.auth.signOut();
     navigate({ to: "/", replace: true });
+  }
+
+  if (sessionLoading) {
+    return (
+      <AppShell>
+        <div className="space-y-3 pt-10">
+          <div className="h-20 animate-pulse rounded-3xl bg-surface" />
+          <div className="h-24 animate-pulse rounded-3xl bg-surface" />
+          <div className="h-40 animate-pulse rounded-3xl bg-surface" />
+        </div>
+      </AppShell>
+    );
   }
 
   if (!user) {
