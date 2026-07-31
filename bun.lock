@@ -37,6 +37,10 @@
         "@tanstack/react-router": "^1.170.16",
         "@tanstack/react-start": "^1.168.26",
         "@tanstack/router-plugin": "^1.168.18",
+        "@wix/ecom": "^1.0.2339",
+        "@wix/redirects": "^1.0.122",
+        "@wix/sdk": "^1.21.14",
+        "@wix/stores": "^1.0.849",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
@@ -206,6 +210,16 @@
 
     "@floating-ui/utils": ["@floating-ui/utils@0.2.11", "", {}, "sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg=="],
 
+    "@formatjs/ecma402-abstract": ["@formatjs/ecma402-abstract@2.3.6", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@formatjs/ecma402-abstract/-/ecma402-abstract-2.3.6.tgz", { "dependencies": { "@formatjs/fast-memoize": "2.2.7", "@formatjs/intl-localematcher": "0.6.2", "decimal.js": "^10.4.3", "tslib": "^2.8.0" } }, "sha512-HJnTFeRM2kVFVr5gr5kH1XP6K0JcJtE7Lzvtr3FS/so5f1kpsqqqxy5JF+FRaO6H2qmcMfAUIox7AJteieRtVw=="],
+
+    "@formatjs/fast-memoize": ["@formatjs/fast-memoize@2.2.7", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@formatjs/fast-memoize/-/fast-memoize-2.2.7.tgz", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-Yabmi9nSvyOMrlSeGGWDiH7rf3a7sIwplbvo/dlz9WCIjzIQAfy1RMf4S0X3yG724n5Ghu2GmEl5NJIV6O9sZQ=="],
+
+    "@formatjs/icu-messageformat-parser": ["@formatjs/icu-messageformat-parser@2.11.4", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@formatjs/icu-messageformat-parser/-/icu-messageformat-parser-2.11.4.tgz", { "dependencies": { "@formatjs/ecma402-abstract": "2.3.6", "@formatjs/icu-skeleton-parser": "1.8.16", "tslib": "^2.8.0" } }, "sha512-7kR78cRrPNB4fjGFZg3Rmj5aah8rQj9KPzuLsmcSn4ipLXQvC04keycTI1F7kJYDwIXtT2+7IDEto842CfZBtw=="],
+
+    "@formatjs/icu-skeleton-parser": ["@formatjs/icu-skeleton-parser@1.8.16", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@formatjs/icu-skeleton-parser/-/icu-skeleton-parser-1.8.16.tgz", { "dependencies": { "@formatjs/ecma402-abstract": "2.3.6", "tslib": "^2.8.0" } }, "sha512-H13E9Xl+PxBd8D5/6TVUluSpxGNvFSlN/b3coUp0e0JpuWXXnQDiavIpY3NnvSp4xhEMoXyyBvVfdFX8jglOHQ=="],
+
+    "@formatjs/intl-localematcher": ["@formatjs/intl-localematcher@0.6.2", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@formatjs/intl-localematcher/-/intl-localematcher-0.6.2.tgz", { "dependencies": { "tslib": "^2.8.0" } }, "sha512-XOMO2Hupl0wdd172Y06h6kLpBz6Dv+J4okPLl4LPtzbr8f66WbIoy4ev98EBuZ6ZK4h5ydTN6XneT4QVpD7cdA=="],
+
     "@hookform/resolvers": ["@hookform/resolvers@5.2.2", "", { "dependencies": { "@standard-schema/utils": "^0.3.0" }, "peerDependencies": { "react-hook-form": "^7.55.0" } }, "sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA=="],
 
     "@humanfs/core": ["@humanfs/core@0.19.2", "", { "dependencies": { "@humanfs/types": "^0.15.0" } }, "sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA=="],
@@ -287,6 +301,10 @@
     "@oxc-project/types": ["@oxc-project/types@0.134.0", "", {}, "sha512-T0xuRRKrQFmocH8y+jGfpmSkGcheaJExY9lEihmR1Gm2aH+75B8CzgU2rABRQSzzDxLjZ15Sc0bRVLj5lVeNXQ=="],
 
     "@pkgr/core": ["@pkgr/core@0.2.9", "", {}, "sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA=="],
+
+    "@preact/signals-core": ["@preact/signals-core@1.14.4", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@preact/signals-core/-/signals-core-1.14.4.tgz", {}, "sha512-HNB6HYeYKhQbJ1aKl+YRjrS4+QWHLKX6qKoUsfS/m0vqzsVaEBiZiaKbG/e+NKk2ch5ALQr/ihWaMHxiCuuWHA=="],
+
+    "@preact/signals-react": ["@preact/signals-react@3.11.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@preact/signals-react/-/signals-react-3.11.0.tgz", { "dependencies": { "@preact/signals-core": "^1.14.4", "use-sync-external-store": "^1.2.0" }, "peerDependencies": { "react": "^16.14.0 || 17.x || 18.x || 19.x" } }, "sha512-r1hgiw0VOrYAGYuERXsXFstGzOH9L628JwcTAda7DnHr1218bQHuJvmwdhOTU3LJzXiCJIlDvN+wrz/1GqIIEg=="],
 
     "@radix-ui/number": ["@radix-ui/number@1.1.1", "", {}, "sha512-MkKCwxlXTgz6CFoJx3pCwn07GKp36+aZyu/u2Ln2VrA5DcdyCZkASEDBTd8x5whTQQL5CiYf4prXKLcgQdv29g=="],
 
@@ -620,6 +638,244 @@
 
     "@vitejs/plugin-react": ["@vitejs/plugin-react@5.2.0", "", { "dependencies": { "@babel/core": "^7.29.0", "@babel/plugin-transform-react-jsx-self": "^7.27.1", "@babel/plugin-transform-react-jsx-source": "^7.27.1", "@rolldown/pluginutils": "1.0.0-rc.3", "@types/babel__core": "^7.20.5", "react-refresh": "^0.18.0" }, "peerDependencies": { "vite": "^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0" } }, "sha512-YmKkfhOAi3wsB1PhJq5Scj3GXMn3WvtQ/JC0xoopuHoXSdmtdStOpFrYaT1kie2YgFBcIe64ROzMYRjCrYOdYw=="],
 
+    "@wix/analytics": ["@wix/analytics@1.19.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/analytics/-/analytics-1.19.0.tgz", {}, "sha512-WlF1fNoXMOcHzu2ORLosmTytnOEQGvwVvF0TjmUiscxnLOin0HQVZOvonggj+J2sS1/uyhyNaKxzhsROoIF1AQ=="],
+
+    "@wix/authentication": ["@wix/authentication@1.16.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/authentication/-/authentication-1.16.0.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.15", "@wix/sdk-types": "^1.17.9" } }, "sha512-P4z9Nzgp+gmIEtfs58LgPBzychMoKZwCawPRQ41/NGBALvCi/pxngRP7TLeyo91Rvq1o0ZjISKAwUv8lx/Wxjw=="],
+
+    "@wix/auto_sdk_bookings_availability-calendar": ["@wix/auto_sdk_bookings_availability-calendar@1.0.193", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_bookings_availability-calendar/-/auto_sdk_bookings_availability-calendar-1.0.193.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-mWA70QSL5IEFdQ3BIqSX5zp6l72AZZKMMktRRxOlu65RjzM7/bWez6EAXFWpc4urS9oUKIdGOjt946o47Jw5hA=="],
+
+    "@wix/auto_sdk_categories_categories": ["@wix/auto_sdk_categories_categories@1.0.130", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_categories_categories/-/auto_sdk_categories_categories-1.0.130.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-t0QqpTH1LWDlWGfaMz8BDqU9ZKkVdmfMwnvuLyyKBTsgM2V0y3G5OZi0twIkBHzPZgDHC8HssX7aI5O0M1libQ=="],
+
+    "@wix/auto_sdk_ecom_abandoned-checkouts": ["@wix/auto_sdk_ecom_abandoned-checkouts@1.0.79", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_abandoned-checkouts/-/auto_sdk_ecom_abandoned-checkouts-1.0.79.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-1khHfiLZ4pPBTjMN9aGQ0IObAkmgK7qN2efQIou958q9u01IcWYQlFk5CxN+3qgGytEYCnzei/DVLzxdudvlHw=="],
+
+    "@wix/auto_sdk_ecom_additional-fees": ["@wix/auto_sdk_ecom_additional-fees@1.0.48", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_additional-fees/-/auto_sdk_ecom_additional-fees-1.0.48.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-Bz+bA6ujDDk/+0ICxqzOKrXV1jl6An8EtG1VXn8YMsWcPsu8czhmTq9B8a1K4JtjjILw1eFo+1rf211BkjhTTg=="],
+
+    "@wix/auto_sdk_ecom_back-in-stock-notifications": ["@wix/auto_sdk_ecom_back-in-stock-notifications@1.0.61", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_back-in-stock-notifications/-/auto_sdk_ecom_back-in-stock-notifications-1.0.61.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-TWhou3t4dU1T5gsIC/ETL3cMLjlc9EF1Ki3Y/YyuSQ4cUNRmC+FquK7c+H+FiCbLblyThW/9xr5pvEAI1nLCow=="],
+
+    "@wix/auto_sdk_ecom_back-in-stock-settings": ["@wix/auto_sdk_ecom_back-in-stock-settings@1.0.40", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_back-in-stock-settings/-/auto_sdk_ecom_back-in-stock-settings-1.0.40.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-CJ44k1oXPzYf9G4rUNTkpX8u1MQCqLvwlyVZ5NYF7fsTvQl84wISUNRlrowmSPoZ9oZZQN8VCeuV+9NByCy18Q=="],
+
+    "@wix/auto_sdk_ecom_cart": ["@wix/auto_sdk_ecom_cart@1.0.171", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_cart/-/auto_sdk_ecom_cart-1.0.171.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-t8KfliV9W500xlOidgokR9JsvRpTahg3mRmsOneIA8ZybhHFZP5Lcm9gOkpi27wJ6GOOsnVy7aZNOJ7BejtkxA=="],
+
+    "@wix/auto_sdk_ecom_cart-v-2": ["@wix/auto_sdk_ecom_cart-v-2@1.0.174", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_cart-v-2/-/auto_sdk_ecom_cart-v-2-1.0.174.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-8B3Oxyldy2QvX3WKesMHNmEKSh5SeQsWKI5GSEzwOunogL3lW/R33kBfnhyAKQIJ7pECHXaodh3vcJOLvJhTkQ=="],
+
+    "@wix/auto_sdk_ecom_catalog": ["@wix/auto_sdk_ecom_catalog@1.0.59", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_catalog/-/auto_sdk_ecom_catalog-1.0.59.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-W6Wc+vyuoMhqF0FGnrJ1MVCWTAbQmTt4z989Dae4D+W1WA44xU8dn6hT7MRY2eGOAxBtO84S3uieuMO/y7bTJQ=="],
+
+    "@wix/auto_sdk_ecom_checkout": ["@wix/auto_sdk_ecom_checkout@1.0.163", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_checkout/-/auto_sdk_ecom_checkout-1.0.163.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-Fc9BQBRFD8A0pauKeNY91WmZX0/rFde4zUrsu0FB6fdEztdmi/nXliDGdNGijxjdesWpZUy79IJQwT8kEr1x+g=="],
+
+    "@wix/auto_sdk_ecom_checkout-content": ["@wix/auto_sdk_ecom_checkout-content@1.0.35", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_checkout-content/-/auto_sdk_ecom_checkout-content-1.0.35.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-xfmraWnQ22gW0IYDuCnvwK3SjDcAcErGy61EYqfh/Q7vN1HJORk2rta9gUQNr+y089ZNVnVlgm0G/zQ7dhOQow=="],
+
+    "@wix/auto_sdk_ecom_checkout-settings": ["@wix/auto_sdk_ecom_checkout-settings@1.0.68", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_checkout-settings/-/auto_sdk_ecom_checkout-settings-1.0.68.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-lT7tCZEQWWvtPkCKuNcte4OYGpp6B0yY7gMfHsJU/n4O4uwN/lOZa4zH+PlwVv46Us07duf7LgxCwpTtT27+YA=="],
+
+    "@wix/auto_sdk_ecom_checkout-templates": ["@wix/auto_sdk_ecom_checkout-templates@1.0.146", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_checkout-templates/-/auto_sdk_ecom_checkout-templates-1.0.146.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-RAF3XgC7W/AkuDVhSNJjFJnrIQza4SmFOdSUTBfj6pnzjNu+SsmWa4jfo9uCQMXEmArZ/HKBTy8KiOJQw1ikXg=="],
+
+    "@wix/auto_sdk_ecom_contact-tax-details": ["@wix/auto_sdk_ecom_contact-tax-details@1.0.1", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_contact-tax-details/-/auto_sdk_ecom_contact-tax-details-1.0.1.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-MKbwfKa2pPYNJVwqFQ650NKSNh+IhU7LwreAqSN7IqVd+l+63VqXLBRcjJNqwXpXRpBl1RPy3lZpoN7zhY3ahg=="],
+
+    "@wix/auto_sdk_ecom_currencies": ["@wix/auto_sdk_ecom_currencies@1.0.34", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_currencies/-/auto_sdk_ecom_currencies-1.0.34.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-EbVeslGnB39KOFO49DURogTJSt0jmETTCB3hcz4Jpr9DOJpZhguYt+8LBMvMR5T4lIkvbCna1iWskVdB8RzhoA=="],
+
+    "@wix/auto_sdk_ecom_current-cart": ["@wix/auto_sdk_ecom_current-cart@1.0.181", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_current-cart/-/auto_sdk_ecom_current-cart-1.0.181.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-qfr6g9SXRgdS1X8pE8UpmOANgYq88gig0mK5I6+MkcdQFjVjukeinMzIV+w5XHOchunK/NxO2tKuA8lYHLFkJA=="],
+
+    "@wix/auto_sdk_ecom_current-cart-v-2": ["@wix/auto_sdk_ecom_current-cart-v-2@1.0.175", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_current-cart-v-2/-/auto_sdk_ecom_current-cart-v-2-1.0.175.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-Xj2IuhU+NHxi2xLGADlbDkT0/TtNk9Sal7FFjl+vc7lK/iAWl9eWzbiWeKNUumv5PqA8MIEuYK749cU0Qh+eEQ=="],
+
+    "@wix/auto_sdk_ecom_custom-triggers": ["@wix/auto_sdk_ecom_custom-triggers@1.0.37", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_custom-triggers/-/auto_sdk_ecom_custom-triggers-1.0.37.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-/j1+IKBaorkyNv4ihXym9a9o3uHo4+cshI+jA11a0xgD5cXWvFH+aWnHiQAgPMypkmXrydyM67HFWti9M3MhGw=="],
+
+    "@wix/auto_sdk_ecom_delivery-profile": ["@wix/auto_sdk_ecom_delivery-profile@1.0.436", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_delivery-profile/-/auto_sdk_ecom_delivery-profile-1.0.436.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-6++kh53oBwEg4+wWlymc4MgnX5nFuRjya1bJohOiaOsW5oBsrbn3hYHSRy9lHrcfiXLjXUXH4mOv/PBOQGCQww=="],
+
+    "@wix/auto_sdk_ecom_delivery-solutions": ["@wix/auto_sdk_ecom_delivery-solutions@1.0.60", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_delivery-solutions/-/auto_sdk_ecom_delivery-solutions-1.0.60.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-FTa7M0sF/6fHETuhZk0/Kac6sRT0UIp+jBX8c6OQ4uAAsWMDK6SzcwAcbbYNvwYJn6szuJb1MbYeTLzZG/0G0A=="],
+
+    "@wix/auto_sdk_ecom_discount-rules": ["@wix/auto_sdk_ecom_discount-rules@1.0.111", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_discount-rules/-/auto_sdk_ecom_discount-rules-1.0.111.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-k87RC+NUoTkqsLMjgbsAyYr87DV4bkpewouUoy/kU2L17Rcx7ql5thgbripMcdb6kiu9Ugj9+7cc6d5HUIjvVA=="],
+
+    "@wix/auto_sdk_ecom_discounts": ["@wix/auto_sdk_ecom_discounts@1.0.33", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_discounts/-/auto_sdk_ecom_discounts-1.0.33.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-adTxBFfZrVXA1WdOSf3bNYUfRc51pJiOIoZC2XxuWPEe1eoIbilkmTxG23tu2zpanVJzjU9frbZqDXeKDXk+qg=="],
+
+    "@wix/auto_sdk_ecom_discounts-custom-trigger": ["@wix/auto_sdk_ecom_discounts-custom-trigger@1.0.43", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_discounts-custom-trigger/-/auto_sdk_ecom_discounts-custom-trigger-1.0.43.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-z+bWZUFkUb21F9dC387PMHVDFnK5K6miUVSp4dc8joXmNcuM3zvsGanSHuutkEZ98SPPw8vCg1rXQ2xhIpPx5g=="],
+
+    "@wix/auto_sdk_ecom_draft-orders": ["@wix/auto_sdk_ecom_draft-orders@1.0.164", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_draft-orders/-/auto_sdk_ecom_draft-orders-1.0.164.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-IECo7yknKm3ur2V9svyUFT2hxe7BhHvE0wldEkyazCRqT3QsbkehbGiRlmdAsBznJsV2Q5lmQ9NtSxIaxkwQEw=="],
+
+    "@wix/auto_sdk_ecom_draft-subscription-contracts": ["@wix/auto_sdk_ecom_draft-subscription-contracts@1.0.3", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_draft-subscription-contracts/-/auto_sdk_ecom_draft-subscription-contracts-1.0.3.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-dmsMDNeLdKegMjc91/DQdys/e0tNQXz5hOB0Q8SpcO7Ac9l4EFnJa1i58JMbYqhZLMsBDY6TUrJIgjXNjpgLTw=="],
+
+    "@wix/auto_sdk_ecom_ecommerce-settings": ["@wix/auto_sdk_ecom_ecommerce-settings@1.0.27", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_ecommerce-settings/-/auto_sdk_ecom_ecommerce-settings-1.0.27.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-4ZjYVctqPhFOt2AYbEK+/sGrAacx1G0JgB/98JWp/JylaT4Tj4Fl90qTyuAJlnkamUjG3XF1LcTQ4peEaEoS6Q=="],
+
+    "@wix/auto_sdk_ecom_gift-vouchers": ["@wix/auto_sdk_ecom_gift-vouchers@1.0.42", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_gift-vouchers/-/auto_sdk_ecom_gift-vouchers-1.0.42.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-VZVDzzUVzLSuHIpnZ0q7Bgmx7bjOpNwEIVlLZnlQosLAq28fh5eqlr9QesiHYZy6Po+u9ktiF57zJRNsH5Hx3g=="],
+
+    "@wix/auto_sdk_ecom_gift-vouchers-provider": ["@wix/auto_sdk_ecom_gift-vouchers-provider@1.0.34", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_gift-vouchers-provider/-/auto_sdk_ecom_gift-vouchers-provider-1.0.34.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-usrV5g4zhOSR34+wsxNbDMAGc6YP51HZMUIhjHk8L5eAGldV6F29c2Yv0hSstobDwXxhP7+J0AeEZA9dhVL3bQ=="],
+
+    "@wix/auto_sdk_ecom_inventory": ["@wix/auto_sdk_ecom_inventory@1.0.23", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_inventory/-/auto_sdk_ecom_inventory-1.0.23.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-Ps4h9BNeI5RQoIfXrSRMGysyLdSDsfuWuAxpONMHl5cIx2Ac1+SRlR+9yXo9Y+ETUdCwnIf6XU3ko1RQ7KPX9g=="],
+
+    "@wix/auto_sdk_ecom_local-delivery-options": ["@wix/auto_sdk_ecom_local-delivery-options@1.0.51", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_local-delivery-options/-/auto_sdk_ecom_local-delivery-options-1.0.51.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-4Jt1i+K2iBgNdZaOcKh5V+Cx//EB4xXWG/GyGuGQ803hi7fS8qx9S04EvjgC4M66qYFR9rnZhZr7EI1u3kVY8Q=="],
+
+    "@wix/auto_sdk_ecom_manual-tax-mappings": ["@wix/auto_sdk_ecom_manual-tax-mappings@1.0.40", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_manual-tax-mappings/-/auto_sdk_ecom_manual-tax-mappings-1.0.40.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-w7bpB5kmHhr2a1Fp+gpa42Yy1SVKdExaWowEccP1pppRGutCNQxCm0RT0gcyoEcAkAwOSwsSROQTwJRNDVmQfg=="],
+
+    "@wix/auto_sdk_ecom_memberships": ["@wix/auto_sdk_ecom_memberships@1.0.61", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_memberships/-/auto_sdk_ecom_memberships-1.0.61.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-PerShhpz6Sw2Lr3bXtJKx8c0w0rcdjikMGK8iN5AZ0DtPvDa5PHwUZU1Wu1NFsbS90c/jDFiiJwKmSaSwheXug=="],
+
+    "@wix/auto_sdk_ecom_order-billing": ["@wix/auto_sdk_ecom_order-billing@1.0.98", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_order-billing/-/auto_sdk_ecom_order-billing-1.0.98.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-aieKQHS0LEybmzqXeZ4DJkywCUt+Gl0YBTZr+I5fnP1tPXr363K+TXUXb23hPRCc1dlhxq09Zw/1/6RZZXq0Tg=="],
+
+    "@wix/auto_sdk_ecom_order-fulfillments": ["@wix/auto_sdk_ecom_order-fulfillments@1.0.61", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_order-fulfillments/-/auto_sdk_ecom_order-fulfillments-1.0.61.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-19FDasS3sAAAsGNwwy3f2Gwwqiqwi1Ql4vvgbCkM0TDX8JR8PQru+myGgmFQ6WZIuvaiMdQZtcjfhekoVfzJ2Q=="],
+
+    "@wix/auto_sdk_ecom_order-invoices": ["@wix/auto_sdk_ecom_order-invoices@1.0.51", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_order-invoices/-/auto_sdk_ecom_order-invoices-1.0.51.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-aLLzpvq5e2sL1I5H5v3nLNGfKwyXxmohHk1mc3G8cK5rjIw+6PvFjWprO6XHSNybvW2b2EBWN5GwPyHv89R3Lw=="],
+
+    "@wix/auto_sdk_ecom_order-payment-requests": ["@wix/auto_sdk_ecom_order-payment-requests@1.0.63", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_order-payment-requests/-/auto_sdk_ecom_order-payment-requests-1.0.63.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-ew1iYyHQPIeEnsrja5p9l39b5PpliaqmyrSDhuh2ORcUfAOh4f/VmCvRQRuPIb3jtopeuV3ybPW4YLhlvWGEpA=="],
+
+    "@wix/auto_sdk_ecom_order-transactions": ["@wix/auto_sdk_ecom_order-transactions@1.0.100", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_order-transactions/-/auto_sdk_ecom_order-transactions-1.0.100.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-OCrm0iXbFDa+ekAIV7xZSmv432VImPD0Q9tnP0/ux8o46e3Qel8/T1jrITb+VLD1JWSZH+vNTT4RDyKlYgbVjQ=="],
+
+    "@wix/auto_sdk_ecom_orders": ["@wix/auto_sdk_ecom_orders@1.0.275", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_orders/-/auto_sdk_ecom_orders-1.0.275.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-Di1Ah355/awgbxem6yPk30lnU6F4H5Bz6w/rKPDVBC7IrGCy0ebGvx855quoAHFmV3FqQhv3VuBTCC+0CooLSA=="],
+
+    "@wix/auto_sdk_ecom_orders-settings": ["@wix/auto_sdk_ecom_orders-settings@1.0.53", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_orders-settings/-/auto_sdk_ecom_orders-settings-1.0.53.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-0PLBhdxGJEVrKoHAba5H+Z32sKjzAeRNYlNp1Avwr2KaaGQ2qJEU/UID8rLw0jUm2KrJhm1QgbzkvCi9Lqbt2A=="],
+
+    "@wix/auto_sdk_ecom_payment-settings": ["@wix/auto_sdk_ecom_payment-settings@1.0.139", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_payment-settings/-/auto_sdk_ecom_payment-settings-1.0.139.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-KCFxANRSsqXQ/hNW0R4o4eeUltoqRUl5L4GJukkOQhxatE2tKd7AmbBv+8zXC7eL/VkJlgtlDniCansnToogJA=="],
+
+    "@wix/auto_sdk_ecom_pickup-locations": ["@wix/auto_sdk_ecom_pickup-locations@1.0.49", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_pickup-locations/-/auto_sdk_ecom_pickup-locations-1.0.49.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-+R0wEAaxO5UuujCM8NyRv0NUUOQE3Y98wCt6SbmTBUKlM/n2kUIwfKMpB50Niou1QfO6Z9j8/ilue0juDDkQRw=="],
+
+    "@wix/auto_sdk_ecom_recommendations": ["@wix/auto_sdk_ecom_recommendations@1.0.45", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_recommendations/-/auto_sdk_ecom_recommendations-1.0.45.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-xA+K5uz590Az0oljNmlcGPmXYySLZevtxpXAvNLTo6Y5v078s0fH+bhW0dDvVIMlaNh74RfglGMZE9SoTAgvGQ=="],
+
+    "@wix/auto_sdk_ecom_recommendations-provider": ["@wix/auto_sdk_ecom_recommendations-provider@1.0.32", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_recommendations-provider/-/auto_sdk_ecom_recommendations-provider-1.0.32.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-pQT+TN95V7Qeyjp/A005bM9gDCjOGiF+kWxVV7NWeaSJwwELb4/Vf9s+y2OVya/kU8zENWhVfzzkGqIZmuuRNQ=="],
+
+    "@wix/auto_sdk_ecom_shipping-options": ["@wix/auto_sdk_ecom_shipping-options@1.0.202", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_shipping-options/-/auto_sdk_ecom_shipping-options-1.0.202.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-4BmzJ4qlVdl25JJ2uTj2AW5PrCIiBZIs/1U4C/iHP+Z8UKzLRbxGTBsrW1j2KE3xHN8BZFT5yNnLhSCDwPLEWw=="],
+
+    "@wix/auto_sdk_ecom_shipping-rates": ["@wix/auto_sdk_ecom_shipping-rates@1.0.38", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_shipping-rates/-/auto_sdk_ecom_shipping-rates-1.0.38.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-oa9kx1WNGOSFXGEnrw9073u8s4ZRC5PqpD7ItEb2W2kzfvw5Oueng3i1m8cd7hwXdrljCNxA3LYwWZMSLNGFBQ=="],
+
+    "@wix/auto_sdk_ecom_shippo-configurations": ["@wix/auto_sdk_ecom_shippo-configurations@1.0.68", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_shippo-configurations/-/auto_sdk_ecom_shippo-configurations-1.0.68.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-DTeMSjPrWbJzvO1wqGfLTD0QDvr3y5O2fG8kE+/hZLudCJlX3ovGLfi9Ux/CUE6TptMQbnY1Jo43WWAVQteB0Q=="],
+
+    "@wix/auto_sdk_ecom_subscription-contracts": ["@wix/auto_sdk_ecom_subscription-contracts@1.0.120", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_subscription-contracts/-/auto_sdk_ecom_subscription-contracts-1.0.120.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-YArK99Ec2M4Ax+t26bQJFUv7mknCxqEhdlUgj09Ku8X0OlZh+eop0j1OeMXjyIaJ6qZ+b9M8UE8d+OoqHgJFww=="],
+
+    "@wix/auto_sdk_ecom_tax-calculation": ["@wix/auto_sdk_ecom_tax-calculation@1.0.51", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tax-calculation/-/auto_sdk_ecom_tax-calculation-1.0.51.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-ZVaEyRrRzCgJSmqpSMH/qOCUQNonIlvjmaubZnnHXuXGbKaeIn/wb1SLCcHbEuWWySF8aB7puotV9WvkW4J2AA=="],
+
+    "@wix/auto_sdk_ecom_tax-calculation-provider": ["@wix/auto_sdk_ecom_tax-calculation-provider@1.0.30", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tax-calculation-provider/-/auto_sdk_ecom_tax-calculation-provider-1.0.30.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-XeF+8K5psAVFY/Q/QHlx8aTcZU7c07rgmsyT5z/dOKjepxVyOkZtXIBqYLp8Fpm8yaFt726U+443kNo6JAVLzA=="],
+
+    "@wix/auto_sdk_ecom_tax-exempt-groups": ["@wix/auto_sdk_ecom_tax-exempt-groups@1.0.1", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tax-exempt-groups/-/auto_sdk_ecom_tax-exempt-groups-1.0.1.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-cB3NMWBPP0D2SYOB63T76QH8N0ed6h0XNOMss/sZb2GUjec9KArcgMh0Wk8JaYRFSrPWHoUI5ahgZkQUwUlChg=="],
+
+    "@wix/auto_sdk_ecom_tax-groups": ["@wix/auto_sdk_ecom_tax-groups@1.0.61", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tax-groups/-/auto_sdk_ecom_tax-groups-1.0.61.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-9PmWfL9XZ8Isvtef1j+xfN8tCr4B2ixrs+EZPQdcQYQBP4wALjpYq8JphCiD5aDQzazLOtwIhpaigjnyVgtOJg=="],
+
+    "@wix/auto_sdk_ecom_tax-regions": ["@wix/auto_sdk_ecom_tax-regions@1.0.58", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tax-regions/-/auto_sdk_ecom_tax-regions-1.0.58.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-4LjiF06ioTBOUCU2V6VPWwgrcEdSgLy+xDp4KG78icEtpC1aAZspbhW0ktSCNQne3bDFGNglvnGamCateVibRg=="],
+
+    "@wix/auto_sdk_ecom_tax-settings": ["@wix/auto_sdk_ecom_tax-settings@1.0.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tax-settings/-/auto_sdk_ecom_tax-settings-1.0.0.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-edQd5tdJ5rGgzEDVcsikDnlyQXce6Yy8CoFCOSSo/cKs3kuSDTre1ijupw5bsTGtxbOqATIcr+y+ffhZKGL3PQ=="],
+
+    "@wix/auto_sdk_ecom_tip-settings": ["@wix/auto_sdk_ecom_tip-settings@1.0.53", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tip-settings/-/auto_sdk_ecom_tip-settings-1.0.53.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-KmJ2ZWhWVnr4jf9+pFDWz7g6kIRAqlylV5gdI94HdLtc7BZ2j9G/71quUFSddRg4d6be2jBp1C/3QOYffDguhw=="],
+
+    "@wix/auto_sdk_ecom_tippable-staff": ["@wix/auto_sdk_ecom_tippable-staff@1.0.39", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tippable-staff/-/auto_sdk_ecom_tippable-staff-1.0.39.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-ccdyXzDAljteD3skvHNFIvpc5LlVTR/gQo878GH2Zy40kMAcP3v2OEdfEtuClL9k8eYjsQ9KQup64uZpmjS/mw=="],
+
+    "@wix/auto_sdk_ecom_tips": ["@wix/auto_sdk_ecom_tips@1.0.61", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_tips/-/auto_sdk_ecom_tips-1.0.61.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-jztCtSlWOFSL5kKEL5kTW2j1svdNdZsT6JZ43zXVpNBKzAFPY7Cp6FY3k1B2VrMOsgKuqyw3w/Gf3lKIQC/wjQ=="],
+
+    "@wix/auto_sdk_ecom_totals-calculator": ["@wix/auto_sdk_ecom_totals-calculator@1.0.110", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_totals-calculator/-/auto_sdk_ecom_totals-calculator-1.0.110.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-dm6/Pt+G1d0peOVux1JA4ksStLg5e3/4rmsetU2Rf8zJ1Grll25FsyyUSJwwdtBKRBz8xN/3yv9BBppmT7tWlA=="],
+
+    "@wix/auto_sdk_ecom_validations": ["@wix/auto_sdk_ecom_validations@1.0.54", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_validations/-/auto_sdk_ecom_validations-1.0.54.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-fqFuUatN4kmh6olG0LskCwnYxppKhFz83eioNEACQcyVJy6AUlv0gxOtdFK22iqUMork/QiYI/UHR9cCR/2wPw=="],
+
+    "@wix/auto_sdk_ecom_wishlists": ["@wix/auto_sdk_ecom_wishlists@1.0.1", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_ecom_wishlists/-/auto_sdk_ecom_wishlists-1.0.1.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-75WgpTAo3d9L9731qxQXA+RAmv8+0VrX/cnSqtFf9EW60GfiAUa+LUB/a/p8WwF2N3u95rUK5a7RVxft4z6Xlw=="],
+
+    "@wix/auto_sdk_headless-site-assets_scripts": ["@wix/auto_sdk_headless-site-assets_scripts@1.0.13", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_headless-site-assets_scripts/-/auto_sdk_headless-site-assets_scripts-1.0.13.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-4ISEZzeYsi0TAX9Te6zZWcsKM+if0LjcTG8dHXO766t3yE1Elo+8jHP+IrUU/tl5I2hNsG1ri8E5uRdojpXH/g=="],
+
+    "@wix/auto_sdk_identity_authentication": ["@wix/auto_sdk_identity_authentication@1.0.49", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_identity_authentication/-/auto_sdk_identity_authentication-1.0.49.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-s/t+2KELWScLtUDDOJZ8a9CvkZLi8ft6i2oYfLsowbC1ViorI4ffnaEYBw5bS1/6OkNgpPPNGEhPQfakJkQ2pQ=="],
+
+    "@wix/auto_sdk_identity_oauth": ["@wix/auto_sdk_identity_oauth@1.0.50", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_identity_oauth/-/auto_sdk_identity_oauth-1.0.50.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-ojzkYnkGBZrJhKn/1ufhf5m3KVKjv6PLqjdh4GDqGPlvTBMoMqJkjwKus5IVlZILWQF7NfpyGwqpDpt4WkOoeg=="],
+
+    "@wix/auto_sdk_identity_recovery": ["@wix/auto_sdk_identity_recovery@1.0.43", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_identity_recovery/-/auto_sdk_identity_recovery-1.0.43.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-O6r0v92FQLgCGffwDclUy83IsBRkz0+3T+m67tCxf3/7JYkMv5k2ml0zSfVfRjWqkY00Pue7/ABLYuQuMdwB+Q=="],
+
+    "@wix/auto_sdk_identity_verification": ["@wix/auto_sdk_identity_verification@1.0.45", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_identity_verification/-/auto_sdk_identity_verification-1.0.45.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-G3Oggq8xut/fqv0WHUQX2pDtGs/aXQUeUK7J3V9Gh47vC6WAZdZs3WKR7mK/YquZlTD4dJS4TTuSjrtwcVQdDw=="],
+
+    "@wix/auto_sdk_redirects_redirects": ["@wix/auto_sdk_redirects_redirects@1.0.50", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_redirects_redirects/-/auto_sdk_redirects_redirects-1.0.50.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-2YGUKEG8I49Ye7aA+gvn0t8VtsO9LODiB8jkZyFsR21thByF1cy1oTxaXdB12Qz8g9lNVQBy3BDLApan8vZFIg=="],
+
+    "@wix/auto_sdk_stores_abandoned-carts": ["@wix/auto_sdk_stores_abandoned-carts@1.0.41", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_abandoned-carts/-/auto_sdk_stores_abandoned-carts-1.0.41.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-CT40zOnibtHJmUsVLHSeWUQlN+wPjLa1QJy84fn4QSjWd0BmElKS4ox11uyZqQMIEswBR0YTdqKnUPzAgY9TuQ=="],
+
+    "@wix/auto_sdk_stores_brands-v-3": ["@wix/auto_sdk_stores_brands-v-3@1.0.78", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_brands-v-3/-/auto_sdk_stores_brands-v-3-1.0.78.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-mwTS3fV7Oc/FeXIL4bEvzpSbQRuA/a9mL/H/PwoLceoBoABN+/+JG6iI1r40IhHpfquxEK7HzXOejqEtdPijIQ=="],
+
+    "@wix/auto_sdk_stores_catalog-imports-v-3": ["@wix/auto_sdk_stores_catalog-imports-v-3@1.0.74", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_catalog-imports-v-3/-/auto_sdk_stores_catalog-imports-v-3-1.0.74.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-UQ7ob2sIP+OjlecfbKzY5SuyPJg0xoAG832hLu22TVyePKUSDxOUHHFJGo8HMTO4ZkGkxQBfWevV+gQ9FpE6IA=="],
+
+    "@wix/auto_sdk_stores_catalog-versioning": ["@wix/auto_sdk_stores_catalog-versioning@1.0.73", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_catalog-versioning/-/auto_sdk_stores_catalog-versioning-1.0.73.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-gYt6Da1WXV5tzBuOZ0dUeC1f1B3ZsJKjMNxlkBsrxgdwO0HQ5+gTu8GeT6LZHQX+JPKufqUKWxtRgtKehwZG7Q=="],
+
+    "@wix/auto_sdk_stores_collections": ["@wix/auto_sdk_stores_collections@1.0.42", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_collections/-/auto_sdk_stores_collections-1.0.42.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-SfScFYu7XWas01AxezhyADqAFI5O83ximOAnUwKieE2cXXueR9CzOB3OMMmpUxV7ktj9cmfE4m8g3BA07nvF9g=="],
+
+    "@wix/auto_sdk_stores_customizations-v-3": ["@wix/auto_sdk_stores_customizations-v-3@1.0.88", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_customizations-v-3/-/auto_sdk_stores_customizations-v-3-1.0.88.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-27FV4fYsIaarr8TMWxsOpP2Tou9m0BZ97s5wenIrWp7Lzo5mYxtl2iy90+6bGyNaTGXqWJY3wTN8a3qUmEzSUA=="],
+
+    "@wix/auto_sdk_stores_info-sections-v-3": ["@wix/auto_sdk_stores_info-sections-v-3@1.0.101", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_info-sections-v-3/-/auto_sdk_stores_info-sections-v-3-1.0.101.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-0UOUdwq3hkdZ+2gCW2+04beajxFcZi8eHhQaQkkHC8lgnMWQY3z+rdjrVQhp5vO+u3Ms3eBlNcM9N+ZjQu3upg=="],
+
+    "@wix/auto_sdk_stores_inventory": ["@wix/auto_sdk_stores_inventory@1.0.73", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_inventory/-/auto_sdk_stores_inventory-1.0.73.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-y/eiSv3cZd2BXaozqcQX6sMFFuLtL1QZuQqzvHea1wpT8jkIfcYyP1UI+EZ9HrB7G7NOEi0wKBDdPg0PzWkjgA=="],
+
+    "@wix/auto_sdk_stores_inventory-items-v-3": ["@wix/auto_sdk_stores_inventory-items-v-3@1.0.89", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_inventory-items-v-3/-/auto_sdk_stores_inventory-items-v-3-1.0.89.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-pwSDTt4Dlvcj+CdhUse4dnoTPdEnQ3Kxw0yaMzACrL8mAb5S2Axy71gz15VVspTeCtFt33vZ8sF28Hu2Cy04rg=="],
+
+    "@wix/auto_sdk_stores_product-groups-v-3": ["@wix/auto_sdk_stores_product-groups-v-3@1.0.4", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_product-groups-v-3/-/auto_sdk_stores_product-groups-v-3-1.0.4.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-wxP5GFF2brLtaCPIESvcc28ccWk5jnMq+8st7WjzaBRbEB+cr38sCK9ud3U3JvKUxBYSTBJCR637+EmzaunPIA=="],
+
+    "@wix/auto_sdk_stores_products": ["@wix/auto_sdk_stores_products@1.0.99", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_products/-/auto_sdk_stores_products-1.0.99.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-p5z2tsAdDaB2Try8RTUfI6viY4kNDPEoZuLcJspvUbBUq2U4muwbjEawYn2KEL6EOJf8twVX+YJlFhsKk5G1VA=="],
+
+    "@wix/auto_sdk_stores_products-v-3": ["@wix/auto_sdk_stores_products-v-3@1.0.203", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_products-v-3/-/auto_sdk_stores_products-v-3-1.0.203.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-cuQQvBiCaL+rhDiNEUTMxyBSECaoJV/CfX3hiuOdb5lS684Snz2LWzOizPUJ2qMoaeFss36a7STIu4bJSthyVA=="],
+
+    "@wix/auto_sdk_stores_promotions-v-3": ["@wix/auto_sdk_stores_promotions-v-3@1.0.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_promotions-v-3/-/auto_sdk_stores_promotions-v-3-1.0.0.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-wzo7ij+F2zKOe9OaPJJFkEY78TWeN/GuB83pfr169hRSMUPEuCVIporddqG4FqEtJTgL1g6X13LpuZOmRqfaGA=="],
+
+    "@wix/auto_sdk_stores_read-only-variants-v-3": ["@wix/auto_sdk_stores_read-only-variants-v-3@1.0.134", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_read-only-variants-v-3/-/auto_sdk_stores_read-only-variants-v-3-1.0.134.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-yNNPZiTMfT0GejFjgV0vC5ZwOxKBeGXs64XMbu47dC6kIDY3nQYjvH2OkM14Y7itljilblOuewjv7q3z7VcnBA=="],
+
+    "@wix/auto_sdk_stores_ribbons-v-3": ["@wix/auto_sdk_stores_ribbons-v-3@1.0.57", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_ribbons-v-3/-/auto_sdk_stores_ribbons-v-3-1.0.57.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-rbXonwLhvbhbIR3IZ8oMoK5WwRoJ43xXFJGOnp2r+cK8/DrKdN1i9NxXl1OhgeuAJ2YMV75RBqFsf89OMMEo5w=="],
+
+    "@wix/auto_sdk_stores_stores-locations-v-3": ["@wix/auto_sdk_stores_stores-locations-v-3@1.0.53", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_stores-locations-v-3/-/auto_sdk_stores_stores-locations-v-3-1.0.53.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-MEEuJt2Nl8cXCxOZwbLCg9QgwtJ7lC6q1wz9D1OJgzNTcepIadF8ot6eFjppfw1554d9tGeLrzEiFV05Q3zc8Q=="],
+
+    "@wix/auto_sdk_stores_subscription-options": ["@wix/auto_sdk_stores_subscription-options@1.0.68", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_subscription-options/-/auto_sdk_stores_subscription-options-1.0.68.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-cVHWY9PPfeslGG/cB8jyQkJ7W7TCx5ppvMXp+BDjMC074drcr26c4KlyAAxkKte+o+e5rxc5Us0N7INDKglOqw=="],
+
+    "@wix/auto_sdk_stores_wishlist": ["@wix/auto_sdk_stores_wishlist@1.0.37", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/auto_sdk_stores_wishlist/-/auto_sdk_stores_wishlist-1.0.37.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-YvX5B0XzF739Aijd/hWu8tQvCbqYQpLBG/IWpK4G8SBGQEsvdg+icGfR69/d0LsxKqYsymnvk3fGJAIbpczAyg=="],
+
+    "@wix/consent-policy-manager": ["@wix/consent-policy-manager@1.15.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/consent-policy-manager/-/consent-policy-manager-1.15.0.tgz", {}, "sha512-XIQeVkNYEdCmAA/jLVTFxzZ7E6lwHbd17HecHZaeCcWjZwVoGuFPlH4mAs4sdrUisMGxe3MJhIHWsoGZ3nBwmA=="],
+
+    "@wix/ecom": ["@wix/ecom@1.0.2339", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/ecom/-/ecom-1.0.2339.tgz", { "dependencies": { "@wix/auto_sdk_ecom_abandoned-checkouts": "1.0.79", "@wix/auto_sdk_ecom_additional-fees": "1.0.48", "@wix/auto_sdk_ecom_back-in-stock-notifications": "1.0.61", "@wix/auto_sdk_ecom_back-in-stock-settings": "1.0.40", "@wix/auto_sdk_ecom_cart": "1.0.171", "@wix/auto_sdk_ecom_cart-v-2": "1.0.174", "@wix/auto_sdk_ecom_catalog": "1.0.59", "@wix/auto_sdk_ecom_checkout": "1.0.163", "@wix/auto_sdk_ecom_checkout-content": "1.0.35", "@wix/auto_sdk_ecom_checkout-settings": "1.0.68", "@wix/auto_sdk_ecom_checkout-templates": "1.0.146", "@wix/auto_sdk_ecom_contact-tax-details": "1.0.1", "@wix/auto_sdk_ecom_currencies": "1.0.34", "@wix/auto_sdk_ecom_current-cart": "1.0.181", "@wix/auto_sdk_ecom_current-cart-v-2": "1.0.175", "@wix/auto_sdk_ecom_custom-triggers": "1.0.37", "@wix/auto_sdk_ecom_delivery-profile": "1.0.436", "@wix/auto_sdk_ecom_delivery-solutions": "1.0.60", "@wix/auto_sdk_ecom_discount-rules": "1.0.111", "@wix/auto_sdk_ecom_discounts": "1.0.33", "@wix/auto_sdk_ecom_discounts-custom-trigger": "1.0.43", "@wix/auto_sdk_ecom_draft-orders": "1.0.164", "@wix/auto_sdk_ecom_draft-subscription-contracts": "1.0.3", "@wix/auto_sdk_ecom_ecommerce-settings": "1.0.27", "@wix/auto_sdk_ecom_gift-vouchers": "1.0.42", "@wix/auto_sdk_ecom_gift-vouchers-provider": "1.0.34", "@wix/auto_sdk_ecom_inventory": "1.0.23", "@wix/auto_sdk_ecom_local-delivery-options": "1.0.51", "@wix/auto_sdk_ecom_manual-tax-mappings": "1.0.40", "@wix/auto_sdk_ecom_memberships": "1.0.61", "@wix/auto_sdk_ecom_order-billing": "1.0.98", "@wix/auto_sdk_ecom_order-fulfillments": "1.0.61", "@wix/auto_sdk_ecom_order-invoices": "1.0.51", "@wix/auto_sdk_ecom_order-payment-requests": "1.0.63", "@wix/auto_sdk_ecom_order-transactions": "1.0.100", "@wix/auto_sdk_ecom_orders": "1.0.275", "@wix/auto_sdk_ecom_orders-settings": "1.0.53", "@wix/auto_sdk_ecom_payment-settings": "1.0.139", "@wix/auto_sdk_ecom_pickup-locations": "1.0.49", "@wix/auto_sdk_ecom_recommendations": "1.0.45", "@wix/auto_sdk_ecom_recommendations-provider": "1.0.32", "@wix/auto_sdk_ecom_shipping-options": "1.0.202", "@wix/auto_sdk_ecom_shipping-rates": "1.0.38", "@wix/auto_sdk_ecom_shippo-configurations": "1.0.68", "@wix/auto_sdk_ecom_subscription-contracts": "1.0.120", "@wix/auto_sdk_ecom_tax-calculation": "1.0.51", "@wix/auto_sdk_ecom_tax-calculation-provider": "1.0.30", "@wix/auto_sdk_ecom_tax-exempt-groups": "1.0.1", "@wix/auto_sdk_ecom_tax-groups": "1.0.61", "@wix/auto_sdk_ecom_tax-regions": "1.0.58", "@wix/auto_sdk_ecom_tax-settings": "1.0.0", "@wix/auto_sdk_ecom_tip-settings": "1.0.53", "@wix/auto_sdk_ecom_tippable-staff": "1.0.39", "@wix/auto_sdk_ecom_tips": "1.0.61", "@wix/auto_sdk_ecom_totals-calculator": "1.0.110", "@wix/auto_sdk_ecom_validations": "1.0.54", "@wix/auto_sdk_ecom_wishlists": "1.0.1", "@wix/ecom_app-extensions": "1.0.106", "@wix/headless-ecom": "0.0.41" } }, "sha512-y2PotN+KR9VO4HCaD1Vq/IdPIAE221HWCHPTHwK5VffdpRIq4LIuvXDH/1dS8tZZDBLLiFGNHYrotLv+Yy2AqQ=="],
+
+    "@wix/ecom_app-extensions": ["@wix/ecom_app-extensions@1.0.106", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/ecom_app-extensions/-/ecom_app-extensions-1.0.106.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-LJy+odZe2rPVBGiLaNIfOicrnWdT9jerx4NWBrkT8LB/vKjRhbie0h+rrxHD5J0tEiJmulG6Yr4lFJzo5Jlbkg=="],
+
+    "@wix/error-handler": ["@wix/error-handler@1.68.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/error-handler/-/error-handler-1.68.0.tgz", { "dependencies": { "@babel/runtime": "^7.28.4", "@wix/error-handler-core": "1.20.0", "events": "^3.3.0", "http-status-codes": "^2.3.0", "uuid": "^11.0.3" }, "peerDependencies": { "@wix/fe-essentials": "^1.233.0", "i18next": ">=19.9.2", "i18next-icu": ">=2.3.0", "intl-messageformat": ">=7.8.4" }, "optionalPeers": ["@wix/fe-essentials", "i18next", "i18next-icu", "intl-messageformat"] }, "sha512-DGP/C3Uv5cpGQX4OxDgXmSvDPJxQPjOkD3vpe+50kVm6CDd2UAvnvkMnvA/6SpvVJwowHeqBLC8DKqzBe5YuHA=="],
+
+    "@wix/error-handler-core": ["@wix/error-handler-core@1.20.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/error-handler-core/-/error-handler-core-1.20.0.tgz", { "dependencies": { "@babel/runtime": "^7.28.4", "@wix/error-handler-types": "1.20.0" } }, "sha512-ubswKgfxN/KwUZKoO0dcz27gER6uVtSbiaV7L91F9hwYUthvrb79zLZiP64NZCGVlgBFIsjHm2JrdPnCDL3TbA=="],
+
+    "@wix/error-handler-types": ["@wix/error-handler-types@1.20.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/error-handler-types/-/error-handler-types-1.20.0.tgz", { "dependencies": { "@babel/runtime": "^7.28.4" } }, "sha512-tMi5BucbWs6CnwIoMaPteWu4J6TeI6O2TsYx5hznKERz509We3ZKi+liJLp+oe2Kd/IUxZr3BAh1Zr+bcbKMVA=="],
+
+    "@wix/essentials": ["@wix/essentials@0.1.28", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/essentials/-/essentials-0.1.28.tgz", { "dependencies": { "@wix/error-handler": "^1.67.0", "@wix/monitoring": "^0.21.0", "@wix/sdk-runtime": "^0.3.62", "@wix/sdk-types": "^1.13.41", "i18next": "^25.3.2", "i18next-icu": "^2.3.0", "intl-messageformat": "^10.7.16" }, "optionalDependencies": { "graphql": "^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0" } }, "sha512-uAB9xpwqebaIrdgPD9YsdZA8XSqWEJvtLT4HKSpuWmSmtLZBRYb+8U0D6NfY5grVw1qYzw0Z4XaGdeM2LLyuuw=="],
+
+    "@wix/headless-components": ["@wix/headless-components@0.0.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-components/-/headless-components-0.0.0.tgz", { "dependencies": { "@radix-ui/react-select": "^2.2.6", "@radix-ui/react-slider": "^1.3.6", "@radix-ui/react-toggle-group": "^1.1.11", "@wix/headless-utils": "0.0.0" } }, "sha512-Ny+mygXkuSPPRuLtvpA0cfau7oChp8uD5mrvuvQojkLNmTcuVKAJQg5gKDMBnPxq3rvvVqqewYDxHWNfTfK8YA=="],
+
+    "@wix/headless-ecom": ["@wix/headless-ecom@0.0.41", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-ecom/-/headless-ecom-0.0.41.tgz", { "dependencies": { "@radix-ui/react-slot": "^1.1.0", "@wix/auto_sdk_ecom_checkout": "^1.0.61", "@wix/auto_sdk_ecom_current-cart": "^1.0.56", "@wix/headless-media": "0.0.21", "@wix/redirects": "^1.0.0", "@wix/sdk": "^1.15.24", "@wix/services-definitions": "^1.0.1", "@wix/services-manager-react": "^1.0.3" }, "peerDependencies": { "@wix/headless-components": "^0.0.0" } }, "sha512-YYZZtCLvY+2vcS0FxSJuuro8aWF8jnINHQRafxYwkZXQNvPMbewKpx1MF97/UiSaGyeSCJyZZoOTdSldEo7Vtw=="],
+
+    "@wix/headless-localization-utils": ["@wix/headless-localization-utils@1.0.15", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-localization-utils/-/headless-localization-utils-1.0.15.tgz", { "dependencies": { "@wix/headless-node": "^1.42.0", "@wix/headless-site-assets": "^1.0.9" } }, "sha512-ZM1aw52LH4nTcWRIYuFcONQbrl6zdevtXCry3PwaA9J4ty7m+G7o/L4Xv3RzKsYq7djsTeVLggFgdW6/6q2jbQ=="],
+
+    "@wix/headless-media": ["@wix/headless-media@0.0.21", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-media/-/headless-media-0.0.21.tgz", { "dependencies": { "@wix/sdk": "^1.17.1", "@wix/services-definitions": "^1.0.1", "@wix/services-manager-react": "^1.0.3" } }, "sha512-7o9ctPfQsQwfLwLCjs4RDO9Ns900Hv+BNVc301tShulKeitxgMKTrFqUxCsCuSQqqgQYaOhm5hDB+994LtBozg=="],
+
+    "@wix/headless-node": ["@wix/headless-node@1.44.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-node/-/headless-node-1.44.0.tgz", { "dependencies": { "@babel/runtime": "^7.0.0", "@wix/monitoring-velo": "^1.31.0", "@wix/sdk-runtime": "^1.0.0" } }, "sha512-CE/3/bL3Vxg54aEwMMCcPe6xihImQu21+p21rwQ79W7uQsYyI0GZ8+sVR3WQHuP3DOR/Nc9NcfRPQ48BDXGjdw=="],
+
+    "@wix/headless-site-assets": ["@wix/headless-site-assets@1.0.13", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-site-assets/-/headless-site-assets-1.0.13.tgz", { "dependencies": { "@wix/auto_sdk_headless-site-assets_scripts": "1.0.13" } }, "sha512-t8wo7ux7fWmzmz2UAUtsVuKnXnLW1SF4duEyTDWPlIw0vpsQjzcsY4fGpFIVvxXSAGpAIz+qecAZHPmUrP50Rw=="],
+
+    "@wix/headless-stores": ["@wix/headless-stores@0.0.119", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-stores/-/headless-stores-0.0.119.tgz", { "dependencies": { "@radix-ui/react-slot": "^1.2.3", "@wix/auto_sdk_bookings_availability-calendar": "^1.0.155", "@wix/auto_sdk_categories_categories": "^1.0.62", "@wix/ecom": "^1.0.1744", "@wix/essentials": "^0.1.24", "@wix/headless-ecom": "0.0.45", "@wix/headless-media": "0.0.25", "@wix/headless-utils": "0.0.12", "@wix/redirects": "^1.0.83", "@wix/services-definitions": "^1.0.1", "@wix/services-manager-react": "^1.0.3", "@wix/site": "^1.40.0", "@wix/stores": "^1.0.650" }, "peerDependencies": { "@wix/headless-components": "^0.0.0" } }, "sha512-PcXXK0FyXffYKMqp8CHRGTnNZgOQftLaxMGDuA8bWY7WT05uzIsxceWK33xDRhzXFPz/lEWB/YvwQ1+vIy2XcA=="],
+
+    "@wix/headless-utils": ["@wix/headless-utils@0.0.12", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-utils/-/headless-utils-0.0.12.tgz", { "dependencies": { "@radix-ui/react-slot": "^1.2.3" }, "peerDependencies": { "react": ">=16.3.0" } }, "sha512-CY5L2/KftFNvoCBzx68MJ2lhSlkjNNBrTXDAhg/fom5PORCruJAoRit4HuIK4u19pUWXkp7QLrhiQKapf1wucg=="],
+
+    "@wix/identity": ["@wix/identity@1.0.213", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/identity/-/identity-1.0.213.tgz", { "dependencies": { "@wix/auto_sdk_identity_authentication": "1.0.49", "@wix/auto_sdk_identity_oauth": "1.0.50", "@wix/auto_sdk_identity_recovery": "1.0.43", "@wix/auto_sdk_identity_verification": "1.0.45" } }, "sha512-z+kjRTXavsxOxWBDX+Akb2Xbn68pYfNftiE8r5OSC2FJY6cx21riehXQlEINJDryHYgBnWvG9GUHNYZbkCQpKA=="],
+
+    "@wix/image-kit": ["@wix/image-kit@1.124.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/image-kit/-/image-kit-1.124.0.tgz", { "dependencies": { "@babel/runtime": "^7.26.0", "tslib": "^2.8.1" } }, "sha512-mM3aNFMu86b2bKkFr0JYKW4/Lmg3L0X2X6YwGXIBmvwFdf7apGdZbs8F8YI+FiM8EKzDANwDwWwiH19r9Jz+Ww=="],
+
+    "@wix/monitoring": ["@wix/monitoring@0.21.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/monitoring/-/monitoring-0.21.0.tgz", { "dependencies": { "@wix/monitoring-types": "0.12.0" } }, "sha512-2KC4ZuJE4abToc2QelY7Bv99BOfbvZiAK8PY5090iP4YVGM9t+VgUdg8H6l94Q0bF/vF44dcA9rjFiEcUz4K7g=="],
+
+    "@wix/monitoring-common": ["@wix/monitoring-common@1.13.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/monitoring-common/-/monitoring-common-1.13.0.tgz", {}, "sha512-gT7sMyoJ50O+jGFKxxlsvg6vZm2K7Bvmwzf5KI1reu2Owz6eC7Rf2pDKnlMrHLTn2uJA7Zxynrj2nS8j0OURdQ=="],
+
+    "@wix/monitoring-types": ["@wix/monitoring-types@0.12.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/monitoring-types/-/monitoring-types-0.12.0.tgz", {}, "sha512-nlv4jwQMewjzPIWFF9rnKf9WhVojj67oLtvilYXfi+lnhXyVlYOfqCnL3qLJuKtJ6wT5XIJdt0Fj0su2NM5taQ=="],
+
+    "@wix/monitoring-velo": ["@wix/monitoring-velo@1.31.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/monitoring-velo/-/monitoring-velo-1.31.0.tgz", { "dependencies": { "@wix/monitoring": "1.1.0", "@wix/monitoring-common": "1.13.0", "@wix/monitoring-types": "1.0.0" } }, "sha512-cgSOZO68e2f4DRzI8yyRiwYftn/7GJcxJ5hcpVPL8yfb7g1quPtFtsT5ChEZdvPjhbx1j0MSQ70dqYkVyWsacg=="],
+
+    "@wix/multilingual-manager": ["@wix/multilingual-manager@1.11.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/multilingual-manager/-/multilingual-manager-1.11.0.tgz", { "dependencies": { "@wix/headless-localization-utils": "^1.0.11", "lodash": "^4.17.21" } }, "sha512-hyvEM9KqmYgHD00KB4yx4dIotMxM4wajAZlAyQkqjDFJaZtfa/aCidhQgmqJ3gyKbvK3I5MAWS0FyqR3vHNFkw=="],
+
+    "@wix/redirects": ["@wix/redirects@1.0.122", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/redirects/-/redirects-1.0.122.tgz", { "dependencies": { "@wix/auto_sdk_redirects_redirects": "1.0.50" } }, "sha512-bW5qXVGLswPOvBB5CB0rIiWJLRRpROxu54EP1jkghxm0fSodoMh1mUTZo9PjcYt/RtLYEM18BaPQX34tBQ0+7w=="],
+
+    "@wix/sdk": ["@wix/sdk@1.21.14", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/sdk/-/sdk-1.21.14.tgz", { "dependencies": { "@wix/identity": "^1.0.204", "@wix/image-kit": "^1.114.0", "@wix/redirects": "^1.0.70", "@wix/sdk-context": "0.0.1", "@wix/sdk-runtime": "1.0.19", "@wix/sdk-types": "1.17.11", "jose": "^5.10.0", "type-fest": "^4.41.0" }, "optionalDependencies": { "graphql": "^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0" } }, "sha512-I5aY2jVkkx7xETbbjo8nqPpnbJ/SnqvZBdzXB2GVDz40mOmZxx2SFB55k7+8SJTh82MdgQG5zsoMi1PliaWMmg=="],
+
+    "@wix/sdk-context": ["@wix/sdk-context@0.0.1", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/sdk-context/-/sdk-context-0.0.1.tgz", {}, "sha512-ziSzrceUC0KFn4IJIVBn1cXXKrZ49ZKG5tQ6fl+TpontyUw5p/Z4VofFUUsnqNl9JYCpYNTzIXpzwok93Vrl8A=="],
+
+    "@wix/sdk-react-context": ["@wix/sdk-react-context@1.0.2", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/sdk-react-context/-/sdk-react-context-1.0.2.tgz", { "peerDependencies": { "react": "*" } }, "sha512-dX1A+IlLVzsW0pE7ZyhtJHNEeeCYnu/suELnHm4FrxX5alJl1JaEpHbvjuaCt6kD/kDP1iIu9Pu6AvyJUCtYrg=="],
+
+    "@wix/sdk-runtime": ["@wix/sdk-runtime@1.0.19", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/sdk-runtime/-/sdk-runtime-1.0.19.tgz", { "dependencies": { "@wix/sdk-context": "0.0.1", "@wix/sdk-types": "1.17.11" } }, "sha512-9C1gJljij0svagtWB1I8RnsqFGEiG2udkt7otzogrdTdRqk6w9qG28Eso2jXyAmh/AWfT9bHt8LROltCqxk1XQ=="],
+
+    "@wix/sdk-types": ["@wix/sdk-types@1.17.11", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/sdk-types/-/sdk-types-1.17.11.tgz", { "dependencies": { "@wix/error-handler-types": "^1.19.0", "@wix/monitoring-types": "^0.12.0", "type-fest": "^4.41.0" } }, "sha512-yZf6pxh1FP8lTHpny1+f54ac26hfzamxe0ldK9EziMXHsbw+99kF+iTGDrbHZ1YT9OV8xo82fWjK7Dhu45AzTA=="],
+
+    "@wix/services-definitions": ["@wix/services-definitions@1.0.5", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/services-definitions/-/services-definitions-1.0.5.tgz", { "dependencies": { "type-fest": "^4.41.0" } }, "sha512-69+ZTkae11GNVXA4WeHs5yINpmhNQHMZ00OhogP77fZXZQHmvFsd7yKpQBXFJKeWj+5wSd1hoL3o0s36jGza/Q=="],
+
+    "@wix/services-manager": ["@wix/services-manager@1.0.7", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/services-manager/-/services-manager-1.0.7.tgz", { "dependencies": { "@preact/signals-core": "^1.12.1", "@wix/sdk-context": "0.0.1", "@wix/services-definitions": "1.0.5" } }, "sha512-Yp985K427nJaNQh5fZoe3p/C5hUzlNprFKTfJJtYCakc+Mpvo0xTBJrIzzZG62gThAjV5741BLA5qT4fIIYMRg=="],
+
+    "@wix/services-manager-react": ["@wix/services-manager-react@1.0.8", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/services-manager-react/-/services-manager-react-1.0.8.tgz", { "dependencies": { "@preact/signals-react": "^3.6.1", "@wix/sdk-react-context": "1.0.2", "@wix/services-definitions": "1.0.5" }, "peerDependencies": { "@wix/services-manager": "^1.0.0", "react": "^16.14.0 || 17.x || 18.x || 19.x", "react-dom": "^18.3.1", "use-sync-external-store": "^1.0.0" } }, "sha512-7prwGFLcJ0p0KDbzoMXJ6WiSE6kvMAxLDwRayU2vMVhgQwjiUxuqx0HopU8oR33RimV+3YJbDPrnoPqh3qCqZw=="],
+
+    "@wix/site": ["@wix/site@1.64.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/site/-/site-1.64.0.tgz", { "dependencies": { "@babel/runtime": "^7.0.0", "@wix/analytics": "1.19.0", "@wix/authentication": "1.16.0", "@wix/consent-policy-manager": "1.15.0", "@wix/multilingual-manager": "1.11.0", "@wix/sdk-types": "^1.13.2" } }, "sha512-wFLBECwgyUrcO92eDjz5vi6aeloX/dBjfwU2X1ceiWBGdk/GITFo8xyLjDPTTos0+2028Q75nDxWmejas3F7fA=="],
+
+    "@wix/stores": ["@wix/stores@1.0.849", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/stores/-/stores-1.0.849.tgz", { "dependencies": { "@wix/auto_sdk_stores_abandoned-carts": "1.0.41", "@wix/auto_sdk_stores_brands-v-3": "1.0.78", "@wix/auto_sdk_stores_catalog-imports-v-3": "1.0.74", "@wix/auto_sdk_stores_catalog-versioning": "1.0.73", "@wix/auto_sdk_stores_collections": "1.0.42", "@wix/auto_sdk_stores_customizations-v-3": "1.0.88", "@wix/auto_sdk_stores_info-sections-v-3": "1.0.101", "@wix/auto_sdk_stores_inventory": "1.0.73", "@wix/auto_sdk_stores_inventory-items-v-3": "1.0.89", "@wix/auto_sdk_stores_product-groups-v-3": "1.0.4", "@wix/auto_sdk_stores_products": "1.0.99", "@wix/auto_sdk_stores_products-v-3": "1.0.203", "@wix/auto_sdk_stores_promotions-v-3": "1.0.0", "@wix/auto_sdk_stores_read-only-variants-v-3": "1.0.134", "@wix/auto_sdk_stores_ribbons-v-3": "1.0.57", "@wix/auto_sdk_stores_stores-locations-v-3": "1.0.53", "@wix/auto_sdk_stores_subscription-options": "1.0.68", "@wix/auto_sdk_stores_wishlist": "1.0.37", "@wix/headless-stores": "^0.0.119", "@wix/stores_app-extensions": "1.0.53" } }, "sha512-GW/7hLIqW10B8QS8yJqOI4KGUibmW48x9/pHzRT4p7IQy2KdEoj82HRtZJ0X+qxbJlUgMUxGNqfHwxOoVsiWQg=="],
+
+    "@wix/stores_app-extensions": ["@wix/stores_app-extensions@1.0.53", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/stores_app-extensions/-/stores_app-extensions-1.0.53.tgz", { "dependencies": { "@wix/sdk-runtime": "^1.0.12", "@wix/sdk-types": "^1.17.7", "zod": "^4.3.6" } }, "sha512-ta9iKgd0/XA70r3He0qzVOv16lkirsjyOM1F6DlSg5wxQeGeMzMOyGuBVLv7H5UgIoyVH0giTKzDXe7k8sLaHg=="],
+
     "acorn": ["acorn@8.16.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw=="],
 
     "acorn-jsx": ["acorn-jsx@5.3.2", "", { "peerDependencies": { "acorn": "^6.0.0 || ^7.0.0 || ^8.0.0" } }, "sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ=="],
@@ -706,6 +962,8 @@
 
     "debug": ["debug@4.4.3", "", { "dependencies": { "ms": "^2.1.3" }, "peerDependencies": { "supports-color": "*" }, "optionalPeers": ["supports-color"] }, "sha512-RGwwWnwQvkVfavKVt22FGLw+xYSdzARwm0ru6DhTVA3umU5hZc28V3kO4stgYryrTlLpuvgI9GiijltAjNbcqA=="],
 
+    "decimal.js": ["decimal.js@10.6.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/decimal.js/-/decimal.js-10.6.0.tgz", {}, "sha512-YpgQiITW3JXGntzdUmyUR1V812Hn8T1YVXhCu+wO3OpS4eU9l4YdD3qjyiKdV6mvV29zapkMeD390UVEf2lkUg=="],
+
     "decimal.js-light": ["decimal.js-light@2.5.1", "", {}, "sha512-qIMFpTMZmny+MMIitAB6D7iVPEorVw6YQRWkvarTkT4tBeSLLiHzcwj6q0MmYSFCiVpiqPJTJEYIrpcPzVEIvg=="],
 
     "deep-is": ["deep-is@0.1.4", "", {}, "sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ=="],
@@ -762,6 +1020,8 @@
 
     "eventemitter3": ["eventemitter3@4.0.7", "", {}, "sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw=="],
 
+    "events": ["events@3.3.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/events/-/events-3.3.0.tgz", {}, "sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q=="],
+
     "exsolve": ["exsolve@1.0.8", "", {}, "sha512-LmDxfWXwcTArk8fUEnOfSZpHOJ6zOMUJKOtFLFqJLoKJetuQG874Uc7/Kki7zFLzYybmZhp1M7+98pfMqeX8yA=="],
 
     "fast-deep-equal": ["fast-deep-equal@3.1.3", "", {}, "sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q=="],
@@ -802,6 +1062,8 @@
 
     "graceful-fs": ["graceful-fs@4.2.11", "", {}, "sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ=="],
 
+    "graphql": ["graphql@17.0.2", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/graphql/-/graphql-17.0.2.tgz", {}, "sha512-FRWbddMxfkjiB7z+aQDWIR+E34xo9I8c9mtK2RPv8PmMzKRvrdsreHL/Ui/TmwHJfhHChEtsFPyMHKI+xuarQQ=="],
+
     "h3": ["h3@2.0.1-rc.22", "", { "dependencies": { "rou3": "^0.8.1", "srvx": "^0.11.15" }, "peerDependencies": { "crossws": "^0.4.1" }, "optionalPeers": ["crossws"], "bin": { "h3": "bin/h3.mjs" } }, "sha512-Esv0DMIuPkCTSWCA0vO73vcTqwzH1wjSrAO1TXNu/K3up1sZHa9EKMapbmxCDYBeymC3fVTk4qxp7ogQWQ+KgA=="],
 
     "h3-v2": ["h3@2.0.1-rc.20", "", { "dependencies": { "rou3": "^0.8.1", "srvx": "^0.11.13" }, "peerDependencies": { "crossws": "^0.4.1" }, "optionalPeers": ["crossws"], "bin": { "h3": "bin/h3.mjs" } }, "sha512-28ljodXuUp0fZovdiSRq4G9OgrxCztrJe5VdYzXAB7ueRvI7pIUqLU14Xi3XqdYJ/khXjfpUOOD2EQa6CmBgsg=="],
@@ -810,7 +1072,13 @@
 
     "hookable": ["hookable@6.1.1", "", {}, "sha512-U9LYDy1CwhMCnprUfeAZWZGByVbhd54hwepegYTK7Pi5NvqEj63ifz5z+xukznehT7i6NIZRu89Ay1AZmRsLEQ=="],
 
+    "http-status-codes": ["http-status-codes@2.3.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/http-status-codes/-/http-status-codes-2.3.0.tgz", {}, "sha512-RJ8XvFvpPM/Dmc5SV+dC4y5PCeOhT3x1Hq0NU3rjGeg5a/CqlhZ7uudknPwZFz4aeAXDcbAyaeP7GAo9lvngtA=="],
+
     "httpxy": ["httpxy@0.5.3", "", {}, "sha512-SMS9V6Sn7VWaS11lYhoAr0ceoaiolTWf4jYdJn0NJhCdKMu9R2H9Fh0LBDWBHQF6HRLI1PmaePYsjanSpE5PEw=="],
+
+    "i18next": ["i18next@25.10.10", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/i18next/-/i18next-25.10.10.tgz", { "dependencies": { "@babel/runtime": "^7.29.2" }, "peerDependencies": { "typescript": "^5 || ^6" }, "optionalPeers": ["typescript"] }, "sha512-cqUW2Z3EkRx7NqSyywjkgCLK7KLCL6IFVFcONG7nVYIJ3ekZ1/N5jUsihHV6Bq37NfhgtczxJcxduELtjTwkuQ=="],
+
+    "i18next-icu": ["i18next-icu@2.4.4", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/i18next-icu/-/i18next-icu-2.4.4.tgz", { "peerDependencies": { "intl-messageformat": ">=10.3.3 <12.0.0" } }, "sha512-yfYdGTftClNUnZAQG1cu0yHHLaMVsrqfcgQHHchGDufkunBLKHuw2wXTCDuE+8mWMMcdePl8UBR0EUUA/3+FDw=="],
 
     "ignore": ["ignore@5.3.2", "", {}, "sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g=="],
 
@@ -822,6 +1090,8 @@
 
     "internmap": ["internmap@2.0.3", "", {}, "sha512-5Hh7Y1wQbvY5ooGgPbDaL5iYLAPzMTUrjMulskHLH6wnv/A+1q5rgEaiuqEjB+oxGXIVZs1FF+R/KPN3ZSQYYg=="],
 
+    "intl-messageformat": ["intl-messageformat@10.7.18", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/intl-messageformat/-/intl-messageformat-10.7.18.tgz", { "dependencies": { "@formatjs/ecma402-abstract": "2.3.6", "@formatjs/fast-memoize": "2.2.7", "@formatjs/icu-messageformat-parser": "2.11.4", "tslib": "^2.8.0" } }, "sha512-m3Ofv/X/tV8Y3tHXLohcuVuhWKo7BBq62cqY15etqmLxg2DZ34AGGgQDeR+SCta2+zICb1NX83af0GJmbQ1++g=="],
+
     "is-extglob": ["is-extglob@2.1.1", "", {}, "sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ=="],
 
     "is-glob": ["is-glob@4.0.3", "", { "dependencies": { "is-extglob": "^2.1.1" } }, "sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg=="],
@@ -831,6 +1101,8 @@
     "isexe": ["isexe@2.0.0", "", {}, "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw=="],
 
     "jiti": ["jiti@2.6.1", "", { "bin": { "jiti": "lib/jiti-cli.mjs" } }, "sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ=="],
+
+    "jose": ["jose@5.10.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/jose/-/jose-5.10.0.tgz", {}, "sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg=="],
 
     "js-tokens": ["js-tokens@4.0.0", "", {}, "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ=="],
 
@@ -1034,6 +1306,8 @@
 
     "type-check": ["type-check@0.4.0", "", { "dependencies": { "prelude-ls": "^1.2.1" } }, "sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew=="],
 
+    "type-fest": ["type-fest@4.41.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/type-fest/-/type-fest-4.41.0.tgz", {}, "sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA=="],
+
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
     "typescript-eslint": ["typescript-eslint@8.59.0", "", { "dependencies": { "@typescript-eslint/eslint-plugin": "8.59.0", "@typescript-eslint/parser": "8.59.0", "@typescript-eslint/typescript-estree": "8.59.0", "@typescript-eslint/utils": "8.59.0" }, "peerDependencies": { "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0", "typescript": ">=4.8.4 <6.1.0" } }, "sha512-BU3ONW9X+v90EcCH9ZS6LMackcVtxRLlI3XrYyqZIwVSHIk7Qf7bFw1z0M9Q0IUxhTMZCf8piY9hTYaNEIASrw=="],
@@ -1057,6 +1331,8 @@
     "use-sidecar": ["use-sidecar@1.1.3", "", { "dependencies": { "detect-node-es": "^1.1.0", "tslib": "^2.0.0" }, "peerDependencies": { "@types/react": "*", "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-Fedw0aZvkhynoPYlA5WXrMCAMm+nSWdZt6lzJQ7Ok8S6Q+VsHmHpRWndVRJ8Be0ZbkfPc5LRYH+5XrzXcEeLRQ=="],
 
     "use-sync-external-store": ["use-sync-external-store@1.6.0", "", { "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w=="],
+
+    "uuid": ["uuid@11.1.1", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/uuid/-/uuid-11.1.1.tgz", { "bin": { "uuid": "dist/esm/bin/uuid" } }, "sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ=="],
 
     "vaul": ["vaul@1.1.2", "", { "dependencies": { "@radix-ui/react-dialog": "^1.1.1" }, "peerDependencies": { "react": "^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc", "react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc" } }, "sha512-ZFkClGpWyI2WUQjdLJ/BaGuV6AVQiJ3uELGk3OYtP+B6yCO7Cmn9vPFXVJkRaGkOJu3m8bQMgtyzNHixULceQA=="],
 
@@ -1151,6 +1427,188 @@
     "@typescript-eslint/typescript-estree/tinyglobby": ["tinyglobby@0.2.16", "", { "dependencies": { "fdir": "^6.5.0", "picomatch": "^4.0.4" } }, "sha512-pn99VhoACYR8nFHhxqix+uvsbXineAasWm5ojXoN8xEwK5Kd3/TrhNn1wByuD52UxWRLy8pu+kRMniEi6Eq9Zg=="],
 
     "@typescript-eslint/visitor-keys/eslint-visitor-keys": ["eslint-visitor-keys@5.0.1", "", {}, "sha512-tD40eHxA35h0PEIZNeIjkHoDR4YjjJp34biM0mDvplBe//mB+IHCqHDGV7pxF+7MklTvighcCPPZC7ynWyjdTA=="],
+
+    "@wix/auto_sdk_bookings_availability-calendar/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_categories_categories/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_abandoned-checkouts/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_additional-fees/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_back-in-stock-notifications/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_back-in-stock-settings/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_cart/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_cart-v-2/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_catalog/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_checkout/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_checkout-content/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_checkout-settings/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_checkout-templates/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_contact-tax-details/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_currencies/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_current-cart/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_current-cart-v-2/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_custom-triggers/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_delivery-profile/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_delivery-solutions/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_discount-rules/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_discounts/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_discounts-custom-trigger/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_draft-orders/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_draft-subscription-contracts/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_ecommerce-settings/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_gift-vouchers/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_gift-vouchers-provider/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_inventory/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_local-delivery-options/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_manual-tax-mappings/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_memberships/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_order-billing/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_order-fulfillments/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_order-invoices/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_order-payment-requests/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_order-transactions/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_orders/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_orders-settings/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_payment-settings/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_pickup-locations/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_recommendations/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_recommendations-provider/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_shipping-options/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_shipping-rates/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_shippo-configurations/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_subscription-contracts/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tax-calculation/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tax-calculation-provider/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tax-exempt-groups/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tax-groups/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tax-regions/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tax-settings/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tip-settings/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tippable-staff/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_tips/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_totals-calculator/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_validations/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_ecom_wishlists/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_headless-site-assets_scripts/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_identity_authentication/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_identity_oauth/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_identity_recovery/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_identity_verification/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_redirects_redirects/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_abandoned-carts/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_brands-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_catalog-imports-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_catalog-versioning/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_collections/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_customizations-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_info-sections-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_inventory/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_inventory-items-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_product-groups-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_products/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_products-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_promotions-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_read-only-variants-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_ribbons-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_stores-locations-v-3/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_subscription-options/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/auto_sdk_stores_wishlist/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/ecom_app-extensions/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
+
+    "@wix/essentials/@wix/sdk-runtime": ["@wix/sdk-runtime@0.3.62", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/sdk-runtime/-/sdk-runtime-0.3.62.tgz", { "dependencies": { "@wix/sdk-context": "0.0.1", "@wix/sdk-types": "^1.13.41" } }, "sha512-5imt9mSEaceX365iLGzMJ7jS4qr4lJj+2DZox86Ge8P7V9IeuPYLsQ+0PN9wN6XgMfjNLHt4G6hJUIi3bdglGA=="],
+
+    "@wix/headless-components/@wix/headless-utils": ["@wix/headless-utils@0.0.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-utils/-/headless-utils-0.0.0.tgz", { "dependencies": { "@radix-ui/react-slot": "^1.2.3" }, "peerDependencies": { "react": ">=16.3.0" } }, "sha512-Pz4UZfMRCTfHf/nRmJ20vVVVPzjcz6VuiRpTzBgsjML9fI/ulviR6oV0ZAReMiyflptqGGl0PU/pTrj/fnhcow=="],
+
+    "@wix/headless-stores/@wix/headless-ecom": ["@wix/headless-ecom@0.0.45", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-ecom/-/headless-ecom-0.0.45.tgz", { "dependencies": { "@radix-ui/react-slot": "^1.1.0", "@wix/auto_sdk_ecom_checkout": "^1.0.61", "@wix/auto_sdk_ecom_current-cart": "^1.0.56", "@wix/headless-media": "0.0.25", "@wix/redirects": "^1.0.0", "@wix/sdk": "^1.15.24", "@wix/services-definitions": "^1.0.1", "@wix/services-manager-react": "^1.0.3" }, "peerDependencies": { "@wix/headless-components": "^0.0.0" } }, "sha512-CRbvUajeMijIitfPMCgOEPLJtBe8ry5ePD4PF9wTiUjFrHR+Ybz0u8wd9zomnH910zLFWdBcfIBqxFboBIP8aw=="],
+
+    "@wix/headless-stores/@wix/headless-media": ["@wix/headless-media@0.0.25", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/headless-media/-/headless-media-0.0.25.tgz", { "dependencies": { "@wix/sdk": "^1.17.1", "@wix/services-definitions": "^1.0.1", "@wix/services-manager-react": "^1.0.3" } }, "sha512-qxS7892M8cr2y6Pata1laHmQDCXeF5SAepB2csxTvCk/bYzFsp7gJOTYwjVqKnZP2O28RW/JO8F00nkKwP1/NA=="],
+
+    "@wix/monitoring-velo/@wix/monitoring": ["@wix/monitoring@1.1.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/monitoring/-/monitoring-1.1.0.tgz", { "dependencies": { "@wix/monitoring-types": "1.0.0" } }, "sha512-sX8QKAuRZl6gaR5pOJ+8BpxtgOddYzyQAvv706A5F/wsO+YDcSU/ViE1U+i2rL2Jlr2B9J4+vnCCZgQH0CMPmQ=="],
+
+    "@wix/monitoring-velo/@wix/monitoring-types": ["@wix/monitoring-types@1.0.0", "https://europe-west1-npm.pkg.dev/lovable-core-prod/sandbox-npm-cache/@wix/monitoring-types/-/monitoring-types-1.0.0.tgz", {}, "sha512-Cc9t8HCt4QUXZQ6T2+MmtARsEKx/UL78mQpouc1IZhblUsM1QF+N5J+o4D5qxZSjt7GzuIXN5cUdLFuUSAfvyA=="],
+
+    "@wix/stores_app-extensions/zod": ["zod@4.4.3", "", {}, "sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ=="],
 
     "cmdk/@radix-ui/react-primitive": ["@radix-ui/react-primitive@2.1.4", "", { "dependencies": { "@radix-ui/react-slot": "1.2.4" }, "peerDependencies": { "@types/react": "*", "@types/react-dom": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc", "react-dom": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react", "@types/react-dom"] }, "sha512-9hQc4+GNVtJAIEPEqlYqW5RiYdrr8ea5XQ0ZOnD6fgru+83kqT15mq2OCcbe8KnjRZl5vF3ks69AKz3kh1jrhg=="],
 

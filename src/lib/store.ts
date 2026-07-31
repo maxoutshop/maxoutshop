@@ -5,7 +5,10 @@ type CartItem = {
   size: string;
   color: string;
   qty: number;
+  productId?: string;
+  variantId?: string;
 };
+
 
 type State = {
   cart: CartItem[];
@@ -38,9 +41,12 @@ function subscribe(l: () => void) {
   return () => listeners.delete(l);
 }
 
+const EMPTY: State = { cart: [], wishlist: [], recentlyViewed: [] };
+
 export function useStore<T>(sel: (s: State) => T): T {
-  return useSyncExternalStore(subscribe, () => sel(state), () => sel(state));
+  return useSyncExternalStore(subscribe, () => sel(state), () => sel(EMPTY));
 }
+
 
 export const cartActions = {
   add(item: CartItem) {

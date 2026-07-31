@@ -1,17 +1,27 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { getProduct, related, type Product } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/store";
+import { getCatalog } from "@/lib/wix.functions";
+import { FALLBACK_CATALOG, type CatalogProduct } from "@/lib/catalog-meta";
+import { findVariant, relatedFrom } from "@/lib/catalog";
 import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler } from "lucide-react";
 
 export const Route = createFileRoute("/product/$slug")({
-  loader: ({ params }) => {
-    const p = getProduct(params.slug);
+  loader: async ({ params }) => {
+    let list: CatalogProduct[] = FALLBACK_CATALOG;
+    try {
+      const live = await getCatalog();
+      if (live?.length) list = live as CatalogProduct[];
+    } catch {
+      // fall back to the bundled catalog snapshot
+    }
+    const p = list.find((x) => x.slug === params.slug);
     if (!p) throw notFound();
-    return { product: p };
+    return { product: p, related: relatedFrom(list, params.slug) };
   },
+
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Product not found — MAXOUT" }, { name: "robots", content: "noindex" }] };
     const { product } = loaderData;
