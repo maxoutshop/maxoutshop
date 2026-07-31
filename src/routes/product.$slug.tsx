@@ -41,18 +41,27 @@ export const Route = createFileRoute("/product/$slug")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData() as { product: Product };
+  const { product, related: relatedItems } = Route.useLoaderData() as {
+    product: CatalogProduct;
+    related: CatalogProduct[];
+  };
   const [imgIdx, setImgIdx] = useState(0);
-  const [size, setSize] = useState<string | null>(product.sizes.length === 1 ? product.sizes[0] : null);
+  const [size, setSize] = useState<string | null>(product.sizes.length === 1 ? product.sizes[0]! : null);
   const [color, setColor] = useState<string | null>(product.colors[0]?.name ?? null);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const wished = useStore((s) => s.wishlist.includes(product.slug));
-  const relatedItems = related(product.slug);
 
   useEffect(() => { recentActions.push(product.slug); }, [product.slug]);
 
-  const canAdd = !!size && !!color;
+  const variant = useMemo(
+    () => findVariant(product, size ?? undefined, color ?? undefined),
+    [product, size, color],
+  );
+  const soldOut = !!variant && !variant.inStock;
+  const canAdd = !!size && !!color && !soldOut;
+
+
 
   return (
     <AppShell>
