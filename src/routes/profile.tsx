@@ -78,11 +78,6 @@ function Profile() {
     );
   }
 
-  const pts = profile.data?.points ?? 0;
-  const tierIndex = Math.max(0, TIERS.findIndex((t, i) => pts >= t.min && (i === TIERS.length - 1 || pts < TIERS[i + 1]!.min)));
-  const tier = TIERS[tierIndex]!;
-  const next = TIERS[tierIndex + 1];
-  const pct = next ? Math.round(((pts - tier.min) / (next.min - tier.min)) * 100) : 100;
   const name = profile.data?.display_name ?? profile.data?.username ?? user.email?.split("@")[0] ?? "Athlete";
 
   return (
@@ -97,23 +92,7 @@ function Profile() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-3xl border border-border bg-surface p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-semibold tracking-[0.25em] text-accent uppercase">{tier.name} tier</p>
-            <h2 className="mt-1 text-2xl font-semibold">{pts.toLocaleString()} points</h2>
-          </div>
-          <Sparkles className="h-6 w-6 text-accent" />
-        </div>
-        <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-background/60">
-          <div className="h-full rounded-full bg-foreground" style={{ width: `${Math.min(100, Math.max(4, pct))}%` }} />
-        </div>
-        <p className="mt-2 text-xs text-muted-foreground">
-          {next ? `${(next.min - pts).toLocaleString()} points to ${next.name} · ${next.perk}` : `Top tier unlocked · ${tier.perk}`}
-        </p>
-      </div>
-
-      <div className="mt-4 grid grid-cols-3 gap-3">
+      <div className="mt-6 grid grid-cols-3 gap-3">
         <Stat value={String((workouts.data ?? []).length)} label="Workouts" />
         <Stat value={String((prs.data ?? []).length)} label="PRs" />
         <Stat value={String((challenges.data ?? []).length)} label="Challenges" />
