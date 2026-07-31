@@ -251,100 +251,148 @@ function Track() {
           : <p className="mt-3 text-xs text-muted-foreground">Log two entries to see your trend.</p>}
       </section>
 
+      {/* Quick log FAB */}
+      <button
+        onClick={() => setSheet("quick")}
+        className="fixed bottom-24 right-5 z-40 grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_10px_30px_rgba(0,0,0,0.45)] transition active:scale-90"
+        aria-label="Quick log"
+      >
+        <Plus className="h-6 w-6" />
+      </button>
+
+      {sheet === "quick" && (
+        <BottomSheet title="Quick log" subtitle="One tap to track anything" onClose={() => setSheet(null)}>
+          <div className="grid grid-cols-2 gap-3">
+            <QuickTile icon={<Utensils className="h-5 w-5" />} label="Food" hint="AI macros" onClick={() => setSheet("meal")} />
+            <QuickTile icon={<Dumbbell className="h-5 w-5" />} label={live ? "Add set" : "Start workout"} hint={live ? live.category : "Pick a split"}
+              onClick={() => (live ? setSheet("set") : setSheet("workout"))} />
+            <QuickTile icon={<Trophy className="h-5 w-5" />} label="New PR" hint="Log a milestone" onClick={() => setSheet("pr")} />
+            <QuickTile icon={<Scale className="h-5 w-5" />} label="Bodyweight" hint="Track the trend" onClick={() => setSheet("weight")} />
+          </div>
+          <button
+            onClick={() => { setWater.mutate(glasses + 1); setSheet(null); }}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-3xl border border-border bg-background py-4 text-sm font-semibold active:scale-[0.98] transition"
+          >
+            <Droplet className="h-4 w-4" /> Add a glass of water
+          </button>
+        </BottomSheet>
+      )}
+
+      {sheet === "workout" && (
+        <BottomSheet title="Start a workout" subtitle="Pick your split" onClose={() => setSheet(null)}>
+          <div className="grid grid-cols-2 gap-3">
+            {CATEGORIES.map((c) => (
+              <button key={c} onClick={() => { startWorkout.mutate(c); setSheet(null); }}
+                className="rounded-3xl border border-border bg-background py-5 text-sm font-semibold active:scale-95 transition">{c}</button>
+            ))}
+          </div>
+        </BottomSheet>
+      )}
+
       {sheet === "meal" && (
-        <Sheet title="Log meal" onClose={() => setSheet(null)} fields={[
-          { key: "name", label: "Meal", type: "text" },
-          { key: "meal_type", label: "Type (breakfast/lunch/dinner/snack)", type: "text", initial: "lunch" },
-          { key: "calories", label: "Calories", type: "number" },
-          { key: "protein", label: "Protein (g)", type: "number" },
-          { key: "carbs", label: "Carbs (g)", type: "number" },
-          { key: "fat", label: "Fat (g)", type: "number" },
-        ]} onSubmit={(v) => { addMeal.mutate(v as never); setSheet(null); }} />
+        <MealSheet
+          recent={recentMeals}
+          onClose={() => setSheet(null)}
+          onSave={(items, mealType) => { addMeals.mutate({ items, mealType }); setSheet(null); }}
+        />
       )}
-      {sheet === "pr" && (
-        <Sheet title="New personal record" onClose={() => setSheet(null)} fields={[
-          { key: "exercise", label: "Exercise", type: "text" },
-          { key: "value", label: "Value", type: "number" },
-          { key: "unit", label: "Unit", type: "text", initial: "lb" },
-        ]} onSubmit={(v) => { addPR.mutate(v as never); setSheet(null); }} />
-      )}
-      {sheet === "weight" && (
-        <Sheet title="Log bodyweight" onClose={() => setSheet(null)} fields={[{ key: "weight", label: "Weight (lb)", type: "number" }]}
-          onSubmit={(v) => { addWeight.mutate(v as never); setSheet(null); }} />
-      )}
+
       {sheet === "set" && (
-        <Sheet title="Add set" onClose={() => setSheet(null)} fields={[
-          { key: "exercise", label: "Exercise", type: "text" },
-          { key: "weight", label: "Weight (lb)", type: "number" },
-          { key: "reps", label: "Reps", type: "number" },
-        ]} onSubmit={(v) => { addSet.mutate(v as never); setSheet(null); }} />
+        <SetSheet
+          exercises={exerciseNames}
+          last={lastSet}
+          onClose={() => setSheet(null)}
+          onSave={(v) => { addSet.mutate(v); setSheet(null); }}
+        />
+      )}
+
+      {sheet === "pr" && (
+        <PRSheet exercises={exerciseNames} onClose={() => setSheet(null)} onSave={(v) => { addPR.mutate(v); setSheet(null); }} />
+      )}
+
+      {sheet === "weight" && (
+        <WeightSheet initial={current ?? 175} onClose={() => setSheet(null)} onSave={(w) => { addWeight.mutate({ weight: w }); setSheet(null); }} />
       )}
     </AppShell>
   );
 }
 
-function SignedOut() {
+function QuickTile({ icon, label, hint, onClick }: { icon: React.ReactNode; label: string; hint: string; onClick: () => void }) {
   return (
-    <AppShell>
-      <div className="pt-2">
-        <p className="text-[11px] font-semibold tracking-[0.3em] text-muted-foreground uppercase">Today</p>
-        <h1 className="mt-1 text-3xl font-semibold">Your Track</h1>
-      </div>
-      <div className="mt-6 rounded-3xl border border-border bg-surface p-6 text-center">
-        <Lock className="mx-auto h-6 w-6 text-accent" />
-        <h2 className="mt-3 text-lg font-semibold">Unlock your tracker</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Workouts, PRs, macros, water and bodyweight — private to you and synced across devices.</p>
-        <Link to="/auth" className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground">
-          Create your free account
-        </Link>
-      </div>
-      <div className="mt-5 grid grid-cols-2 gap-3 opacity-40">
-        <BigStat icon={<Flame className="h-5 w-5 text-accent" />} value="12" label="Day streak" hint="Preview" />
-        <BigStat icon={<Dumbbell className="h-5 w-5" />} value="4/5" label="Workouts this week" hint="Preview" />
-      </div>
-    </AppShell>
+    <button onClick={onClick} className="rounded-3xl border border-border bg-background p-4 text-left transition active:scale-95">
+      <div className="text-accent">{icon}</div>
+      <p className="mt-3 text-sm font-semibold">{label}</p>
+      <p className="text-[11px] text-muted-foreground">{hint}</p>
+    </button>
   );
 }
 
-type Field = { key: string; label: string; type: "text" | "number"; initial?: string };
-
-function Sheet({ title, fields, onSubmit, onClose }: { title: string; fields: Field[]; onSubmit: (v: Record<string, string | number>) => void; onClose: () => void }) {
-  const [values, setValues] = useState<Record<string, string>>(
-    () => Object.fromEntries(fields.map((f) => [f.key, f.initial ?? ""])),
-  );
+function SetSheet({
+  exercises, last, onClose, onSave,
+}: {
+  exercises: string[];
+  last: { exercise: string; weight: number; reps: number } | null;
+  onClose: () => void;
+  onSave: (v: { exercise: string; weight: number; reps: number }) => void;
+}) {
+  const [exercise, setExercise] = useState(last?.exercise ?? "");
+  const [weight, setWeight] = useState(last?.weight ?? 135);
+  const [reps, setReps] = useState(last?.reps ?? 8);
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-background/80 backdrop-blur-sm" onClick={onClose}>
-      <div className="max-h-[85vh] w-full overflow-y-auto rounded-t-3xl border-t border-border bg-surface p-5 pb-10" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">{title}</h3>
-          <button onClick={onClose}><X className="h-5 w-5 text-muted-foreground" /></button>
-        </div>
-        <form
-          className="mt-4 space-y-3"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSubmit(Object.fromEntries(fields.map((f) => [f.key, f.type === "number" ? Number(values[f.key] || 0) : (values[f.key] ?? "")])));
-          }}
+    <BottomSheet title="Add set" subtitle="Tap the steppers — no typing needed" onClose={onClose}>
+      {last && (
+        <button
+          onClick={() => onSave(last)}
+          className="mb-4 flex w-full items-center justify-center gap-2 rounded-3xl border border-border bg-background py-3.5 text-sm font-semibold active:scale-[0.98] transition"
         >
-          {fields.map((f) => (
-            <label key={f.key} className="block">
-              <span className="text-xs text-muted-foreground">{f.label}</span>
-              <input
-                required
-                type={f.type}
-                inputMode={f.type === "number" ? "decimal" : "text"}
-                value={values[f.key] ?? ""}
-                onChange={(e) => setValues((s) => ({ ...s, [f.key]: e.target.value }))}
-                className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none"
-              />
-            </label>
-          ))}
-          <button type="submit" className="w-full rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground">Save</button>
-        </form>
+          <Repeat className="h-4 w-4" /> Repeat {last.exercise} · {last.weight} × {last.reps}
+        </button>
+      )}
+      <BigInput label="Exercise" value={exercise} onChange={setExercise} placeholder="Bench press" suggestions={exercises.length ? exercises : COMMON_LIFTS} />
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <Stepper label="Weight" value={weight} onChange={setWeight} step={5} suffix="lb" />
+        <Stepper label="Reps" value={reps} onChange={setReps} step={1} min={1} />
       </div>
-    </div>
+      <PrimaryButton disabled={!exercise.trim()} onClick={() => onSave({ exercise: exercise.trim(), weight, reps })}>
+        Log set
+      </PrimaryButton>
+    </BottomSheet>
   );
 }
+
+function PRSheet({ exercises, onClose, onSave }: { exercises: string[]; onClose: () => void; onSave: (v: { exercise: string; value: number; unit: string }) => void }) {
+  const [exercise, setExercise] = useState("");
+  const [value, setValue] = useState(225);
+  const [unit, setUnit] = useState("lb");
+  return (
+    <BottomSheet title="New personal record" subtitle="Log the moment you maxed out" onClose={onClose}>
+      <BigInput label="Exercise" value={exercise} onChange={setExercise} placeholder="Deadlift" suggestions={exercises.length ? exercises : COMMON_LIFTS} />
+      <div className="mt-3"><Stepper label="Value" value={value} onChange={setValue} step={5} suffix={unit} /></div>
+      <div className="mt-3 flex gap-2">
+        {["lb", "kg", "reps", "sec"].map((u) => (
+          <button key={u} onClick={() => setUnit(u)}
+            className={`flex-1 rounded-full py-2 text-xs font-semibold transition active:scale-95 ${unit === u ? "bg-foreground text-background" : "border border-border text-muted-foreground"}`}>
+            {u}
+          </button>
+        ))}
+      </div>
+      <PrimaryButton disabled={!exercise.trim()} onClick={() => onSave({ exercise: exercise.trim(), value, unit })}>
+        <Trophy className="h-4 w-4" /> Save PR
+      </PrimaryButton>
+    </BottomSheet>
+  );
+}
+
+function WeightSheet({ initial, onClose, onSave }: { initial: number; onClose: () => void; onSave: (w: number) => void }) {
+  const [w, setW] = useState(initial);
+  return (
+    <BottomSheet title="Log bodyweight" subtitle="Same time each day works best" onClose={onClose}>
+      <Stepper label="Weight" value={w} onChange={setW} step={0.5} suffix="lb" />
+      <PrimaryButton onClick={() => onSave(w)}>Save weight</PrimaryButton>
+    </BottomSheet>
+  );
+}
+
 
 function BigStat({ icon, value, label, hint }: { icon: React.ReactNode; value: string; label: string; hint: string }) {
   return (
