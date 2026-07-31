@@ -229,7 +229,7 @@ export type CheckoutLine = {
   options?: Record<string, string>;
 };
 
-export async function createWixCheckoutUrl(lines: CheckoutLine[]): Promise<string> {
+export async function createWixCheckoutUrl(lines: CheckoutLine[], buyerEmail?: string): Promise<string> {
   const client = wixClient();
 
   const lineItems = lines
