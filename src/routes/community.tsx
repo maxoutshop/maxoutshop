@@ -33,7 +33,7 @@ const TAGS = [
 const FILTERS = ["All", "PR", "Fit Check", "Progress", "Workout", "Challenge"] as const;
 
 function Community() {
-  const { user } = useSession();
+  const { user, loading: sessionLoading } = useSession();
   const uid = user?.id;
   const [tab, setTab] = useState<"feed" | "challenges">("feed");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
@@ -99,7 +99,7 @@ function Community() {
         )}
       </div>
 
-      {!user && (
+      {!user && !sessionLoading && (
         <div className="mt-5 overflow-hidden rounded-3xl border border-border bg-surface p-6 text-center">
           <Users className="mx-auto h-6 w-6 text-accent" />
           <p className="mt-3 text-sm text-muted-foreground">Sign in to post PRs, drop comments and join challenges.</p>
