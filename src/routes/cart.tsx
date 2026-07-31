@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { getProduct } from "@/lib/products";
 import { cartActions, useStore } from "@/lib/store";
-import { Minus, Plus, Trash2, ShoppingBag, ExternalLink } from "lucide-react";
+import { findVariant, useCatalog } from "@/lib/catalog";
+import { createCheckout } from "@/lib/wix.functions";
+import { Minus, Plus, Trash2, ShoppingBag, ExternalLink, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/cart")({
@@ -12,11 +13,42 @@ export const Route = createFileRoute("/cart")({
 
 function Cart() {
   const cart = useStore((s) => s.cart);
+  const { products } = useCatalog();
   const [promo, setPromo] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const items = cart.map((c) => ({ ...c, product: getProduct(c.slug)! })).filter((i) => i.product);
+  const items = cart
+    .map((c) => ({ ...c, product: products.find((p) => p.slug === c.slug)! }))
+    .filter((i) => i.product);
   const subtotal = items.reduce((n, i) => n + (i.product.salePrice ?? i.product.price) * i.qty, 0);
   const shipping = subtotal > 75 ? 0 : subtotal > 0 ? 7 : 0;
+
+  async function goToCheckout() {
+    setBusy(true);
+    setError(null);
+    try {
+      const lines = items.map((i) => {
+        const variant = findVariant(i.product, i.size, i.color);
+        return {
+          productId: i.productId ?? i.product.id ?? "",
+          variantId: i.variantId ?? variant?.id,
+          quantity: i.qty,
+          options: { ...(i.size ? { Size: i.size } : {}), ...(i.color ? { Color: i.color } : {}) },
+        };
+      });
+      if (lines.some((l) => !l.productId)) {
+        throw new Error("Some items need to be re-added before checkout.");
+      }
+      const { url } = await createCheckout({ data: { lines } });
+      window.open(url, "_blank", "noopener");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not start checkout. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
 
   if (items.length === 0) {
     return (
