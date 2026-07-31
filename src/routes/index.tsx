@@ -152,8 +152,8 @@ function Home() {
               {challenge?.title ?? "30-Day Consistency"}
             </h3>
           </div>
-          <div className="shrink-0 text-right">
-            <p className="display text-2xl leading-none">
+          <div className="w-[104px] shrink-0 text-right">
+            <p className="display truncate text-xl leading-none">
               {challenge?.goal_label ?? "20 workouts"}
             </p>
             <p className="text-[8px] font-bold uppercase tracking-[0.2em] opacity-60">Goal</p>
