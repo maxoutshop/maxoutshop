@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, Check, Utensils, Scale, Repeat } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -7,7 +7,9 @@ import { useSession } from "@/lib/auth";
 import {
   useProfile, useTodayMeals, useWater, useWorkouts, usePRs, useWeights, useMutate,
 } from "@/lib/db";
+import { useElite } from "@/lib/subscription";
 import { BottomSheet, MealSheet, Stepper, BigInput, PrimaryButton, type MealDraft } from "@/components/LogSheet";
+
 
 
 export const Route = createFileRoute("/track")({
@@ -32,7 +34,10 @@ const COMMON_LIFTS = ["Bench press", "Back squat", "Deadlift", "Overhead press",
 function Track() {
   const { user } = useSession();
   const uid = user?.id;
+  const navigate = useNavigate();
+  const { isElite } = useElite(uid);
   const profile = useProfile(uid);
+
   const meals = useTodayMeals(uid);
   const water = useWater(uid);
   const workouts = useWorkouts(uid);
@@ -313,10 +318,13 @@ function Track() {
       {sheet === "meal" && (
         <MealSheet
           recent={recentMeals}
+          isElite={isElite}
+          onUpgrade={() => { setSheet(null); navigate({ to: "/elite" }); }}
           onClose={() => setSheet(null)}
           onSave={(items, mealType) => { addMeals.mutate({ items, mealType }); setSheet(null); }}
         />
       )}
+
 
       {sheet === "set" && (
         <SetSheet
