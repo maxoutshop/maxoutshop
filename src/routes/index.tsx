@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
       { title: "MAXOUT — Built for More" },
       { name: "description", content: "Premium athletic clothing, workout tracking, meal logging, and community challenges. Built for more." },
       { property: "og:title", content: "MAXOUT — Built for More" },
-      { property: "og:description", content: "Premium athletic clothing and a full fitness platform. Built for more." },
+      { property: "og:description", content: "Premium athletic clothing, workout tracking, meal logging, and community challenges. Built for more." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
