@@ -1,19 +1,19 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { ChevronRight, Package, Heart, Trophy, Activity, Utensils, Flag, LogOut, Sparkles, Megaphone } from "lucide-react";
+import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, initials } from "@/lib/auth";
-import { useProfile, usePoints, useMyChallenges, usePRs, useWorkouts } from "@/lib/db";
+import { useProfile, useMyChallenges, usePRs, useWorkouts } from "@/lib/db";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Profile & Rewards — MAXOUT" },
-      { name: "description", content: "Your MAXOUT member profile: reward points, tier progress, challenges and ambassador tools." },
-      { property: "og:title", content: "Profile & Rewards — MAXOUT" },
-      { property: "og:description", content: "Track your MAXOUT tier, points and member perks." },
+      { title: "Profile — MAXOUT" },
+      { name: "description", content: "Your MAXOUT member profile: training stats, challenges and ambassador tools." },
+      { property: "og:title", content: "Profile — MAXOUT" },
+      { property: "og:description", content: "Your MAXOUT member profile, training stats and challenges." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -21,20 +21,12 @@ export const Route = createFileRoute("/profile")({
   component: Profile,
 });
 
-const TIERS = [
-  { name: "Rookie", min: 0, perk: "Member pricing" },
-  { name: "Athlete", min: 500, perk: "Early access to drops" },
-  { name: "Elite", min: 2000, perk: "20% off + free shipping" },
-  { name: "Legend", min: 5000, perk: "Ambassador invite" },
-];
-
 function Profile() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { user } = useSession();
   const wishlistCount = useStore((s) => s.wishlist.length);
   const profile = useProfile(user?.id);
-  const points = usePoints(user?.id);
   const challenges = useMyChallenges(user?.id);
   const prs = usePRs(user?.id);
   const workouts = useWorkouts(user?.id);
@@ -54,7 +46,7 @@ function Profile() {
             <div className="grid h-16 w-16 place-items-center rounded-full bg-gradient-to-br from-secondary to-surface text-lg font-semibold">M</div>
             <div>
               <h1 className="text-xl font-semibold">Sign in to MAXOUT</h1>
-              <p className="text-xs text-muted-foreground">Create an account to unlock rewards, tracking, and early access.</p>
+              <p className="text-xs text-muted-foreground">Create an account for tracking, challenges and early access.</p>
             </div>
           </div>
           <Link to="/auth" className="mt-4 block w-full rounded-full bg-primary py-3 text-center text-sm font-semibold text-primary-foreground">Create account</Link>
@@ -63,20 +55,11 @@ function Profile() {
         <div className="mt-6 space-y-2">
           <Row icon={<Heart className="h-4 w-4" />} label="Wishlist" hint={String(wishlistCount)} to="/shop" />
         </div>
-        <div className="mt-6 rounded-3xl border border-border bg-surface p-5">
-          <p className="text-[11px] font-semibold tracking-[0.25em] text-accent uppercase">MAXOUT Rewards</p>
-          <div className="mt-3 space-y-2">
-            {TIERS.map((t) => (
-              <div key={t.name} className="flex items-center justify-between text-sm">
-                <span className="font-medium">{t.name}</span>
-                <span className="text-xs text-muted-foreground">{t.min}+ pts · {t.perk}</span>
-              </div>
-            ))}
-          </div>
-        </div>
       </AppShell>
     );
   }
+
+
 
   const name = profile.data?.display_name ?? profile.data?.username ?? user.email?.split("@")[0] ?? "Athlete";
 
