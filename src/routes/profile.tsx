@@ -163,7 +163,7 @@ function Profile() {
         {isAdmin && (
           <Row icon={<ShieldCheck className="h-4 w-4" />} label="Admin: verification" to="/admin/verify" />
         )}
-        <Row icon={<Package className="h-4 w-4" />} label="Orders" hint="On maxoutshop.com" />
+        <Row icon={<Package className="h-4 w-4" />} label="Orders" to="/orders" />
         <Row icon={<Heart className="h-4 w-4" />} label="Wishlist" hint={String(wishlistCount)} to="/shop" />
         <Row icon={<Activity className="h-4 w-4" />} label="Fitness progress" to="/track" />
         <Row icon={<Utensils className="h-4 w-4" />} label="Meal history" to="/track" />
