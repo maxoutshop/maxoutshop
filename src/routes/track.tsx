@@ -34,7 +34,10 @@ const COMMON_LIFTS = ["Bench press", "Back squat", "Deadlift", "Overhead press",
 function Track() {
   const { user } = useSession();
   const uid = user?.id;
+  const navigate = useNavigate();
+  const { isElite } = useElite(uid);
   const profile = useProfile(uid);
+
   const meals = useTodayMeals(uid);
   const water = useWater(uid);
   const workouts = useWorkouts(uid);
