@@ -129,7 +129,7 @@ function Track() {
   const exerciseNames = Array.from(new Set(allSets.map((s) => s.exercise))).slice(0, 8);
   const liveSets = (live?.workout_sets ?? []).slice().sort((a, b) => a.set_index - b.set_index);
   const lastRaw = liveSets.at(-1) ?? allSets.at(-1);
-  const lastSet = lastRaw ? { exercise: lastRaw.exercise, weight: lastRaw.weight, reps: lastRaw.reps } : null;
+  const lastSet = lastRaw ? { exercise: lastRaw.exercise, weight: lastRaw.weight ?? 0, reps: lastRaw.reps ?? 0 } : null;
 
 
   return (
