@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.guard_verified_flag() FROM PUBLIC, anon, authenticated;
