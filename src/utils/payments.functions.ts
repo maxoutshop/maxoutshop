@@ -96,15 +96,76 @@ export const createPortalSession = createServerFn({ method: "POST" })
       .limit(1)
       .maybeSingle();
 
-    if (!sub?.stripe_customer_id) return { error: "No membership found" };
-
     try {
       const stripe = createStripeClient(data.environment);
+
+      // Self-heal: if no local row exists (missed webhook), resolve the Stripe
+      // customer directly so billing management still works.
+      let customerId = sub?.stripe_customer_id as string | undefined;
+      if (!customerId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        const found = await stripe.customers.search({
+          query: `metadata['userId']:'${userId}'`,
+          limit: 1,
+        });
+        customerId = found.data[0]?.id;
+        if (!customerId && user?.email) {
+          const byEmail = await stripe.customers.list({ email: user.email, limit: 1 });
+          customerId = byEmail.data[0]?.id;
+        }
+      }
+      if (!customerId) return { error: "No billing account found for this member." };
       const portal = await stripe.billingPortal.sessions.create({
-        customer: sub.stripe_customer_id,
+        customer: customerId,
         ...(data.returnUrl && { return_url: data.returnUrl }),
       });
       return { url: portal.url };
+    } catch (error) {
+      return { error: getStripeErrorMessage(error) };
+    }
+  });
+
+type SyncResult = { isElite: boolean; status: string | null; currentPeriodEnd: string | null } | { error: string };
+
+/**
+ * Pulls the member's subscriptions straight from Stripe and rewrites the local
+ * rows. Used after checkout (before the webhook lands) and as a self-heal if a
+ * webhook was ever missed.
+ */
+export const syncMembership = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { environment: StripeEnv }) => data)
+  .handler(async ({ data, context }): Promise<SyncResult> => {
+    const { userId, supabase } = context;
+    const { upsertSubscription, refreshEliteFlag, statusGrantsAccess } = await import("@/lib/membership.server");
+
+    try {
+      const stripe = createStripeClient(data.environment);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      const customerId = await resolveOrCreateCustomer(stripe, {
+        email: user?.email ?? undefined,
+        userId,
+      });
+
+      const list = await stripe.subscriptions.list({ customer: customerId, status: "all", limit: 20 });
+      for (const sub of list.data) {
+        await upsertSubscription(sub, data.environment, userId);
+      }
+
+      const isElite = await refreshEliteFlag(userId);
+      const newest = list.data[0];
+      const item = newest?.items?.data?.[0] as { current_period_end?: number } | undefined;
+      const end = item?.current_period_end ?? null;
+
+      return {
+        isElite,
+        status: newest?.status ?? null,
+        currentPeriodEnd: end ? new Date(end * 1000).toISOString() : null,
+        ...(newest ? { _ok: statusGrantsAccess(newest.status, end ? new Date(end * 1000).toISOString() : null) } : {}),
+      } as SyncResult;
     } catch (error) {
       return { error: getStripeErrorMessage(error) };
     }
