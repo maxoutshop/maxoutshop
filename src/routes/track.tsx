@@ -65,10 +65,15 @@ function Track() {
     return n;
   }, [workouts.data]);
 
-  const addMeal = useMutate(async (v: { name: string; meal_type: string; calories: number; protein: number; carbs: number; fat: number }) => {
-    const { error } = await supabase.from("meals").insert({ ...v, user_id: uid! });
+  const addMeals = useMutate(async (v: { items: MealDraft[]; mealType: string }) => {
+    const rows = v.items.map((i) => ({
+      user_id: uid!, name: i.name, meal_type: v.mealType,
+      calories: Math.round(i.calories), protein: Math.round(i.protein), carbs: Math.round(i.carbs), fat: Math.round(i.fat),
+    }));
+    const { error } = await supabase.from("meals").insert(rows);
     if (error) throw error;
   }, ["meals", "profile"]);
+
 
   const addPR = useMutate(async (v: { exercise: string; value: number; unit: string }) => {
     const { error } = await supabase.from("personal_records").insert({ ...v, user_id: uid! });
