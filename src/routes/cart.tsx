@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { getProduct } from "@/lib/products";
 import { cartActions, useStore } from "@/lib/store";
-import { Minus, Plus, Trash2, ShoppingBag, ExternalLink } from "lucide-react";
+import { findVariant, useCatalog } from "@/lib/catalog";
+import { createCheckout } from "@/lib/wix.functions";
+import { Minus, Plus, Trash2, ShoppingBag, ExternalLink, Loader2 } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/cart")({
@@ -12,11 +13,42 @@ export const Route = createFileRoute("/cart")({
 
 function Cart() {
   const cart = useStore((s) => s.cart);
+  const { products } = useCatalog();
   const [promo, setPromo] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const items = cart.map((c) => ({ ...c, product: getProduct(c.slug)! })).filter((i) => i.product);
+  const items = cart
+    .map((c) => ({ ...c, product: products.find((p) => p.slug === c.slug)! }))
+    .filter((i) => i.product);
   const subtotal = items.reduce((n, i) => n + (i.product.salePrice ?? i.product.price) * i.qty, 0);
   const shipping = subtotal > 75 ? 0 : subtotal > 0 ? 7 : 0;
+
+  async function goToCheckout() {
+    setBusy(true);
+    setError(null);
+    try {
+      const lines = items.map((i) => {
+        const variant = findVariant(i.product, i.size, i.color);
+        return {
+          productId: i.productId ?? i.product.id ?? "",
+          variantId: i.variantId ?? variant?.id,
+          quantity: i.qty,
+          options: { ...(i.size ? { Size: i.size } : {}), ...(i.color ? { Color: i.color } : {}) },
+        };
+      });
+      if (lines.some((l) => !l.productId)) {
+        throw new Error("Some items need to be re-added before checkout.");
+      }
+      const { url } = await createCheckout({ data: { lines } });
+      window.open(url, "_blank", "noopener");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not start checkout. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
 
   if (items.length === 0) {
     return (
@@ -89,35 +121,23 @@ function Cart() {
         <Row label={<span className="text-base font-semibold text-foreground">Total</span>} value={<span className="text-base font-semibold text-foreground">${(subtotal + shipping).toFixed(2)}</span>} />
       </div>
 
-      <div className="mt-5 rounded-2xl border border-border bg-surface p-4">
-        <p className="text-xs text-muted-foreground">
-          Checkout happens on maxoutshop.com. The store can’t receive this cart yet, so open each item below and add it there.
+      {error && (
+        <p className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
+          {error}
         </p>
-        <div className="mt-3 space-y-2">
-          {items.map((i, idx) => (
-            <a
-              key={idx}
-              href={i.product.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between gap-2 rounded-xl border border-border px-3 py-2.5 text-sm"
-            >
-              <span className="min-w-0 truncate">{i.product.name} · {i.size} · ×{i.qty}</span>
-              <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
-            </a>
-          ))}
-        </div>
-      </div>
+      )}
 
-      <a
-        href="https://www.maxoutshop.com/category/all-products"
-        target="_blank"
-        rel="noreferrer"
-        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground"
+      <button
+        onClick={goToCheckout}
+        disabled={busy}
+        className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground disabled:opacity-60"
       >
-        Continue on maxoutshop.com <ExternalLink className="h-4 w-4" />
-      </a>
-      <p className="mt-2 text-center text-[11px] text-muted-foreground">In-app payments aren’t connected yet — that comes with the backend phase.</p>
+        {busy ? (<><Loader2 className="h-4 w-4 animate-spin" /> Preparing checkout…</>) : (<>Checkout <ExternalLink className="h-4 w-4" /></>)}
+      </button>
+      <p className="mt-2 text-center text-[11px] text-muted-foreground">
+        Your full cart carries over to maxoutshop.com — no need to re-add anything.
+      </p>
+
     </AppShell>
   );
 }

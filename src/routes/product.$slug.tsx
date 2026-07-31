@@ -1,17 +1,27 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { getProduct, related, type Product } from "@/lib/products";
 import { ProductCard } from "@/components/ProductCard";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/store";
+import { getCatalog } from "@/lib/wix.functions";
+import { FALLBACK_CATALOG, type CatalogProduct } from "@/lib/catalog-meta";
+import { findVariant, relatedFrom } from "@/lib/catalog";
 import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler } from "lucide-react";
 
 export const Route = createFileRoute("/product/$slug")({
-  loader: ({ params }) => {
-    const p = getProduct(params.slug);
+  loader: async ({ params }) => {
+    let list: CatalogProduct[] = FALLBACK_CATALOG;
+    try {
+      const live = await getCatalog();
+      if (live?.length) list = live as CatalogProduct[];
+    } catch {
+      // fall back to the bundled catalog snapshot
+    }
+    const p = list.find((x) => x.slug === params.slug);
     if (!p) throw notFound();
-    return { product: p };
+    return { product: p, related: relatedFrom(list, params.slug) };
   },
+
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Product not found — MAXOUT" }, { name: "robots", content: "noindex" }] };
     const { product } = loaderData;
@@ -31,18 +41,27 @@ export const Route = createFileRoute("/product/$slug")({
 });
 
 function ProductPage() {
-  const { product } = Route.useLoaderData() as { product: Product };
+  const { product, related: relatedItems } = Route.useLoaderData() as {
+    product: CatalogProduct;
+    related: CatalogProduct[];
+  };
   const [imgIdx, setImgIdx] = useState(0);
-  const [size, setSize] = useState<string | null>(product.sizes.length === 1 ? product.sizes[0] : null);
+  const [size, setSize] = useState<string | null>(product.sizes.length === 1 ? product.sizes[0]! : null);
   const [color, setColor] = useState<string | null>(product.colors[0]?.name ?? null);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const wished = useStore((s) => s.wishlist.includes(product.slug));
-  const relatedItems = related(product.slug);
 
   useEffect(() => { recentActions.push(product.slug); }, [product.slug]);
 
-  const canAdd = !!size && !!color;
+  const variant = useMemo(
+    () => findVariant(product, size ?? undefined, color ?? undefined),
+    [product, size, color],
+  );
+  const soldOut = !!variant && !variant.inStock;
+  const canAdd = !!size && !!color && !soldOut;
+
+
 
   return (
     <AppShell>
@@ -82,7 +101,10 @@ function ProductPage() {
             <span className="text-xl font-semibold">${product.price.toFixed(2)}</span>
           )}
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">In stock · Ships within 3–5 business days</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          {soldOut ? "Sold out in this combination" : "In stock · Ships within 3–5 business days"}
+        </p>
+
 
         {/* Colors */}
         <div className="mt-6">
@@ -139,14 +161,22 @@ function ProductPage() {
         <button
           disabled={!canAdd}
           onClick={() => {
-            cartActions.add({ slug: product.slug, size: size!, color: color!, qty });
+            cartActions.add({
+              slug: product.slug,
+              size: size!,
+              color: color!,
+              qty,
+              productId: product.id,
+              variantId: variant?.id,
+            });
             setAdded(true);
             setTimeout(() => setAdded(false), 1400);
           }}
           className="mt-6 w-full rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:bg-secondary disabled:text-muted-foreground transition"
         >
-          {!canAdd ? "Select size & color" : added ? "Added to cart" : `Add to cart · $${((product.salePrice ?? product.price) * qty).toFixed(2)}`}
+          {soldOut ? "Sold out" : !canAdd ? "Select size & color" : added ? "Added to cart" : `Add to cart · $${((variant?.price ?? product.salePrice ?? product.price) * qty).toFixed(2)}`}
         </button>
+
 
         {/* Description */}
         <div className="mt-8">

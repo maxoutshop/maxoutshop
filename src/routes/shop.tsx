@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { PRODUCTS } from "@/lib/products";
+import { useCatalog } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { useMemo, useState } from "react";
 import { Search as SearchIcon, SlidersHorizontal, X } from "lucide-react";
@@ -47,9 +47,10 @@ function Shop() {
   const [showFilters, setShowFilters] = useState(false);
   const [sizes, setSizes] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState<number>(100);
+  const { products } = useCatalog();
 
   const filtered = useMemo(() => {
-    let list = [...PRODUCTS];
+    let list = [...products];
     if (search.category) list = list.filter((p) => p.category === search.category || (search.category !== "accessories" && p.category === "unisex"));
     if (search.collection) list = list.filter((p) => p.collection === search.collection);
     if (q) {
@@ -64,7 +65,7 @@ function Shop() {
       case "new": list.sort((a, b) => Number(!!b.newArrival) - Number(!!a.newArrival)); break;
     }
     return list;
-  }, [search, q, sizes, maxPrice]);
+  }, [products, search, q, sizes, maxPrice]);
 
   return (
     <AppShell>
