@@ -11,6 +11,9 @@ export type CatalogProduct = Product & {
   id?: string;
   variants?: WixVariant[];
   inStock?: boolean;
+  dropDate?: string | null;
+  hidden?: boolean;
+  sourceUrl?: string;
 };
 
 type Meta = Pick<Product, "category" | "collection" | "bestSeller" | "newArrival" | "earlyAccess">;
