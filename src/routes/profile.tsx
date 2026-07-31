@@ -6,6 +6,7 @@ import { useStore } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, initials } from "@/lib/auth";
 import { useProfile, useMyChallenges, usePRs, useWorkouts } from "@/lib/db";
+import { useElite } from "@/lib/subscription";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
