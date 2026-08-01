@@ -7,7 +7,8 @@ import { FeedPost } from "@/components/FeedPost";
 import { supabase } from "@/integrations/supabase/client";
 import { initials, useSession } from "@/lib/auth";
 import { useCheers, useMutate, useProfileByUsername, usePRs, useUserPosts, useWorkouts } from "@/lib/db";
-import { BadgeCheck, Dumbbell, Trophy, Flame, ArrowLeft, Send } from "lucide-react";
+import { BadgeCheck, Dumbbell, Trophy, Flame, ArrowLeft, Send, UserPlus, UserCheck, MessageCircle } from "lucide-react";
+import { useFollowCounts, useFollowing, useToggleFollow } from "@/lib/social";
 
 export const Route = createFileRoute("/u/$handle")({
   head: () => ({
@@ -35,6 +36,10 @@ function AthleteProfile() {
   const prs = usePRs(athleteId);
   const posts = useUserPosts(athleteId);
   const cheers = useCheers(athleteId);
+  const counts = useFollowCounts(athleteId);
+  const following = useFollowing(uid);
+  const toggleFollow = useToggleFollow(uid);
+  const isFollowing = !!athleteId && (following.data ?? []).includes(athleteId);
 
   const name = profile.data?.display_name ?? profile.data?.username ?? "MAXOUT athlete";
   const isMe = !!uid && uid === athleteId;
@@ -108,6 +113,33 @@ function AthleteProfile() {
           )}
         </div>
       </div>
+
+      <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
+        <span><span className="font-semibold text-foreground">{counts.data?.followers ?? 0}</span> followers</span>
+        <span><span className="font-semibold text-foreground">{counts.data?.following ?? 0}</span> following</span>
+      </div>
+
+      {!isMe && uid && athleteId && (
+        <div className="mt-4 flex gap-2">
+          <button
+            onClick={() => toggleFollow.mutate({ targetId: athleteId, follow: !isFollowing })}
+            disabled={toggleFollow.isPending}
+            className={`inline-flex flex-1 items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold transition active:scale-[0.98] ${
+              isFollowing ? "border border-border text-muted-foreground" : "bg-foreground text-background"
+            }`}
+          >
+            {isFollowing ? <UserCheck className="h-4 w-4" /> : <UserPlus className="h-4 w-4" />}
+            {isFollowing ? "Following" : "Follow"}
+          </button>
+          <Link
+            to="/messages/$handle"
+            params={{ handle: profile.data?.username ?? athleteId }}
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-border py-3 text-sm font-semibold"
+          >
+            <MessageCircle className="h-4 w-4" /> Message
+          </Link>
+        </div>
+      )}
 
       <div className="mt-5 grid grid-cols-3 gap-3">
         <Stat icon={<Dumbbell className="h-3.5 w-3.5" />} value={String((workouts.data ?? []).length)} label="Workouts" />

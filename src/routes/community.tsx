@@ -1,12 +1,12 @@
-import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { FeedPost } from "@/components/FeedPost";
-import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus, Sparkles } from "lucide-react";
+import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus, Sparkles, Search, MessageCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useSession, initials } from "@/lib/auth";
-import { usePosts, useChallenges, useMyChallenges, useMutate, useAthletes } from "@/lib/db";
+import { useSession } from "@/lib/auth";
+import { usePosts, useChallenges, useMyChallenges, useMutate } from "@/lib/db";
+import { useUnreadCount } from "@/lib/social";
 
 export const Route = createFileRoute("/community")({
   head: () => ({
@@ -41,7 +41,7 @@ function Community() {
   const posts = usePosts(uid);
   const challenges = useChallenges();
   const mine = useMyChallenges(uid);
-  const athletes = useAthletes(uid);
+  const unread = useUnreadCount(uid);
 
   const join = useMutate(async (challengeId: string) => {
     const { error } = await supabase.from("challenge_participants").insert({ challenge_id: challengeId, user_id: uid! });
@@ -111,41 +111,26 @@ function Community() {
 
       {tab === "feed" ? (
         <>
-          {user && (athletes.data ?? []).length > 0 && (
-            <div className="no-scrollbar -mx-5 mt-4 flex gap-4 overflow-x-auto px-5">
-              <button onClick={() => setComposing(true)} className="flex w-16 shrink-0 flex-col items-center gap-1.5">
-                <div className="grid h-16 w-16 place-items-center rounded-full border border-dashed border-border bg-surface">
-                  <Plus className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <span className="truncate text-[10px] text-muted-foreground">Your log</span>
-              </button>
-              {(athletes.data ?? []).map((a) => {
-                const n = a.display_name ?? a.username ?? "Athlete";
-                return (
-                  <Link
-                    key={a.id}
-                    to="/u/$handle"
-                    params={{ handle: a.username ?? "" }}
-                    disabled={!a.username}
-                    className="flex w-16 shrink-0 flex-col items-center gap-1.5"
-                  >
-                    <div className="rounded-full bg-gradient-to-br from-accent to-destructive p-[2px]">
-                      <div className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-surface text-sm font-semibold ring-2 ring-background">
-                        {a.avatar_url ? (
-                          <img src={a.avatar_url} alt={n} className="h-full w-full object-cover" loading="lazy" />
-                        ) : (
-                          initials(n)
-                        )}
-                      </div>
-                    </div>
-                    <span className="flex w-full items-center justify-center gap-0.5 truncate text-center text-[10px] text-muted-foreground">
-                      <span className="truncate">{n}</span>
-                      {a.verified && <VerifiedBadge className="h-3 w-3" />}
-                    </span>
-                  </Link>
-                );
-              })}
-
+          {user && (
+            <div className="mt-4 flex items-center gap-2">
+              <Link
+                to="/messages"
+                className="flex flex-1 items-center gap-2 rounded-full border border-border bg-surface px-4 py-3 text-sm text-muted-foreground"
+              >
+                <Search className="h-4 w-4" /> Search for friends
+              </Link>
+              <Link
+                to="/messages"
+                aria-label="Messages"
+                className="relative grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border bg-surface"
+              >
+                <MessageCircle className="h-4 w-4" />
+                {(unread.data ?? 0) > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-accent px-1 text-[9px] font-bold text-accent-foreground">
+                    {unread.data}
+                  </span>
+                )}
+              </Link>
             </div>
           )}
 

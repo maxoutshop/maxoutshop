@@ -13,7 +13,7 @@ import { initials } from "@/lib/auth";
 import { toast } from "sonner";
 import {
   adminOverview, setAdmin, addAdminByEmail, removeAccount, moderateMember,
-  upsertChallenge, removeChallenge,
+  upsertChallenge, removeChallenge, adminMessages,
 } from "@/lib/admin.functions";
 import type { AdminChallenge } from "@/lib/admin.types";
 
@@ -31,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminHome,
 });
 
-type Tab = "overview" | "members" | "challenges" | "products";
+type Tab = "overview" | "members" | "challenges" | "products" | "messages";
 
 function AdminHome() {
   const qc = useQueryClient();
@@ -53,8 +53,8 @@ function AdminHome() {
         </h1>
         <p className="mt-1 text-xs text-muted-foreground">Everything that runs MAXOUT, in one place.</p>
 
-        <div className="mt-5 grid grid-cols-4 gap-2">
-          {(["overview", "members", "challenges", "products"] as Tab[]).map((t) => (
+        <div className="mt-5 grid grid-cols-5 gap-2">
+          {(["overview", "members", "challenges", "products", "messages"] as Tab[]).map((t) => (
             <button key={t} onClick={() => setTab(t)}
               className={`rounded-full py-2 text-[11px] font-semibold capitalize transition active:scale-95 ${
                 tab === t ? "bg-foreground text-background" : "border border-border text-muted-foreground"
@@ -64,10 +64,10 @@ function AdminHome() {
           ))}
         </div>
 
-        {tab !== "products" && q.isLoading && (
+        {tab !== "products" && tab !== "messages" && q.isLoading && (
           <div className="mt-10 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
         )}
-        {tab !== "products" && q.error && (
+        {tab !== "products" && tab !== "messages" && q.error && (
           <p className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
             {q.error instanceof Error ? q.error.message : "Could not load admin data."}
           </p>
@@ -77,8 +77,67 @@ function AdminHome() {
         {q.data && tab === "members" && <Members members={q.data.members} onDone={refresh} />}
         {q.data && tab === "challenges" && <Challenges list={q.data.challenges} onDone={refresh} />}
         {tab === "products" && <AdminProductsPanel />}
+        {tab === "messages" && <MessagesPanel />}
       </div>
     </AppShell>
+  );
+}
+
+function MessagesPanel() {
+  const load = useServerFn(adminMessages);
+  const [term, setTerm] = useState("");
+  const [search, setSearch] = useState("");
+  const m = useQuery({ queryKey: ["admin-messages", search], queryFn: () => load({ data: { search } }) });
+
+  return (
+    <div className="mt-6">
+      <form
+        onSubmit={(e) => { e.preventDefault(); setSearch(term.trim()); }}
+        className="flex items-center gap-2 rounded-full border border-border bg-surface px-4"
+      >
+        <Search className="h-4 w-4 text-muted-foreground" />
+        <input
+          value={term}
+          onChange={(e) => setTerm(e.target.value)}
+          placeholder="Search message text"
+          className="h-11 flex-1 bg-transparent text-sm outline-none"
+        />
+      </form>
+      <p className="mt-2 text-[11px] text-muted-foreground">
+        Moderation view — every private message on MAXOUT, newest first.
+      </p>
+
+      {m.isLoading && <div className="mt-8 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}
+      {m.error && (
+        <p className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
+          {m.error instanceof Error ? m.error.message : "Could not load messages."}
+        </p>
+      )}
+
+      <div className="mt-4 space-y-2">
+        {(m.data ?? []).length === 0 && !m.isLoading && (
+          <p className="rounded-2xl border border-dashed border-border px-4 py-6 text-center text-xs text-muted-foreground">
+            No messages found.
+          </p>
+        )}
+        {(m.data ?? []).map((row) => (
+          <div key={row.id} className="rounded-2xl border border-border bg-surface px-4 py-3">
+            <p className="text-[11px] text-muted-foreground">
+              <span className="font-semibold text-foreground">
+                {row.from.name ?? row.from.username ?? "Athlete"}
+              </span>{" "}
+              →{" "}
+              <span className="font-semibold text-foreground">
+                {row.to.name ?? row.to.username ?? "Athlete"}
+              </span>{" "}
+              · {new Date(row.createdAt).toLocaleString()}
+              {!row.readAt && " · unread"}
+            </p>
+            <p className="mt-1 whitespace-pre-wrap break-words text-sm leading-snug">{row.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

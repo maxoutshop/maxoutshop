@@ -163,3 +163,30 @@ export async function wipeContent(userId: string) {
   await db.from("post_comments").delete().eq("user_id", userId);
   await db.from("posts").delete().eq("user_id", userId);
 }
+
+/** All direct messages across the platform (moderation view). */
+export async function listMessages(search: string): Promise<import("./admin.types").AdminMessage[]> {
+  const db = adminDb();
+  let req = db.from("direct_messages").select("*").order("created_at", { ascending: false }).limit(300);
+  if (search) req = req.ilike("body", `%${search}%`);
+  const { data: rows } = await req;
+  const ids = new Set<string>();
+  for (const m of rows ?? []) { ids.add(m.sender_id); ids.add(m.recipient_id); }
+  const { data: profiles } = ids.size
+    ? await db.from("profiles").select("id, display_name, username").in("id", [...ids])
+    : { data: [] as any[] };
+  const byId = new Map<string, any>((profiles ?? []).map((p: any) => [p.id, p]));
+  const who = (id: string) => ({
+    id,
+    name: byId.get(id)?.display_name ?? null,
+    username: byId.get(id)?.username ?? null,
+  });
+  return (rows ?? []).map((m: any) => ({
+    id: m.id,
+    body: m.body,
+    createdAt: m.created_at,
+    readAt: m.read_at,
+    from: who(m.sender_id),
+    to: who(m.recipient_id),
+  }));
+}
