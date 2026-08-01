@@ -411,38 +411,21 @@ function QuickTile({ icon, label, hint, onClick }: { icon: React.ReactNode; labe
   );
 }
 
-function SetSheet({
-  exercises, last, onClose, onSave,
-}: {
-  exercises: string[];
-  last: { exercise: string; weight: number; reps: number } | null;
-  onClose: () => void;
-  onSave: (v: { exercise: string; weight: number; reps: number }) => void;
-}) {
-  const [exercise, setExercise] = useState(last?.exercise ?? "");
-  const [weight, setWeight] = useState(last?.weight ?? 135);
-  const [reps, setReps] = useState(last?.reps ?? 8);
+function TemplateRow({ name, focus, count, onClick }: { name: string; focus: string; count: number; onClick: () => void }) {
   return (
-    <BottomSheet title="Add set" subtitle="Tap the steppers — no typing needed" onClose={onClose}>
-      {last && (
-        <button
-          onClick={() => onSave(last)}
-          className="mb-4 flex w-full items-center justify-center gap-2 rounded-3xl border border-border bg-background py-3.5 text-sm font-semibold active:scale-[0.98] transition"
-        >
-          <Repeat className="h-4 w-4" /> Repeat {last.exercise} · {last.weight} × {last.reps}
-        </button>
-      )}
-      <BigInput label="Exercise" value={exercise} onChange={setExercise} placeholder="Bench press" suggestions={exercises.length ? exercises : COMMON_LIFTS} />
-      <div className="mt-3 grid grid-cols-2 gap-3">
-        <Stepper label="Weight" value={weight} onChange={setWeight} step={5} suffix="lb" />
-        <Stepper label="Reps" value={reps} onChange={setReps} step={1} min={1} />
+    <button onClick={onClick} className="flex w-full items-center gap-3 rounded-3xl border border-border bg-background px-4 py-3.5 text-left active:scale-[0.98] transition">
+      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-border">
+        <Dumbbell className="h-4 w-4 text-accent" />
       </div>
-      <PrimaryButton disabled={!exercise.trim()} onClick={() => onSave({ exercise: exercise.trim(), weight, reps })}>
-        Log set
-      </PrimaryButton>
-    </BottomSheet>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold">{name}</p>
+        <p className="truncate text-[11px] text-muted-foreground">{focus} · {count} exercises</p>
+      </div>
+      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+    </button>
   );
 }
+
 
 function PRSheet({ exercises, onClose, onSave }: { exercises: string[]; onClose: () => void; onSave: (v: { exercise: string; value: number; unit: string }) => void }) {
   const [exercise, setExercise] = useState("");
