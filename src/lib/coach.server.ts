@@ -1,25 +1,6 @@
-export type CoachInput = {
-  heightIn: number;
-  weightLb: number;
-  goalWeightLb: number;
-  age: number;
-  sex: "male" | "female";
-  activity: "sedentary" | "light" | "moderate" | "high" | "athlete";
-  notes?: string;
-};
+import type { CoachInput, CoachPlan } from "./coach.types";
 
-export type CoachPlan = {
-  headline: string;
-  summary: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  weeklyChangeLb: number;
-  weeks: number;
-  meals: Array<{ slot: string; idea: string; calories: number; protein: number }>;
-  tips: string[];
-};
+export type { CoachInput, CoachPlan };
 
 const SYSTEM = `You are the MAXOUT AI TRAINER, an elite but plain-spoken nutrition coach.
 Given a lifter's stats and target weight, produce a safe, effective daily nutrition plan.
