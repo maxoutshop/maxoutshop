@@ -4,9 +4,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import {
   ArrowLeft, Shield, Search, Trash2, Crown, BadgeCheck, Plus, Flag,
-  Package, ShieldCheck, Users, Loader2, X, Eraser,
+  Users, Loader2, X, Eraser,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { AdminProductsPanel } from "@/components/AdminProductsPanel";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { initials } from "@/lib/auth";
 import { toast } from "sonner";
