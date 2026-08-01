@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { makeStorageRef, isVideoRef } from "@/lib/media";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
