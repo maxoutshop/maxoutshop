@@ -1,11 +1,10 @@
-import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { FeedPost } from "@/components/FeedPost";
 import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus, Sparkles, Search, MessageCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useSession, initials } from "@/lib/auth";
+import { useSession } from "@/lib/auth";
 import { usePosts, useChallenges, useMyChallenges, useMutate } from "@/lib/db";
 import { useUnreadCount } from "@/lib/social";
 
