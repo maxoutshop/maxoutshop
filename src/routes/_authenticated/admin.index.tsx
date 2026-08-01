@@ -52,10 +52,10 @@ function AdminHome() {
         </h1>
         <p className="mt-1 text-xs text-muted-foreground">Everything that runs MAXOUT, in one place.</p>
 
-        <div className="mt-5 flex gap-2">
-          {(["overview", "members", "challenges"] as Tab[]).map((t) => (
+        <div className="mt-5 grid grid-cols-4 gap-2">
+          {(["overview", "members", "challenges", "products"] as Tab[]).map((t) => (
             <button key={t} onClick={() => setTab(t)}
-              className={`flex-1 rounded-full py-2 text-xs font-semibold capitalize transition active:scale-95 ${
+              className={`rounded-full py-2 text-[11px] font-semibold capitalize transition active:scale-95 ${
                 tab === t ? "bg-foreground text-background" : "border border-border text-muted-foreground"
               }`}>
               {t}
@@ -63,10 +63,10 @@ function AdminHome() {
           ))}
         </div>
 
-        {q.isLoading && (
+        {tab !== "products" && q.isLoading && (
           <div className="mt-10 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
         )}
-        {q.error && (
+        {tab !== "products" && q.error && (
           <p className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
             {q.error instanceof Error ? q.error.message : "Could not load admin data."}
           </p>
@@ -75,6 +75,7 @@ function AdminHome() {
         {q.data && tab === "overview" && <Overview stats={q.data.stats} />}
         {q.data && tab === "members" && <Members members={q.data.members} onDone={refresh} />}
         {q.data && tab === "challenges" && <Challenges list={q.data.challenges} onDone={refresh} />}
+        {tab === "products" && <AdminProductsPanel />}
       </div>
     </AppShell>
   );
