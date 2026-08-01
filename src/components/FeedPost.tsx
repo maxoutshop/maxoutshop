@@ -118,17 +118,14 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
         {post.image_url && (
           <div className="relative mt-3 overflow-hidden rounded-2xl border border-border">
             {isVideoUrl(post.image_url) ? (
-              <video
-                src={post.image_url}
-                className="aspect-4/5 w-full bg-black object-cover"
-                playsInline
-                muted
-                loop
-                controls
-                preload="metadata"
-              />
+              <MediaVideo src={post.image_url} className="aspect-4/5 w-full bg-black object-cover" />
             ) : (
-              <img src={post.image_url} alt={`${name} post`} className="aspect-4/5 w-full object-cover" loading="lazy" />
+              <MediaImage
+                src={post.image_url}
+                alt={`${name} post`}
+                className="aspect-4/5 w-full object-cover"
+                loading="lazy"
+              />
             )}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
           </div>
