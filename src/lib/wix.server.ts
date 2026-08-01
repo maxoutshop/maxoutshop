@@ -17,6 +17,7 @@ import {
 export const WIX_CLIENT_ID = "45f1c242-f35d-42c1-bcdc-11bf47989eba";
 export const WIX_STORES_APP_ID = "215238eb-22a5-4c36-9e7b-e7c08025e04e";
 export const STORE_URL = "https://www.maxoutshop.com";
+export const WIX_SITE_ID = "741b6307-7799-4856-8b19-8a9a516c050e";
 
 export function wixClient() {
   return createClient({
@@ -287,6 +288,7 @@ export type MemberOrder = {
   createdAt: string | null;
   status: string;
   paymentStatus: string;
+  fulfillmentStatus: string;
   total: string;
   items: Array<{ name: string; quantity: number; image?: string }>;
 };
@@ -308,11 +310,13 @@ export async function fetchOrdersByEmail(
     headers: {
       Authorization: `Bearer ${lovableApiKey}`,
       "X-Connection-Api-Key": connectionApiKey,
+      "wix-site-id": WIX_SITE_ID,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
       search: {
         filter: { "buyerInfo.email": email },
+        sort: [{ fieldName: "createdDate", order: "DESC" }],
         cursorPaging: { limit: 25 },
       },
     }),
@@ -331,6 +335,7 @@ export async function fetchOrdersByEmail(
     createdAt: o.createdDate ?? null,
     status: String(o.status ?? "").toLowerCase(),
     paymentStatus: String(o.paymentStatus ?? "").toLowerCase(),
+    fulfillmentStatus: String(o.fulfillmentStatus ?? "").toLowerCase(),
     total: o.priceSummary?.total?.formattedAmount ?? "",
     items: (o.lineItems ?? []).map((li: any) => ({
       name: li.productName?.original ?? li.productName?.translated ?? "Item",

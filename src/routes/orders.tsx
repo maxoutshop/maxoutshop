@@ -94,7 +94,7 @@ function Orders() {
                 <div>
                   <p className="text-sm font-semibold">Order #{o.number}</p>
                   <p className="mt-0.5 text-[11px] text-muted-foreground">
-                    {o.createdAt ? new Date(o.createdAt).toLocaleDateString() : ""} · {o.paymentStatus.replace(/_/g, " ")}
+                    {o.createdAt ? new Date(o.createdAt).toLocaleDateString() : ""} · {(o.fulfillmentStatus || o.paymentStatus).replace(/_/g, " ")}
                   </p>
                 </div>
                 <span className="text-sm font-semibold">{o.total}</span>
