@@ -2,11 +2,12 @@ import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { FeedPost } from "@/components/FeedPost";
-import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus, Sparkles } from "lucide-react";
+import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus, Sparkles, Search, MessageCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, initials } from "@/lib/auth";
-import { usePosts, useChallenges, useMyChallenges, useMutate, useAthletes } from "@/lib/db";
+import { usePosts, useChallenges, useMyChallenges, useMutate } from "@/lib/db";
+import { useUnreadCount } from "@/lib/social";
 
 export const Route = createFileRoute("/community")({
   head: () => ({
@@ -41,7 +42,7 @@ function Community() {
   const posts = usePosts(uid);
   const challenges = useChallenges();
   const mine = useMyChallenges(uid);
-  const athletes = useAthletes(uid);
+  const unread = useUnreadCount(uid);
 
   const join = useMutate(async (challengeId: string) => {
     const { error } = await supabase.from("challenge_participants").insert({ challenge_id: challengeId, user_id: uid! });
@@ -115,7 +116,6 @@ function Community() {
             <div className="mt-4 flex items-center gap-2">
               <Link
                 to="/messages"
-                search={{ tab: "find" } as never}
                 className="flex flex-1 items-center gap-2 rounded-full border border-border bg-surface px-4 py-3 text-sm text-muted-foreground"
               >
                 <Search className="h-4 w-4" /> Search for friends
