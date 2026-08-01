@@ -1,3 +1,4 @@
+import { MediaImage } from "@/components/Media";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";

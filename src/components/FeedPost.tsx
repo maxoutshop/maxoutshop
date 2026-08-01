@@ -1,3 +1,4 @@
+import { MediaImage } from "@/components/Media";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { EliteBadge } from "@/components/EliteBadge";
 import { useRef, useState } from "react";
