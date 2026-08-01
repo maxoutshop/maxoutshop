@@ -281,6 +281,12 @@ function Track() {
             <span className="ml-2 text-xs text-accent">{current > first ? "+" : "−"}{Math.abs(current - first).toFixed(1)} since start</span>
           )}
         </div>
+        {goalWeight != null && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            Goal {goalWeight} lb{current ? ` · ${Math.abs(current - goalWeight).toFixed(1)} lb to go` : ""}
+          </p>
+        )}
+
         {(weights.data ?? []).length > 1
           ? <MiniChart points={weights.data!.map((w) => w.weight)} />
           : <p className="mt-3 text-xs text-muted-foreground">Log two entries to see your trend.</p>}
