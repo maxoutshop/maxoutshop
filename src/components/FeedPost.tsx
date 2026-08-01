@@ -84,11 +84,13 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
         >
           <div className={`rounded-full bg-gradient-to-br ${meta.ring} p-[2px]`}>
             <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-surface text-xs font-semibold ring-2 ring-surface">
-              {author?.avatar_url ? (
-                <img src={author.avatar_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
-              ) : (
-                initials(name)
-              )}
+              <MediaImage
+                src={author?.avatar_url}
+                alt={name}
+                className="h-full w-full object-cover"
+                loading="lazy"
+                fallback={initials(name)}
+              />
             </div>
           </div>
           <div className="min-w-0">

@@ -76,11 +76,12 @@ function Thread() {
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-full bg-surface text-[11px] font-semibold">
-          {other.data?.avatar_url ? (
-            <img src={other.data.avatar_url} alt={name} className="h-full w-full object-cover" />
-          ) : (
-            initials(name)
-          )}
+          <MediaImage
+            src={other.data?.avatar_url}
+            alt={name}
+            className="h-full w-full object-cover"
+            fallback={initials(name)}
+          />
         </div>
         <p className="flex min-w-0 items-center gap-1 text-sm font-semibold">
           <span className="truncate">{name}</span>

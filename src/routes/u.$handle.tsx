@@ -91,11 +91,12 @@ function AthleteProfile() {
       <div className="mt-5 flex items-center gap-4">
         <div className="rounded-full bg-gradient-to-br from-accent to-destructive p-[2px]">
           <div className="grid h-20 w-20 place-items-center overflow-hidden rounded-full bg-surface text-lg font-semibold ring-2 ring-background">
-            {profile.data?.avatar_url ? (
-              <img src={profile.data.avatar_url} alt={name} className="h-full w-full object-cover" />
-            ) : (
-              initials(name)
-            )}
+            <MediaImage
+              src={profile.data?.avatar_url}
+              alt={name}
+              className="h-full w-full object-cover"
+              fallback={initials(name)}
+            />
           </div>
         </div>
         <div className="min-w-0">
