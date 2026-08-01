@@ -100,10 +100,12 @@ function Track() {
     if (error) throw error;
   }, ["water"]);
 
-  const startWorkout = useMutate(async (category: string) => {
-    const { data, error } = await supabase.from("workouts").insert({ user_id: uid!, category, title: `${category} session` }).select().single();
+  const startWorkout = useMutate(async (v: { category: string; title: string; exercises: TemplateExercise[] }) => {
+    const { data, error } = await supabase.from("workouts").insert({ user_id: uid!, category: v.category, title: v.title }).select().single();
     if (error) throw error;
+    setPlan(v.exercises);
     setActiveWorkout(data.id);
+    setSessionOpen(true);
   }, ["workouts", "profile"]);
 
   const addSet = useMutate(async (v: { exercise: string; weight: number; reps: number }) => {
@@ -113,6 +115,22 @@ function Track() {
     });
     if (error) throw error;
   }, ["workouts"]);
+
+  const deleteSet = useMutate(async (id: string) => {
+    const { error } = await supabase.from("workout_sets").delete().eq("id", id);
+    if (error) throw error;
+  }, ["workouts"]);
+
+  const saveGoals = useMutate(async (g: { calories: number; protein: number; carbs: number; fat: number; weight: number | null }) => {
+    const { error } = await supabase.from("profiles").update({
+      goal_calories: Math.round(g.calories),
+      goal_protein: Math.round(g.protein),
+      goal_carbs: Math.round(g.carbs),
+      goal_fat: Math.round(g.fat),
+      goal_weight: g.weight,
+    }).eq("id", uid!);
+    if (error) throw error;
+  }, ["profile"]);
 
   if (sessionLoading) return <SessionLoading />;
   if (!user) return <SignedOut />;
@@ -124,6 +142,7 @@ function Track() {
     carbs: profile.data?.goal_carbs ?? 250,
     fat: profile.data?.goal_fat ?? 80,
   };
+  const goalWeight = (profile.data as { goal_weight?: number | null } | null)?.goal_weight ?? null;
   const current = weights.data?.at(-1)?.weight;
   const first = weights.data?.[0]?.weight;
   const live = (workouts.data ?? []).find((w) => w.id === activeWorkout);
@@ -137,8 +156,7 @@ function Track() {
   const allSets = (workouts.data ?? []).flatMap((w) => w.workout_sets ?? []);
   const exerciseNames = Array.from(new Set(allSets.map((s) => s.exercise))).slice(0, 8);
   const liveSets = (live?.workout_sets ?? []).slice().sort((a, b) => a.set_index - b.set_index);
-  const lastRaw = liveSets.at(-1) ?? allSets.at(-1);
-  const lastSet = lastRaw ? { exercise: lastRaw.exercise, weight: lastRaw.weight ?? 0, reps: lastRaw.reps ?? 0 } : null;
+
 
 
   return (
