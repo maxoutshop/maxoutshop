@@ -305,8 +305,8 @@ function Track() {
         <BottomSheet title="Quick log" subtitle="One tap to track anything" onClose={() => setSheet(null)}>
           <div className="grid grid-cols-2 gap-3">
             <QuickTile icon={<Utensils className="h-5 w-5" />} label="Food" hint="AI macros" onClick={() => setSheet("meal")} />
-            <QuickTile icon={<Dumbbell className="h-5 w-5" />} label={live ? "Add set" : "Start workout"} hint={live ? live.category : "Pick a split"}
-              onClick={() => (live ? setSheet("set") : setSheet("workout"))} />
+            <QuickTile icon={<Dumbbell className="h-5 w-5" />} label={live ? "Resume workout" : "Start workout"} hint={live ? live.category : "Templates & splits"}
+              onClick={() => { if (live) { setSheet(null); setSessionOpen(true); } else setSheet("workout"); }} />
             <QuickTile icon={<Trophy className="h-5 w-5" />} label="New PR" hint="Log a milestone" onClick={() => setSheet("pr")} />
             <QuickTile icon={<Scale className="h-5 w-5" />} label="Bodyweight" hint="Track the trend" onClick={() => setSheet("weight")} />
           </div>
@@ -320,12 +320,29 @@ function Track() {
       )}
 
       {sheet === "workout" && (
-        <BottomSheet title="Start a workout" subtitle="Pick your split" onClose={() => setSheet(null)}>
-          <div className="grid grid-cols-2 gap-3">
-            {CATEGORIES.map((c) => (
-              <button key={c} onClick={() => { startWorkout.mutate(c); setSheet(null); }}
-                className="rounded-3xl border border-border bg-background py-5 text-sm font-semibold active:scale-95 transition">{c}</button>
+        <BottomSheet title="Start a workout" subtitle="Templates, splits or freestyle" onClose={() => setSheet(null)}>
+          <div className="space-y-2">
+            {WORKOUT_TEMPLATES.map((t) => (
+              <TemplateRow key={t.id} name={t.name} focus={t.focus} count={t.exercises.length}
+                onClick={() => { startWorkout.mutate({ category: t.category, title: t.name, exercises: t.exercises }); setSheet(null); }} />
             ))}
+          </div>
+
+          <p className="mt-5 text-[11px] uppercase tracking-widest text-muted-foreground">Freestyle</p>
+          <div className="mt-2 grid grid-cols-3 gap-2">
+            {CATEGORIES.map((c) => (
+              <button key={c} onClick={() => { startWorkout.mutate({ category: c, title: `${c} session`, exercises: [] }); setSheet(null); }}
+                className="rounded-2xl border border-border bg-background py-3.5 text-xs font-semibold active:scale-95 transition">{c}</button>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-3xl border border-border bg-background p-4">
+            <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Growth tips</p>
+            <ul className="mt-2 space-y-1.5">
+              {GROWTH_TIPS.map((t) => (
+                <li key={t} className="text-xs leading-relaxed text-muted-foreground">· {t}</li>
+              ))}
+            </ul>
           </div>
         </BottomSheet>
       )}
@@ -340,15 +357,14 @@ function Track() {
         />
       )}
 
-
-      {sheet === "set" && (
-        <SetSheet
-          exercises={exerciseNames}
-          last={lastSet}
+      {sheet === "goals" && (
+        <GoalsSheet
+          initial={{ ...goals, weight: goalWeight }}
           onClose={() => setSheet(null)}
-          onSave={(v) => { addSet.mutate(v); setSheet(null); }}
+          onSave={(g) => { saveGoals.mutate(g); setSheet(null); }}
         />
       )}
+
 
       {sheet === "pr" && (
         <PRSheet exercises={exerciseNames} onClose={() => setSheet(null)} onSave={(v) => { addPR.mutate(v); setSheet(null); }} />
