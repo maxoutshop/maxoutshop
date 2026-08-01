@@ -33,8 +33,12 @@ function Auth() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/profile", replace: true });
+    if (!loading && user) {
+      localStorage.setItem("maxout_welcomed", "1");
+      navigate({ to: "/profile", replace: true });
+    }
   }, [loading, user, navigate]);
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -97,7 +101,11 @@ function Auth() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center px-5 py-10">
-      <Link to="/" className="mb-8 inline-flex items-center gap-2 text-xs text-muted-foreground">
+      <Link
+        to="/"
+        onClick={() => localStorage.setItem("maxout_welcomed", "1")}
+        className="mb-8 inline-flex items-center gap-2 text-xs text-muted-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> Back
       </Link>
       <p className="text-[11px] font-semibold uppercase tracking-[0.4em] text-accent">MAXOUT</p>
@@ -174,6 +182,14 @@ function Auth() {
       >
         {mode === "signin" ? "New here? Create an account" : "Already a member? Sign in"}
       </Button>
+
+      <Link
+        to="/"
+        onClick={() => localStorage.setItem("maxout_welcomed", "1")}
+        className="mt-2 text-center text-xs text-muted-foreground underline-offset-4 hover:underline"
+      >
+        Just browsing? Continue to the shop
+      </Link>
     </main>
   );
 }

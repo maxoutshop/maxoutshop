@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo } from "react";
 import { AppShell } from "@/components/AppShell";
 import { useCatalog } from "@/lib/catalog";
 import { useSession } from "@/lib/auth";
@@ -26,8 +26,17 @@ const HERO_FALLBACK =
 
 function Home() {
   const { products } = useCatalog();
-  const { user } = useSession();
+  const { user, loading: sessionLoading } = useSession();
   const uid = user?.id;
+  const navigate = useNavigate();
+
+  // First visit: show the sign-in screen before the app.
+  useEffect(() => {
+    if (sessionLoading || user) return;
+    if (localStorage.getItem("maxout_welcomed")) return;
+    navigate({ to: "/auth", replace: true });
+  }, [sessionLoading, user, navigate]);
+
 
   const profile = useProfile(uid);
   const meals = useTodayMeals(uid);
