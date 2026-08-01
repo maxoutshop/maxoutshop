@@ -26,8 +26,17 @@ const HERO_FALLBACK =
 
 function Home() {
   const { products } = useCatalog();
-  const { user } = useSession();
+  const { user, loading: sessionLoading } = useSession();
   const uid = user?.id;
+  const navigate = useNavigate();
+
+  // First visit: show the sign-in screen before the app.
+  useEffect(() => {
+    if (sessionLoading || user) return;
+    if (localStorage.getItem("maxout_welcomed")) return;
+    navigate({ to: "/auth", replace: true });
+  }, [sessionLoading, user, navigate]);
+
 
   const profile = useProfile(uid);
   const meals = useTodayMeals(uid);
