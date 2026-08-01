@@ -1,5 +1,4 @@
 import { VerifiedBadge } from "@/components/VerifiedBadge";
-import { ShieldCheck } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
