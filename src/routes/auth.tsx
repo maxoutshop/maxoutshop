@@ -182,6 +182,14 @@ function Auth() {
       >
         {mode === "signin" ? "New here? Create an account" : "Already a member? Sign in"}
       </Button>
+
+      <Link
+        to="/"
+        onClick={() => localStorage.setItem("maxout_welcomed", "1")}
+        className="mt-2 text-center text-xs text-muted-foreground underline-offset-4 hover:underline"
+      >
+        Just browsing? Continue to the shop
+      </Link>
     </main>
   );
 }
