@@ -107,3 +107,12 @@ export const removeChallenge = createServerFn({ method: "POST" })
     await a.deleteChallenge(data.id);
     return { ok: true };
   });
+
+export const adminMessages = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { search?: string }) => ({ search: String(d?.search ?? "").trim().slice(0, 120) }))
+  .handler(async ({ data, context }): Promise<import("./admin.types").AdminMessage[]> => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    return a.listMessages(data.search);
+  });

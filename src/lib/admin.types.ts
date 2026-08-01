@@ -21,3 +21,12 @@ export type AdminChallenge = {
   imageUrl: string | null;
   participants: number;
 };
+
+export type AdminMessage = {
+  id: string;
+  body: string;
+  createdAt: string;
+  readAt: string | null;
+  from: { id: string; name: string | null; username: string | null };
+  to: { id: string; name: string | null; username: string | null };
+};
