@@ -24,6 +24,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as UHandleRouteImport } from './routes/u.$handle'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as MessagesHandleRouteImport } from './routes/messages.$handle'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -102,6 +103,11 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
   path: '/product/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesHandleRoute = MessagesHandleRouteImport.update({
+  id: '/messages/$handle',
+  path: '/messages/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
   id: '/checkout/return',
   path: '/checkout/return',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/messages/$handle': typeof MessagesHandleRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
@@ -151,6 +158,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/messages/$handle': typeof MessagesHandleRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages': typeof MessagesIndexRoute
@@ -172,6 +180,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/messages/$handle': typeof MessagesHandleRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/track'
     | '/checkout/return'
+    | '/messages/$handle'
     | '/product/$slug'
     | '/u/$handle'
     | '/messages/'
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/track'
     | '/checkout/return'
+    | '/messages/$handle'
     | '/product/$slug'
     | '/u/$handle'
     | '/messages'
@@ -232,6 +243,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/track'
     | '/checkout/return'
+    | '/messages/$handle'
     | '/product/$slug'
     | '/u/$handle'
     | '/messages/'
@@ -253,6 +265,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrackRoute: typeof TrackRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
+  MessagesHandleRoute: typeof MessagesHandleRoute
   ProductSlugRoute: typeof ProductSlugRoute
   UHandleRoute: typeof UHandleRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
@@ -366,6 +379,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages/$handle': {
+      id: '/messages/$handle'
+      path: '/messages/$handle'
+      fullPath: '/messages/$handle'
+      preLoaderRoute: typeof MessagesHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout/return': {
       id: '/checkout/return'
       path: '/checkout/return'
@@ -415,6 +435,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrackRoute: TrackRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
+  MessagesHandleRoute: MessagesHandleRoute,
   ProductSlugRoute: ProductSlugRoute,
   UHandleRoute: UHandleRoute,
   MessagesIndexRoute: MessagesIndexRoute,
