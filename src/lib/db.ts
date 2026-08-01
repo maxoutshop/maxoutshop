@@ -301,3 +301,28 @@ export async function uploadAvatar(userId: string, file: File) {
   if (pErr) throw pErr;
   return url;
 }
+
+export const MAX_POST_MEDIA_MB = 50;
+
+export function isVideoUrl(url?: string | null) {
+  if (!url) return false;
+  const clean = url.split("?")[0]!.toLowerCase();
+  return /\.(mp4|webm|mov|m4v|quicktime)$/.test(clean);
+}
+
+export async function uploadPostMedia(userId: string, file: File) {
+  if (file.size > MAX_POST_MEDIA_MB * 1024 * 1024) {
+    throw new Error(`File is too large — keep it under ${MAX_POST_MEDIA_MB}MB.`);
+  }
+  const isVideo = file.type.startsWith("video");
+  const ext = (file.name.split(".").pop() || (isVideo ? "mp4" : "jpg")).toLowerCase();
+  const path = `${userId}/post-${Date.now()}.${ext}`;
+  const { error: upErr } = await supabase.storage.from("post-media").upload(path, file, {
+    upsert: true,
+    contentType: file.type || (isVideo ? "video/mp4" : "image/jpeg"),
+  });
+  if (upErr) throw upErr;
+  const { data, error } = await supabase.storage.from("post-media").createSignedUrl(path, 60 * 60 * 24 * 3650);
+  if (error) throw error;
+  return data.signedUrl;
+}

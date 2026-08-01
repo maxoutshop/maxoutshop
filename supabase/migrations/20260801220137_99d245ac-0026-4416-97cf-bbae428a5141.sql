@@ -1,0 +1,3 @@
+CREATE POLICY "post media upload own folder" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'post-media' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "post media view" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'post-media');
+CREATE POLICY "post media delete own" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'post-media' AND (storage.foldername(name))[1] = auth.uid()::text);

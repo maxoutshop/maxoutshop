@@ -6,7 +6,18 @@ import { Link } from "@tanstack/react-router";
 import { Heart, MessageCircle, Share2, Flame, Dumbbell, Camera, TrendingUp, Trophy, BadgeCheck, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { initials } from "@/lib/auth";
-import { useComments, useMutate, usePosts } from "@/lib/db";
+import { useComments, useMutate, usePosts, isVideoUrl } from "@/lib/db";
+
+const PARTICLES: { x: number; y: number; d: number }[] = [
+  { x: -70, y: -60, d: 0 },
+  { x: 70, y: -55, d: 40 },
+  { x: -95, y: 20, d: 80 },
+  { x: 95, y: 25, d: 60 },
+  { x: -35, y: -100, d: 100 },
+  { x: 40, y: -105, d: 20 },
+  { x: -55, y: 75, d: 120 },
+  { x: 60, y: 70, d: 90 },
+];
 
 export type PostRow = NonNullable<ReturnType<typeof usePosts>["data"]>[number];
 
@@ -103,8 +114,20 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
         <p className="text-[15px] leading-relaxed">{post.body}</p>
         {post.image_url && (
           <div className="relative mt-3 overflow-hidden rounded-2xl border border-border">
-            <img src={post.image_url} alt={`${name} post`} className="aspect-4/5 w-full object-cover" loading="lazy" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+            {isVideoUrl(post.image_url) ? (
+              <video
+                src={post.image_url}
+                className="aspect-4/5 w-full bg-black object-cover"
+                playsInline
+                muted
+                loop
+                controls
+                preload="metadata"
+              />
+            ) : (
+              <img src={post.image_url} alt={`${name} post`} className="aspect-4/5 w-full object-cover" loading="lazy" />
+            )}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
           </div>
         )}
         {post.tag === "PR" && (
@@ -119,8 +142,16 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
           </div>
         )}
         {burst && (
-          <div className="pointer-events-none absolute inset-0 grid place-items-center">
-            <Heart className="h-24 w-24 animate-in fill-accent text-accent zoom-in-50 fade-in duration-300" />
+          <div className="pointer-events-none absolute inset-0 grid place-items-center overflow-hidden">
+            <span className="absolute h-24 w-24 rounded-full border-2 border-accent/70 like-ring" />
+            <Heart className="h-24 w-24 fill-accent text-accent drop-shadow-[0_0_24px_hsl(var(--accent)/0.6)] like-pop" />
+            {PARTICLES.map((p, i) => (
+              <Heart
+                key={i}
+                className="absolute h-4 w-4 fill-accent text-accent like-particle"
+                style={{ "--px": `${p.x}px`, "--py": `${p.y}px`, animationDelay: `${p.d}ms` } as React.CSSProperties}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -131,8 +162,9 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
           disabled={!uid}
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-semibold transition-transform active:scale-90 ${liked ? "text-accent" : ""}`}
         >
-          <Heart className={`h-4 w-4 ${liked ? "fill-accent" : ""}`} /> {likes.length}
+          <Heart className={`h-4 w-4 transition-transform ${liked ? "fill-accent like-beat" : ""}`} /> {likes.length}
         </button>
+
         <button
           onClick={() => setOpen((v) => !v)}
           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-semibold ${open ? "text-foreground" : ""}`}
