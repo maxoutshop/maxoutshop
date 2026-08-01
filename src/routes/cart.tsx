@@ -110,10 +110,6 @@ function Cart() {
           />
           <button className="rounded-full border border-border px-4 text-sm font-medium">Apply</button>
         </div>
-        <label className="mt-3 flex items-center justify-between text-sm">
-          <span className="text-muted-foreground">Use 320 rewards points (−$5)</span>
-          <input type="checkbox" className="h-4 w-4 accent-foreground" />
-        </label>
       </div>
 
       <div className="mt-5 space-y-2 text-sm">
