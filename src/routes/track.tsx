@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, Utensils, Scale, Target, ChevronRight } from "lucide-react";
+import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, Utensils, Scale, Target, ChevronRight, Brain } from "lucide-react";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
@@ -11,6 +11,7 @@ import { useElite } from "@/lib/subscription";
 import { NutritionPanel } from "@/components/NutritionPanel";
 import { BottomSheet, MealSheet, Stepper, BigInput, PrimaryButton, type MealDraft } from "@/components/LogSheet";
 import { GoalsSheet } from "@/components/GoalsSheet";
+import { TrainerSheet } from "@/components/TrainerSheet";
 import { WorkoutSession } from "@/components/WorkoutSession";
 import { WORKOUT_TEMPLATES, GROWTH_TIPS, type TemplateExercise } from "@/lib/workout-templates";
 
@@ -52,7 +53,7 @@ function Track() {
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
   const [plan, setPlan] = useState<TemplateExercise[]>([]);
   const [sessionOpen, setSessionOpen] = useState(false);
-  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals">(null);
+  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals" | "trainer">(null);
 
 
   const weekCount = useMemo(() => {
@@ -187,6 +188,21 @@ function Track() {
           <Target className="h-3.5 w-3.5" /> Goals
         </button>
       </div>
+
+      <button
+        onClick={() => setSheet("trainer")}
+        className="mt-5 flex w-full items-center gap-3 rounded-3xl border border-border bg-surface p-5 text-left transition active:scale-[0.99]"
+      >
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary text-primary-foreground">
+          <Brain className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-[11px] font-semibold uppercase tracking-[0.3em] text-muted-foreground">AI</span>
+          <span className="block text-base font-semibold">MAXOUT Trainer</span>
+          <span className="block text-xs text-muted-foreground">Your stats in — daily calories and macros out</span>
+        </span>
+        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+      </button>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
         <BigStat icon={<Flame className="h-5 w-5 text-accent" />} value={String(streak)} label="Day streak" hint={streak ? "Keep it alive" : "Log a workout"} />
@@ -365,6 +381,15 @@ function Track() {
         />
       )}
 
+
+      {sheet === "trainer" && (
+        <TrainerSheet
+          initialWeight={current ?? null}
+          initialGoalWeight={goalWeight}
+          onClose={() => setSheet(null)}
+          onApply={(g) => { saveGoals.mutate(g); setSheet(null); }}
+        />
+      )}
 
       {sheet === "pr" && (
         <PRSheet exercises={exerciseNames} onClose={() => setSheet(null)} onSave={(v) => { addPR.mutate(v); setSheet(null); }} />
