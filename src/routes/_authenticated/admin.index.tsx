@@ -4,9 +4,10 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import {
   ArrowLeft, Shield, Search, Trash2, Crown, BadgeCheck, Plus, Flag,
-  Package, ShieldCheck, Users, Loader2, X, Eraser,
+  Users, Loader2, X, Eraser,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { AdminProductsPanel } from "@/components/AdminProductsPanel";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { initials } from "@/lib/auth";
 import { toast } from "sonner";
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminHome,
 });
 
-type Tab = "overview" | "members" | "challenges";
+type Tab = "overview" | "members" | "challenges" | "products";
 
 function AdminHome() {
   const qc = useQueryClient();
@@ -52,10 +53,10 @@ function AdminHome() {
         </h1>
         <p className="mt-1 text-xs text-muted-foreground">Everything that runs MAXOUT, in one place.</p>
 
-        <div className="mt-5 flex gap-2">
-          {(["overview", "members", "challenges"] as Tab[]).map((t) => (
+        <div className="mt-5 grid grid-cols-4 gap-2">
+          {(["overview", "members", "challenges", "products"] as Tab[]).map((t) => (
             <button key={t} onClick={() => setTab(t)}
-              className={`flex-1 rounded-full py-2 text-xs font-semibold capitalize transition active:scale-95 ${
+              className={`rounded-full py-2 text-[11px] font-semibold capitalize transition active:scale-95 ${
                 tab === t ? "bg-foreground text-background" : "border border-border text-muted-foreground"
               }`}>
               {t}
@@ -63,10 +64,10 @@ function AdminHome() {
           ))}
         </div>
 
-        {q.isLoading && (
+        {tab !== "products" && q.isLoading && (
           <div className="mt-10 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
         )}
-        {q.error && (
+        {tab !== "products" && q.error && (
           <p className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
             {q.error instanceof Error ? q.error.message : "Could not load admin data."}
           </p>
@@ -75,6 +76,7 @@ function AdminHome() {
         {q.data && tab === "overview" && <Overview stats={q.data.stats} />}
         {q.data && tab === "members" && <Members members={q.data.members} onDone={refresh} />}
         {q.data && tab === "challenges" && <Challenges list={q.data.challenges} onDone={refresh} />}
+        {tab === "products" && <AdminProductsPanel />}
       </div>
     </AppShell>
   );
@@ -100,23 +102,11 @@ function Overview({ stats }: { stats: { members: number; posts: number; workouts
         ))}
       </div>
 
-      <div className="mt-4 space-y-2">
-        <ToolRow to="/admin/products" icon={<Package className="h-4 w-4" />} label="Product tags & drops" />
-        <ToolRow to="/admin/verify" icon={<ShieldCheck className="h-4 w-4" />} label="Verification queue" />
-      </div>
     </div>
   );
 }
 
-function ToolRow({ to, icon, label }: { to: string; icon: React.ReactNode; label: string }) {
-  return (
-    <Link to={to} className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5">
-      <span className="grid h-8 w-8 place-items-center rounded-full bg-background/60">{icon}</span>
-      <span className="flex-1 text-sm font-medium">{label}</span>
-      <span className="text-xs text-muted-foreground">Open</span>
-    </Link>
-  );
-}
+
 
 function Members({ members, onDone }: { members: import("@/lib/admin.types").AdminMember[]; onDone: () => void }) {
   const [term, setTerm] = useState("");

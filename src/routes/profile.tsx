@@ -1,5 +1,4 @@
 import { VerifiedBadge } from "@/components/VerifiedBadge";
-import { ShieldCheck } from "lucide-react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -160,12 +159,7 @@ function Profile() {
         {isAdmin && (
           <Row icon={<Settings className="h-4 w-4" />} label="Admin console" to="/admin" />
         )}
-        {isAdmin && (
-          <Row icon={<Settings className="h-4 w-4" />} label="Admin: product tags" to="/admin/products" />
-        )}
-        {isAdmin && (
-          <Row icon={<ShieldCheck className="h-4 w-4" />} label="Admin: verification" to="/admin/verify" />
-        )}
+
 
         <Row icon={<Package className="h-4 w-4" />} label="Orders" to="/orders" />
         <Row icon={<Heart className="h-4 w-4" />} label="Wishlist" hint={String(wishlistCount)} to="/shop" />
