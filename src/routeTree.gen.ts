@@ -21,6 +21,7 @@ import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MessagesIndexRouteImport } from './routes/messages.index'
 import { Route as UHandleRouteImport } from './routes/u.$handle'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
@@ -86,6 +87,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesIndexRoute = MessagesIndexRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const UHandleRoute = UHandleRouteImport.update({
   id: '/u/$handle',
   path: '/u/$handle',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
+  '/messages/': typeof MessagesIndexRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
+  '/messages': typeof MessagesIndexRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/checkout/return': typeof CheckoutReturnRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
+  '/messages/': typeof MessagesIndexRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
+    | '/messages/'
     | '/admin/'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
+    | '/messages'
     | '/admin'
     | '/api/public/payments/webhook'
   id:
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/checkout/return'
     | '/product/$slug'
     | '/u/$handle'
+    | '/messages/'
     | '/_authenticated/admin/'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
@@ -243,6 +255,7 @@ export interface RootRouteChildren {
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   ProductSlugRoute: typeof ProductSlugRoute
   UHandleRoute: typeof UHandleRoute
+  MessagesIndexRoute: typeof MessagesIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
@@ -332,6 +345,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages/': {
+      id: '/messages/'
+      path: '/messages'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof MessagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/u/$handle': {
       id: '/u/$handle'
       path: '/u/$handle'
@@ -397,6 +417,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutReturnRoute: CheckoutReturnRoute,
   ProductSlugRoute: ProductSlugRoute,
   UHandleRoute: UHandleRoute,
+  MessagesIndexRoute: MessagesIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
