@@ -33,8 +33,12 @@ function Auth() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/profile", replace: true });
+    if (!loading && user) {
+      localStorage.setItem("maxout_welcomed", "1");
+      navigate({ to: "/profile", replace: true });
+    }
   }, [loading, user, navigate]);
+
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
