@@ -215,23 +215,56 @@ function Community() {
 function Composer({ uid, onClose }: { uid: string; onClose: () => void }) {
   const [body, setBody] = useState("");
   const [tag, setTag] = useState<string>(TAGS[0].key);
-  const [imageUrl, setImageUrl] = useState("");
-  const [showImage, setShowImage] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string>("");
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState("");
+  const photoRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLInputElement>(null);
+  const isVideo = !!file?.type.startsWith("video");
+
+  const pick = (f?: File) => {
+    if (!f) return;
+    setErr("");
+    if (f.size > MAX_POST_MEDIA_MB * 1024 * 1024) {
+      setErr(`Keep it under ${MAX_POST_MEDIA_MB}MB.`);
+      return;
+    }
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
+  };
+
+  const clear = () => {
+    if (preview) URL.revokeObjectURL(preview);
+    setFile(null);
+    setPreview("");
+  };
 
   const create = useMutate(async () => {
+    let mediaUrl: string | null = null;
+    if (file) {
+      setUploading(true);
+      try {
+        mediaUrl = await uploadPostMedia(uid, file);
+      } finally {
+        setUploading(false);
+      }
+    }
     const { error } = await supabase.from("posts").insert({
       user_id: uid,
       body,
       tag,
-      image_url: imageUrl.trim() || null,
+      image_url: mediaUrl,
     });
     if (error) throw error;
   }, ["posts", "profile"]);
 
+  const busy = uploading || create.isPending;
+
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-background/80 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="animate-in w-full rounded-t-3xl border-t border-border bg-surface p-5 pb-10 slide-in-from-bottom duration-200"
+        className="animate-in max-h-[92vh] w-full overflow-y-auto rounded-t-3xl border-t border-border bg-surface p-5 pb-10 slide-in-from-bottom duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
@@ -267,30 +300,70 @@ function Composer({ uid, onClose }: { uid: string; onClose: () => void }) {
           placeholder="What did you max out today?"
           className="mt-3 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
         />
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => setShowImage((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"
-          >
-            <ImagePlus className="h-4 w-4" /> {showImage ? "Remove photo" : "Add photo"}
-          </button>
-          <span className="text-[11px] text-muted-foreground">{body.length}/280</span>
-        </div>
-        {showImage && (
-          <input
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            placeholder="Paste an image link"
-            className="mt-2 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
-          />
+
+        {preview ? (
+          <div className="relative mt-2 overflow-hidden rounded-2xl border border-border">
+            {isVideo ? (
+              <video src={preview} className="max-h-72 w-full bg-black object-cover" controls playsInline muted />
+            ) : (
+              <img src={preview} alt="Selected media" className="max-h-72 w-full object-cover" />
+            )}
+            <button
+              onClick={clear}
+              aria-label="Remove media"
+              className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-background/80 backdrop-blur"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            {uploading && (
+              <div className="absolute inset-0 grid place-items-center bg-background/70 text-xs font-semibold">
+                Uploading…
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            <button
+              onClick={() => photoRef.current?.click()}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-background py-3 text-xs font-semibold"
+            >
+              <ImagePlus className="h-4 w-4" /> Photo
+            </button>
+            <button
+              onClick={() => videoRef.current?.click()}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-background py-3 text-xs font-semibold"
+            >
+              <Video className="h-4 w-4" /> Video
+            </button>
+          </div>
         )}
 
+        <input
+          ref={photoRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => pick(e.target.files?.[0])}
+        />
+        <input
+          ref={videoRef}
+          type="file"
+          accept="video/*"
+          className="hidden"
+          onChange={(e) => pick(e.target.files?.[0])}
+        />
+
+        <div className="mt-2 flex items-center justify-between">
+          <span className="text-[11px] text-destructive">{err || (create.isError ? "Couldn't post — try again." : "")}</span>
+          <span className="text-[11px] text-muted-foreground">{body.length}/280</span>
+        </div>
+
         <button
-          disabled={!body.trim() || create.isPending}
+          disabled={(!body.trim() && !file) || busy}
           onClick={() => create.mutate(undefined as never, { onSuccess: onClose })}
-          className="mt-4 w-full rounded-full bg-accent py-3.5 text-sm font-semibold text-accent-foreground disabled:opacity-50"
+          className="mt-3 w-full rounded-full bg-accent py-3.5 text-sm font-semibold text-accent-foreground disabled:opacity-50"
         >
-          {create.isPending ? "Posting…" : "Post"}
+          {uploading ? "Uploading…" : create.isPending ? "Posting…" : "Post"}
         </button>
       </div>
     </div>
