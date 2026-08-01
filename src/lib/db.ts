@@ -45,6 +45,27 @@ export function useTodayMeals(userId?: string) {
   });
 }
 
+/** Meals for today + yesterday, so the tracker can show both days. */
+export function useRecentMeals(userId?: string) {
+  return useQuery({
+    queryKey: ["meals", userId, "recent", today()],
+    enabled: !!userId,
+    queryFn: async () => {
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+      start.setDate(start.getDate() - 1);
+      const { data, error } = await supabase
+        .from("meals")
+        .select("*")
+        .gte("logged_at", start.toISOString())
+        .order("logged_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+
 export function useWater(userId?: string) {
   return useQuery({
     queryKey: ["water", userId, today()],
