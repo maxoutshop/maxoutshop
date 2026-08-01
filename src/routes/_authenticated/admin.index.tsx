@@ -235,13 +235,16 @@ function Members({ members, onDone }: { members: import("@/lib/admin.types").Adm
         {list.map((m) => (
           <div key={m.id} className="rounded-3xl border border-border bg-surface p-4">
             <div className="flex items-center gap-3">
-              {m.avatarUrl ? (
-                <img src={m.avatarUrl} alt={m.displayName ?? "Member avatar"} className="h-10 w-10 rounded-full object-cover" />
-              ) : (
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-background text-xs font-semibold">
-                  {initials(m.displayName ?? m.username ?? "?")}
-                </span>
-              )}
+              <MediaImage
+                src={m.avatarUrl}
+                alt={m.displayName ?? "Member avatar"}
+                className="h-10 w-10 rounded-full object-cover"
+                fallback={
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-background text-xs font-semibold">
+                    {initials(m.displayName ?? m.username ?? "?")}
+                  </span>
+                }
+              />
               <div className="min-w-0 flex-1">
                 <p className="flex items-center gap-1 truncate text-sm font-semibold">
                   {m.displayName ?? m.username ?? "Member"} {m.verified && <VerifiedBadge className="h-3.5 w-3.5" />}
