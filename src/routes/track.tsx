@@ -50,7 +50,10 @@ function Track() {
   const weights = useWeights(uid);
 
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "set" | "workout">(null);
+  const [plan, setPlan] = useState<TemplateExercise[]>([]);
+  const [sessionOpen, setSessionOpen] = useState(false);
+  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals">(null);
+
 
   const weekCount = useMemo(() => {
     const since = Date.now() - 7 * 864e5;
