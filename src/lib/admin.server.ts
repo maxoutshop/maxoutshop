@@ -175,7 +175,7 @@ export async function listMessages(search: string): Promise<import("./admin.type
   const { data: profiles } = ids.size
     ? await db.from("profiles").select("id, display_name, username").in("id", [...ids])
     : { data: [] as any[] };
-  const byId = new Map((profiles ?? []).map((p: any) => [p.id, p]));
+  const byId = new Map<string, any>((profiles ?? []).map((p: any) => [p.id, p]));
   const who = (id: string) => ({
     id,
     name: byId.get(id)?.display_name ?? null,
