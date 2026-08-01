@@ -6,7 +6,18 @@ import { Link } from "@tanstack/react-router";
 import { Heart, MessageCircle, Share2, Flame, Dumbbell, Camera, TrendingUp, Trophy, BadgeCheck, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { initials } from "@/lib/auth";
-import { useComments, useMutate, usePosts } from "@/lib/db";
+import { useComments, useMutate, usePosts, isVideoUrl } from "@/lib/db";
+
+const PARTICLES: { x: number; y: number; d: number }[] = [
+  { x: -70, y: -60, d: 0 },
+  { x: 70, y: -55, d: 40 },
+  { x: -95, y: 20, d: 80 },
+  { x: 95, y: 25, d: 60 },
+  { x: -35, y: -100, d: 100 },
+  { x: 40, y: -105, d: 20 },
+  { x: -55, y: 75, d: 120 },
+  { x: 60, y: 70, d: 90 },
+];
 
 export type PostRow = NonNullable<ReturnType<typeof usePosts>["data"]>[number];
 
