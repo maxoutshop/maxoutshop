@@ -38,7 +38,7 @@ export function ProductTile({
         }`}
       />
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-background via-background/70 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-background via-background/75 to-transparent" />
 
       <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
         {product.newArrival && (
