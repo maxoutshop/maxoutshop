@@ -1,3 +1,4 @@
+import { MediaImage } from "@/components/Media";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
@@ -224,7 +225,7 @@ function AvatarPicker({ userId, name, url }: { userId: string; name: string; url
       aria-label="Change profile picture"
     >
       <div className="grid h-16 w-16 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-secondary to-surface text-lg font-semibold">
-        {url ? <img src={url} alt={name} className="h-full w-full object-cover" /> : initials(name)}
+        <MediaImage src={url} alt={name} className="h-full w-full object-cover" fallback={initials(name)} />
       </div>
       <span className="absolute -bottom-0.5 -right-0.5 grid h-6 w-6 place-items-center rounded-full bg-accent text-accent-foreground ring-2 ring-background">
         <Camera className="h-3 w-3" />

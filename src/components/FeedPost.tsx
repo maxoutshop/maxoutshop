@@ -1,3 +1,4 @@
+import { MediaImage, MediaVideo } from "@/components/Media";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { EliteBadge } from "@/components/EliteBadge";
 import { useRef, useState } from "react";
@@ -84,11 +85,13 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
         >
           <div className={`rounded-full bg-gradient-to-br ${meta.ring} p-[2px]`}>
             <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-surface text-xs font-semibold ring-2 ring-surface">
-              {author?.avatar_url ? (
-                <img src={author.avatar_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
-              ) : (
-                initials(name)
-              )}
+              <MediaImage
+                src={author?.avatar_url}
+                alt={name}
+                className="h-full w-full object-cover"
+                loading="lazy"
+                fallback={initials(name)}
+              />
             </div>
           </div>
           <div className="min-w-0">
@@ -115,17 +118,14 @@ export function FeedPost({ post, uid }: { post: PostRow; uid?: string }) {
         {post.image_url && (
           <div className="relative mt-3 overflow-hidden rounded-2xl border border-border">
             {isVideoUrl(post.image_url) ? (
-              <video
-                src={post.image_url}
-                className="aspect-4/5 w-full bg-black object-cover"
-                playsInline
-                muted
-                loop
-                controls
-                preload="metadata"
-              />
+              <MediaVideo src={post.image_url} className="aspect-4/5 w-full bg-black object-cover" />
             ) : (
-              <img src={post.image_url} alt={`${name} post`} className="aspect-4/5 w-full object-cover" loading="lazy" />
+              <MediaImage
+                src={post.image_url}
+                alt={`${name} post`}
+                className="aspect-4/5 w-full object-cover"
+                loading="lazy"
+              />
             )}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
           </div>
