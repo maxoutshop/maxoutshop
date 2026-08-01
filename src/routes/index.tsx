@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo } from "react";
 import { AppShell } from "@/components/AppShell";
 import { useCatalog } from "@/lib/catalog";
 import { useSession } from "@/lib/auth";
