@@ -78,16 +78,24 @@ export function ProductTile({
         </div>
       )}
 
-      <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3">
+      <div
+        className={`absolute inset-x-0 bottom-0 p-3 ${
+          wide ? "flex items-end justify-between gap-3" : ""
+        }`}
+      >
         <div className="min-w-0">
           {product.collection && (
             <p className="kicker truncate text-muted-foreground">{product.collection}</p>
           )}
-          <h3 className={`display mt-1 truncate leading-none ${wide ? "text-3xl" : "text-lg"}`}>
+          <h3
+            className={`display mt-1 leading-[0.95] ${
+              wide ? "truncate text-3xl" : "line-clamp-2 text-base"
+            }`}
+          >
             {product.name}
           </h3>
         </div>
-        <div className="shrink-0 text-right">
+        <div className={`shrink-0 ${wide ? "text-right" : "mt-1 flex items-baseline gap-2"}`}>
           <div className="display text-lg leading-none">${price.toFixed(2)}</div>
           {product.salePrice && (
             <div className="text-[11px] text-muted-foreground line-through">
@@ -96,6 +104,7 @@ export function ProductTile({
           )}
         </div>
       </div>
+
     </Link>
   );
 }
