@@ -499,6 +499,7 @@ export type Database = {
           goal_carbs: number
           goal_fat: number
           goal_protein: number
+          goal_weight: number | null
           id: string
           is_ambassador: boolean
           is_elite: boolean
@@ -516,6 +517,7 @@ export type Database = {
           goal_carbs?: number
           goal_fat?: number
           goal_protein?: number
+          goal_weight?: number | null
           id: string
           is_ambassador?: boolean
           is_elite?: boolean
@@ -533,6 +535,7 @@ export type Database = {
           goal_carbs?: number
           goal_fat?: number
           goal_protein?: number
+          goal_weight?: number | null
           id?: string
           is_ambassador?: boolean
           is_elite?: boolean
