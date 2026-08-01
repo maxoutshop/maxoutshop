@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, Check, Utensils, Scale, Repeat } from "lucide-react";
+import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, Utensils, Scale, Target, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
@@ -10,6 +10,10 @@ import {
 import { useElite } from "@/lib/subscription";
 import { NutritionPanel } from "@/components/NutritionPanel";
 import { BottomSheet, MealSheet, Stepper, BigInput, PrimaryButton, type MealDraft } from "@/components/LogSheet";
+import { GoalsSheet } from "@/components/GoalsSheet";
+import { WorkoutSession } from "@/components/WorkoutSession";
+import { WORKOUT_TEMPLATES, GROWTH_TIPS, type TemplateExercise } from "@/lib/workout-templates";
+
 
 
 
@@ -46,7 +50,10 @@ function Track() {
   const weights = useWeights(uid);
 
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "set" | "workout">(null);
+  const [plan, setPlan] = useState<TemplateExercise[]>([]);
+  const [sessionOpen, setSessionOpen] = useState(false);
+  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals">(null);
+
 
   const weekCount = useMemo(() => {
     const since = Date.now() - 7 * 864e5;
@@ -93,10 +100,12 @@ function Track() {
     if (error) throw error;
   }, ["water"]);
 
-  const startWorkout = useMutate(async (category: string) => {
-    const { data, error } = await supabase.from("workouts").insert({ user_id: uid!, category, title: `${category} session` }).select().single();
+  const startWorkout = useMutate(async (v: { category: string; title: string; exercises: TemplateExercise[] }) => {
+    const { data, error } = await supabase.from("workouts").insert({ user_id: uid!, category: v.category, title: v.title }).select().single();
     if (error) throw error;
+    setPlan(v.exercises);
     setActiveWorkout(data.id);
+    setSessionOpen(true);
   }, ["workouts", "profile"]);
 
   const addSet = useMutate(async (v: { exercise: string; weight: number; reps: number }) => {
@@ -106,6 +115,22 @@ function Track() {
     });
     if (error) throw error;
   }, ["workouts"]);
+
+  const deleteSet = useMutate(async (id: string) => {
+    const { error } = await supabase.from("workout_sets").delete().eq("id", id);
+    if (error) throw error;
+  }, ["workouts"]);
+
+  const saveGoals = useMutate(async (g: { calories: number; protein: number; carbs: number; fat: number; weight: number | null }) => {
+    const { error } = await supabase.from("profiles").update({
+      goal_calories: Math.round(g.calories),
+      goal_protein: Math.round(g.protein),
+      goal_carbs: Math.round(g.carbs),
+      goal_fat: Math.round(g.fat),
+      goal_weight: g.weight,
+    }).eq("id", uid!);
+    if (error) throw error;
+  }, ["profile"]);
 
   if (sessionLoading) return <SessionLoading />;
   if (!user) return <SignedOut />;
@@ -117,6 +142,7 @@ function Track() {
     carbs: profile.data?.goal_carbs ?? 250,
     fat: profile.data?.goal_fat ?? 80,
   };
+  const goalWeight = (profile.data as { goal_weight?: number | null } | null)?.goal_weight ?? null;
   const current = weights.data?.at(-1)?.weight;
   const first = weights.data?.[0]?.weight;
   const live = (workouts.data ?? []).find((w) => w.id === activeWorkout);
@@ -130,15 +156,36 @@ function Track() {
   const allSets = (workouts.data ?? []).flatMap((w) => w.workout_sets ?? []);
   const exerciseNames = Array.from(new Set(allSets.map((s) => s.exercise))).slice(0, 8);
   const liveSets = (live?.workout_sets ?? []).slice().sort((a, b) => a.set_index - b.set_index);
-  const lastRaw = liveSets.at(-1) ?? allSets.at(-1);
-  const lastSet = lastRaw ? { exercise: lastRaw.exercise, weight: lastRaw.weight ?? 0, reps: lastRaw.reps ?? 0 } : null;
 
+
+
+  if (live && sessionOpen) {
+    return (
+      <WorkoutSession
+        title={live.title ?? live.category}
+        category={live.category}
+        startedAt={live.performed_at}
+        sets={liveSets.map((s) => ({ id: s.id, exercise: s.exercise, weight: s.weight, reps: s.reps, set_index: s.set_index }))}
+        plan={plan}
+        onAddSet={(v) => addSet.mutate(v)}
+        onDeleteSet={(id) => deleteSet.mutate(id)}
+        onFinish={() => { setSessionOpen(false); setActiveWorkout(null); setPlan([]); }}
+        onClose={() => setSessionOpen(false)}
+      />
+    );
+  }
 
   return (
     <AppShell>
-      <div className="pt-2">
-        <p className="text-[11px] font-semibold tracking-[0.3em] text-muted-foreground uppercase">Today</p>
-        <h1 className="mt-1 text-3xl font-semibold">Your Track</h1>
+      <div className="flex items-start justify-between pt-2">
+        <div>
+          <p className="text-[11px] font-semibold tracking-[0.3em] text-muted-foreground uppercase">Today</p>
+          <h1 className="mt-1 text-3xl font-semibold">Your Track</h1>
+        </div>
+        <button onClick={() => setSheet("goals")} aria-label="Edit goals"
+          className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-border px-3.5 py-2 text-xs font-semibold active:scale-95 transition">
+          <Target className="h-3.5 w-3.5" /> Goals
+        </button>
       </div>
 
       <div className="mt-5 grid grid-cols-2 gap-3">
@@ -161,38 +208,30 @@ function Track() {
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">Workout</h2>
           {live && (
-            <button onClick={() => setSheet("set")} className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background">
-              <Plus className="h-3.5 w-3.5" /> Add set
+            <button onClick={() => setSessionOpen(true)} className="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground">
+              Resume
             </button>
           )}
         </div>
+
         {live ? (
-          <>
-            <p className="mt-1 text-xs text-accent">Live · {live.category}</p>
-            <div className="mt-3 divide-y divide-border">
-              {(live.workout_sets ?? []).sort((a, b) => a.set_index - b.set_index).map((s) => (
-                <div key={s.id} className="flex items-center justify-between py-2.5 text-sm">
-                  <span className="font-medium">{s.exercise}</span>
-                  <span className="text-muted-foreground">{s.weight} lb × {s.reps}</span>
-                </div>
-              ))}
-              {(live.workout_sets ?? []).length === 0 && <p className="py-3 text-xs text-muted-foreground">No sets yet — add your first.</p>}
-            </div>
-            <button onClick={() => setActiveWorkout(null)} className="mt-3 inline-flex items-center gap-1 rounded-full border border-border px-4 py-2 text-xs font-semibold">
-              <Check className="h-3.5 w-3.5" /> Finish workout
-            </button>
-          </>
+          <p className="mt-1 text-xs text-accent">Live · {live.category} · {liveSets.length} sets logged</p>
         ) : (
           <>
-            <p className="mt-1 text-xs text-muted-foreground">Pick a category to start logging.</p>
-            <div className="no-scrollbar mt-3 flex gap-2 overflow-x-auto">
-              {CATEGORIES.map((c) => (
-                <button key={c} onClick={() => startWorkout.mutate(c)}
-                  className="shrink-0 rounded-full border border-border px-4 py-2 text-xs font-medium text-muted-foreground hover:text-foreground">{c}</button>
+            <p className="mt-1 text-xs text-muted-foreground">Start from a template or freestyle it.</p>
+            <div className="mt-3 space-y-2">
+              {WORKOUT_TEMPLATES.slice(0, 3).map((t) => (
+                <TemplateRow key={t.id} name={t.name} focus={t.focus} count={t.exercises.length}
+                  onClick={() => startWorkout.mutate({ category: t.category, title: t.name, exercises: t.exercises })} />
               ))}
             </div>
+            <button onClick={() => setSheet("workout")}
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-xs font-semibold active:scale-[0.98] transition">
+              <Plus className="h-3.5 w-3.5" /> All templates & splits
+            </button>
           </>
         )}
+
         {(workouts.data ?? []).length > 0 && (
           <div className="mt-4 border-t border-border pt-3">
             <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Recent</p>
@@ -207,6 +246,7 @@ function Track() {
           </div>
         )}
       </section>
+
 
       {/* PRs */}
       <section className="mt-5 rounded-3xl border border-border bg-surface p-5">
@@ -241,6 +281,12 @@ function Track() {
             <span className="ml-2 text-xs text-accent">{current > first ? "+" : "−"}{Math.abs(current - first).toFixed(1)} since start</span>
           )}
         </div>
+        {goalWeight != null && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            Goal {goalWeight} lb{current ? ` · ${Math.abs(current - goalWeight).toFixed(1)} lb to go` : ""}
+          </p>
+        )}
+
         {(weights.data ?? []).length > 1
           ? <MiniChart points={weights.data!.map((w) => w.weight)} />
           : <p className="mt-3 text-xs text-muted-foreground">Log two entries to see your trend.</p>}
@@ -259,8 +305,8 @@ function Track() {
         <BottomSheet title="Quick log" subtitle="One tap to track anything" onClose={() => setSheet(null)}>
           <div className="grid grid-cols-2 gap-3">
             <QuickTile icon={<Utensils className="h-5 w-5" />} label="Food" hint="AI macros" onClick={() => setSheet("meal")} />
-            <QuickTile icon={<Dumbbell className="h-5 w-5" />} label={live ? "Add set" : "Start workout"} hint={live ? live.category : "Pick a split"}
-              onClick={() => (live ? setSheet("set") : setSheet("workout"))} />
+            <QuickTile icon={<Dumbbell className="h-5 w-5" />} label={live ? "Resume workout" : "Start workout"} hint={live ? live.category : "Templates & splits"}
+              onClick={() => { if (live) { setSheet(null); setSessionOpen(true); } else setSheet("workout"); }} />
             <QuickTile icon={<Trophy className="h-5 w-5" />} label="New PR" hint="Log a milestone" onClick={() => setSheet("pr")} />
             <QuickTile icon={<Scale className="h-5 w-5" />} label="Bodyweight" hint="Track the trend" onClick={() => setSheet("weight")} />
           </div>
@@ -274,12 +320,29 @@ function Track() {
       )}
 
       {sheet === "workout" && (
-        <BottomSheet title="Start a workout" subtitle="Pick your split" onClose={() => setSheet(null)}>
-          <div className="grid grid-cols-2 gap-3">
-            {CATEGORIES.map((c) => (
-              <button key={c} onClick={() => { startWorkout.mutate(c); setSheet(null); }}
-                className="rounded-3xl border border-border bg-background py-5 text-sm font-semibold active:scale-95 transition">{c}</button>
+        <BottomSheet title="Start a workout" subtitle="Templates, splits or freestyle" onClose={() => setSheet(null)}>
+          <div className="space-y-2">
+            {WORKOUT_TEMPLATES.map((t) => (
+              <TemplateRow key={t.id} name={t.name} focus={t.focus} count={t.exercises.length}
+                onClick={() => { startWorkout.mutate({ category: t.category, title: t.name, exercises: t.exercises }); setSheet(null); }} />
             ))}
+          </div>
+
+          <p className="mt-5 text-[11px] uppercase tracking-widest text-muted-foreground">Freestyle</p>
+          <div className="mt-2 grid grid-cols-3 gap-2">
+            {CATEGORIES.map((c) => (
+              <button key={c} onClick={() => { startWorkout.mutate({ category: c, title: `${c} session`, exercises: [] }); setSheet(null); }}
+                className="rounded-2xl border border-border bg-background py-3.5 text-xs font-semibold active:scale-95 transition">{c}</button>
+            ))}
+          </div>
+
+          <div className="mt-5 rounded-3xl border border-border bg-background p-4">
+            <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Growth tips</p>
+            <ul className="mt-2 space-y-1.5">
+              {GROWTH_TIPS.map((t) => (
+                <li key={t} className="text-xs leading-relaxed text-muted-foreground">· {t}</li>
+              ))}
+            </ul>
           </div>
         </BottomSheet>
       )}
@@ -294,15 +357,14 @@ function Track() {
         />
       )}
 
-
-      {sheet === "set" && (
-        <SetSheet
-          exercises={exerciseNames}
-          last={lastSet}
+      {sheet === "goals" && (
+        <GoalsSheet
+          initial={{ ...goals, weight: goalWeight }}
           onClose={() => setSheet(null)}
-          onSave={(v) => { addSet.mutate(v); setSheet(null); }}
+          onSave={(g) => { saveGoals.mutate(g); setSheet(null); }}
         />
       )}
+
 
       {sheet === "pr" && (
         <PRSheet exercises={exerciseNames} onClose={() => setSheet(null)} onSave={(v) => { addPR.mutate(v); setSheet(null); }} />
@@ -349,38 +411,21 @@ function QuickTile({ icon, label, hint, onClick }: { icon: React.ReactNode; labe
   );
 }
 
-function SetSheet({
-  exercises, last, onClose, onSave,
-}: {
-  exercises: string[];
-  last: { exercise: string; weight: number; reps: number } | null;
-  onClose: () => void;
-  onSave: (v: { exercise: string; weight: number; reps: number }) => void;
-}) {
-  const [exercise, setExercise] = useState(last?.exercise ?? "");
-  const [weight, setWeight] = useState(last?.weight ?? 135);
-  const [reps, setReps] = useState(last?.reps ?? 8);
+function TemplateRow({ name, focus, count, onClick }: { name: string; focus: string; count: number; onClick: () => void }) {
   return (
-    <BottomSheet title="Add set" subtitle="Tap the steppers — no typing needed" onClose={onClose}>
-      {last && (
-        <button
-          onClick={() => onSave(last)}
-          className="mb-4 flex w-full items-center justify-center gap-2 rounded-3xl border border-border bg-background py-3.5 text-sm font-semibold active:scale-[0.98] transition"
-        >
-          <Repeat className="h-4 w-4" /> Repeat {last.exercise} · {last.weight} × {last.reps}
-        </button>
-      )}
-      <BigInput label="Exercise" value={exercise} onChange={setExercise} placeholder="Bench press" suggestions={exercises.length ? exercises : COMMON_LIFTS} />
-      <div className="mt-3 grid grid-cols-2 gap-3">
-        <Stepper label="Weight" value={weight} onChange={setWeight} step={5} suffix="lb" />
-        <Stepper label="Reps" value={reps} onChange={setReps} step={1} min={1} />
+    <button onClick={onClick} className="flex w-full items-center gap-3 rounded-3xl border border-border bg-background px-4 py-3.5 text-left active:scale-[0.98] transition">
+      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl border border-border">
+        <Dumbbell className="h-4 w-4 text-accent" />
       </div>
-      <PrimaryButton disabled={!exercise.trim()} onClick={() => onSave({ exercise: exercise.trim(), weight, reps })}>
-        Log set
-      </PrimaryButton>
-    </BottomSheet>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold">{name}</p>
+        <p className="truncate text-[11px] text-muted-foreground">{focus} · {count} exercises</p>
+      </div>
+      <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+    </button>
   );
 }
+
 
 function PRSheet({ exercises, onClose, onSave }: { exercises: string[]; onClose: () => void; onSave: (v: { exercise: string; value: number; unit: string }) => void }) {
   const [exercise, setExercise] = useState("");
