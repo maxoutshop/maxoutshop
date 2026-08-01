@@ -48,16 +48,6 @@ function Track() {
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
   const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "set" | "workout">(null);
 
-  const totals = useMemo(() => {
-    const list = meals.data ?? [];
-    return {
-      calories: list.reduce((s, m) => s + (m.calories ?? 0), 0),
-      protein: list.reduce((s, m) => s + (m.protein ?? 0), 0),
-      carbs: list.reduce((s, m) => s + (m.carbs ?? 0), 0),
-      fat: list.reduce((s, m) => s + (m.fat ?? 0), 0),
-    };
-  }, [meals.data]);
-
   const weekCount = useMemo(() => {
     const since = Date.now() - 7 * 864e5;
     return (workouts.data ?? []).filter((w) => new Date(w.performed_at).getTime() > since).length;
@@ -433,26 +423,6 @@ function BigStat({ icon, value, label, hint }: { icon: React.ReactNode; value: s
       <div className="mt-3 text-3xl font-semibold tracking-tight">{value}</div>
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 text-[11px] text-accent">{hint}</div>
-    </div>
-  );
-}
-
-function MacroRing({ label, value, goal, unit = "" }: { label: string; value: number; goal: number; unit?: string }) {
-  const pct = Math.min(100, Math.round((value / (goal || 1)) * 100));
-  const r = 22;
-  const c = 2 * Math.PI * r;
-  return (
-    <div>
-      <div className="relative mx-auto h-14 w-14">
-        <svg viewBox="0 0 60 60" className="h-full w-full -rotate-90">
-          <circle cx="30" cy="30" r={r} fill="none" stroke="var(--color-secondary)" strokeWidth="4" />
-          <circle cx="30" cy="30" r={r} fill="none" stroke="var(--color-foreground)" strokeWidth="4"
-            strokeDasharray={c} strokeDashoffset={c - (c * pct) / 100} strokeLinecap="round" />
-        </svg>
-        <div className="absolute inset-0 grid place-items-center text-[10px] font-semibold">{pct}%</div>
-      </div>
-      <div className="mt-1 text-[11px] text-muted-foreground">{label}</div>
-      <div className="text-xs font-medium">{Math.round(value)}{unit}<span className="text-muted-foreground">/{goal}{unit}</span></div>
     </div>
   );
 }
