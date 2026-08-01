@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 import { PageTransition } from "@/components/PageTransition";
+import { SplashScreen } from "@/components/SplashScreen";
 
 
 function NotFoundComponent() {
@@ -140,11 +141,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <PageTransition>
-        <Outlet />
-      </PageTransition>
-
+      <SplashScreen>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <PageTransition>
+          <Outlet />
+        </PageTransition>
+      </SplashScreen>
     </QueryClientProvider>
   );
 }
