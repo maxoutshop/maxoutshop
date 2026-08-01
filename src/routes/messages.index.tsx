@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
+import { MediaImage } from "@/components/Media";
 import { initials, useSession } from "@/lib/auth";
 import { useAthleteSearch, useConversations, useFollowing, useToggleFollow } from "@/lib/social";
 import { Search, MessageCircle, UserPlus, UserCheck, ArrowLeft } from "lucide-react";
@@ -171,7 +172,7 @@ function Messages() {
 function Avatar({ url, name }: { url: string | null; name: string }) {
   return (
     <div className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-full bg-background text-xs font-semibold">
-      {url ? <img src={url} alt={name} className="h-full w-full object-cover" loading="lazy" /> : initials(name)}
+      <MediaImage src={url} alt={name} className="h-full w-full object-cover" loading="lazy" fallback={initials(name)} />
     </div>
   );
 }
