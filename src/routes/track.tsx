@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
-import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, Check, Utensils, Scale, Repeat } from "lucide-react";
+import { Flame, Trophy, Dumbbell, Droplet, TrendingUp, Plus, Lock, Utensils, Scale, Target, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
@@ -10,6 +10,10 @@ import {
 import { useElite } from "@/lib/subscription";
 import { NutritionPanel } from "@/components/NutritionPanel";
 import { BottomSheet, MealSheet, Stepper, BigInput, PrimaryButton, type MealDraft } from "@/components/LogSheet";
+import { GoalsSheet } from "@/components/GoalsSheet";
+import { WorkoutSession } from "@/components/WorkoutSession";
+import { WORKOUT_TEMPLATES, GROWTH_TIPS, type TemplateExercise } from "@/lib/workout-templates";
+
 
 
 
