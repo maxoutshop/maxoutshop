@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { FeedPost } from "@/components/FeedPost";
-import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus, Sparkles, Search, MessageCircle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus, Video, Sparkles, Search, MessageCircle } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
-import { usePosts, useChallenges, useMyChallenges, useMutate } from "@/lib/db";
+import { usePosts, useChallenges, useMyChallenges, useMutate, uploadPostMedia, MAX_POST_MEDIA_MB } from "@/lib/db";
 import { useUnreadCount } from "@/lib/social";
 
 export const Route = createFileRoute("/community")({
