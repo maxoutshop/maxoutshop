@@ -5,9 +5,10 @@ import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
 import {
-  useProfile, useTodayMeals, useWater, useWorkouts, usePRs, useWeights, useMutate,
+  useProfile, useRecentMeals, useWater, useWorkouts, usePRs, useWeights, useMutate,
 } from "@/lib/db";
 import { useElite } from "@/lib/subscription";
+import { NutritionPanel } from "@/components/NutritionPanel";
 import { BottomSheet, MealSheet, Stepper, BigInput, PrimaryButton, type MealDraft } from "@/components/LogSheet";
 
 
@@ -38,7 +39,7 @@ function Track() {
   const { isElite } = useElite(uid);
   const profile = useProfile(uid);
 
-  const meals = useTodayMeals(uid);
+  const meals = useRecentMeals(uid);
   const water = useWater(uid);
   const workouts = useWorkouts(uid);
   const prs = usePRs(uid);
@@ -46,16 +47,6 @@ function Track() {
 
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
   const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "set" | "workout">(null);
-
-  const totals = useMemo(() => {
-    const list = meals.data ?? [];
-    return {
-      calories: list.reduce((s, m) => s + (m.calories ?? 0), 0),
-      protein: list.reduce((s, m) => s + (m.protein ?? 0), 0),
-      carbs: list.reduce((s, m) => s + (m.carbs ?? 0), 0),
-      fat: list.reduce((s, m) => s + (m.fat ?? 0), 0),
-    };
-  }, [meals.data]);
 
   const weekCount = useMemo(() => {
     const since = Date.now() - 7 * 864e5;
@@ -79,6 +70,11 @@ function Track() {
     if (error) throw error;
   }, ["meals", "profile"]);
 
+
+  const deleteMeal = useMutate(async (id: string) => {
+    const { error } = await supabase.from("meals").delete().eq("id", id);
+    if (error) throw error;
+  }, ["meals"]);
 
   const addPR = useMutate(async (v: { exercise: string; value: number; unit: string }) => {
     const { error } = await supabase.from("personal_records").insert({ ...v, user_id: uid! });
@@ -150,43 +146,15 @@ function Track() {
         <BigStat icon={<Dumbbell className="h-5 w-5" />} value={`${weekCount}/5`} label="Workouts this week" hint={weekCount >= 5 ? "Goal hit" : "On pace"} />
       </div>
 
-      {/* Nutrition */}
-      <section className="mt-5 rounded-3xl border border-border bg-surface p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Nutrition</h2>
-          <button onClick={() => setSheet("meal")} className="inline-flex items-center gap-1 rounded-full bg-foreground px-3 py-1.5 text-xs font-semibold text-background">
-            <Plus className="h-3.5 w-3.5" /> Log meal
-          </button>
-        </div>
-        <div className="mt-4 grid grid-cols-4 gap-3 text-center">
-          <MacroRing label="Cals" value={totals.calories} goal={goals.calories} />
-          <MacroRing label="Protein" value={totals.protein} goal={goals.protein} unit="g" />
-          <MacroRing label="Carbs" value={totals.carbs} goal={goals.carbs} unit="g" />
-          <MacroRing label="Fat" value={totals.fat} goal={goals.fat} unit="g" />
-        </div>
-        <div className="mt-4 flex items-center justify-between rounded-2xl bg-background/60 p-3 text-sm">
-          <span className="inline-flex items-center gap-2 text-muted-foreground"><Droplet className="h-4 w-4" /> Water</span>
-          <div className="flex gap-1">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <button key={i} onClick={() => setWater.mutate(i + 1 === glasses ? i : i + 1)}
-                className={`h-6 w-2 rounded-full transition ${i < glasses ? "bg-foreground" : "bg-secondary"}`} />
-            ))}
-          </div>
-        </div>
-        {(meals.data ?? []).length > 0 && (
-          <div className="mt-3 divide-y divide-border">
-            {meals.data!.map((m) => (
-              <div key={m.id} className="flex items-center justify-between py-2.5 text-sm">
-                <div>
-                  <p className="font-medium">{m.name}</p>
-                  <p className="text-xs capitalize text-muted-foreground">{m.meal_type} · {m.protein}p / {m.carbs}c / {m.fat}f</p>
-                </div>
-                <span className="font-semibold">{m.calories}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      <NutritionPanel
+        meals={meals.data ?? []}
+        goals={goals}
+        glasses={glasses}
+        onWater={(n) => setWater.mutate(n)}
+        onLogMeal={() => setSheet("meal")}
+        onRepeat={(m) => addMeals.mutate({ items: [{ name: m.name, calories: m.calories, protein: m.protein, carbs: m.carbs, fat: m.fat }], mealType: m.meal_type })}
+        onDelete={(id) => deleteMeal.mutate(id)}
+      />
 
       {/* Workout */}
       <section className="mt-5 rounded-3xl border border-border bg-surface p-5">
@@ -455,26 +423,6 @@ function BigStat({ icon, value, label, hint }: { icon: React.ReactNode; value: s
       <div className="mt-3 text-3xl font-semibold tracking-tight">{value}</div>
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 text-[11px] text-accent">{hint}</div>
-    </div>
-  );
-}
-
-function MacroRing({ label, value, goal, unit = "" }: { label: string; value: number; goal: number; unit?: string }) {
-  const pct = Math.min(100, Math.round((value / (goal || 1)) * 100));
-  const r = 22;
-  const c = 2 * Math.PI * r;
-  return (
-    <div>
-      <div className="relative mx-auto h-14 w-14">
-        <svg viewBox="0 0 60 60" className="h-full w-full -rotate-90">
-          <circle cx="30" cy="30" r={r} fill="none" stroke="var(--color-secondary)" strokeWidth="4" />
-          <circle cx="30" cy="30" r={r} fill="none" stroke="var(--color-foreground)" strokeWidth="4"
-            strokeDasharray={c} strokeDashoffset={c - (c * pct) / 100} strokeLinecap="round" />
-        </svg>
-        <div className="absolute inset-0 grid place-items-center text-[10px] font-semibold">{pct}%</div>
-      </div>
-      <div className="mt-1 text-[11px] text-muted-foreground">{label}</div>
-      <div className="text-xs font-medium">{Math.round(value)}{unit}<span className="text-muted-foreground">/{goal}{unit}</span></div>
     </div>
   );
 }
