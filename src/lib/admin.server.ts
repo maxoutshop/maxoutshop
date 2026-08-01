@@ -1,28 +1,8 @@
 import { adminDb } from "./membership.server";
 
-export type AdminMember = {
-  id: string;
-  email: string | null;
-  username: string | null;
-  displayName: string | null;
-  avatarUrl: string | null;
-  verified: boolean;
-  isElite: boolean;
-  isAdmin: boolean;
-  createdAt: string | null;
-};
+import type { AdminMember, AdminChallenge } from "./admin.types";
 
-export type AdminChallenge = {
-  id: string;
-  title: string;
-  description: string | null;
-  goalLabel: string | null;
-  startsOn: string;
-  endsOn: string | null;
-  rewardPoints: number;
-  imageUrl: string | null;
-  participants: number;
-};
+export type { AdminMember, AdminChallenge };
 
 /** Throws unless the given user has the admin role. */
 export async function assertAdmin(userId: string) {
