@@ -101,23 +101,11 @@ function Overview({ stats }: { stats: { members: number; posts: number; workouts
         ))}
       </div>
 
-      <div className="mt-4 space-y-2">
-        <ToolRow to="/admin/products" icon={<Package className="h-4 w-4" />} label="Product tags & drops" />
-        <ToolRow to="/admin/verify" icon={<ShieldCheck className="h-4 w-4" />} label="Verification queue" />
-      </div>
     </div>
   );
 }
 
-function ToolRow({ to, icon, label }: { to: string; icon: React.ReactNode; label: string }) {
-  return (
-    <Link to={to} className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3.5">
-      <span className="grid h-8 w-8 place-items-center rounded-full bg-background/60">{icon}</span>
-      <span className="flex-1 text-sm font-medium">{label}</span>
-      <span className="text-xs text-muted-foreground">Open</span>
-    </Link>
-  );
-}
+
 
 function Members({ members, onDone }: { members: import("@/lib/admin.types").AdminMember[]; onDone: () => void }) {
   const [term, setTerm] = useState("");
