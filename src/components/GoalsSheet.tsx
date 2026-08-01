@@ -23,10 +23,8 @@ export function GoalsSheet({
       <div className="space-y-3">
         <Stepper label="Calories / day" value={g.calories} onChange={(v) => setG({ ...g, calories: v })} step={50} suffix="cal" />
         <Stepper label="Protein / day" value={g.protein} onChange={(v) => setG({ ...g, protein: v })} step={5} suffix="g" />
-        <div className="grid grid-cols-2 gap-3">
-          <Stepper label="Carbs" value={g.carbs} onChange={(v) => setG({ ...g, carbs: v })} step={5} suffix="g" />
-          <Stepper label="Fat" value={g.fat} onChange={(v) => setG({ ...g, fat: v })} step={5} suffix="g" />
-        </div>
+        <Stepper label="Carbs / day" value={g.carbs} onChange={(v) => setG({ ...g, carbs: v })} step={5} suffix="g" />
+        <Stepper label="Fat / day" value={g.fat} onChange={(v) => setG({ ...g, fat: v })} step={5} suffix="g" />
         <Stepper label="Goal weight" value={g.weight ?? 180} onChange={(v) => setG({ ...g, weight: v })} step={1} suffix="lb" />
       </div>
       <PrimaryButton onClick={() => onSave(g)}>
