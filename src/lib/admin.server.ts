@@ -145,6 +145,11 @@ export async function setComped(userId: string, months: number | null) {
   if (months === null) {
     await db.from("elite_grants").delete().eq("user_id", userId).eq("code", "ADMIN-COMP");
   } else {
+    // elite_grants.code references promo_codes.code, so make sure the comp code exists.
+    await db.from("promo_codes").upsert(
+      { code: "ADMIN-COMP", label: "Admin comp", grant_months: months, max_redemptions: 1000000, active: true },
+      { onConflict: "code" },
+    );
     const expires = new Date();
     expires.setMonth(expires.getMonth() + months);
     await db.from("elite_grants").insert({ user_id: userId, code: "ADMIN-COMP", expires_at: expires.toISOString() });
