@@ -27,6 +27,7 @@ import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as MessagesHandleRouteImport } from './routes/messages.$handle'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as ApiPublicPushPendingRouteImport } from './routes/api/public/push/pending'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const TrackRoute = TrackRouteImport.update({
@@ -118,6 +119,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicPushPendingRoute = ApiPublicPushPendingRouteImport.update({
+  id: '/api/public/push/pending',
+  path: '/api/public/push/pending',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -144,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/messages/': typeof MessagesIndexRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesIndexRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/messages/': typeof MessagesIndexRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -208,6 +217,7 @@ export interface FileRouteTypes {
     | '/messages/'
     | '/admin/'
     | '/api/public/payments/webhook'
+    | '/api/public/push/pending'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/admin'
     | '/api/public/payments/webhook'
+    | '/api/public/push/pending'
   id:
     | '__root__'
     | '/'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/messages/'
     | '/_authenticated/admin/'
     | '/api/public/payments/webhook'
+    | '/api/public/push/pending'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -270,6 +282,7 @@ export interface RootRouteChildren {
   UHandleRoute: typeof UHandleRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
+  ApiPublicPushPendingRoute: typeof ApiPublicPushPendingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -400,6 +413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/push/pending': {
+      id: '/api/public/push/pending'
+      path: '/api/public/push/pending'
+      fullPath: '/api/public/push/pending'
+      preLoaderRoute: typeof ApiPublicPushPendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -440,6 +460,7 @@ const rootRouteChildren: RootRouteChildren = {
   UHandleRoute: UHandleRoute,
   MessagesIndexRoute: MessagesIndexRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
+  ApiPublicPushPendingRoute: ApiPublicPushPendingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
