@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import {
   ArrowLeft, Shield, Search, Trash2, Crown, BadgeCheck, Plus, Flag,
-  Users, Loader2, X, Eraser,
+  Users, Loader2, X, Eraser, Bell,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { AdminProductsPanel } from "@/components/AdminProductsPanel";
@@ -16,6 +16,7 @@ import {
   adminOverview, setAdmin, addAdminByEmail, removeAccount, moderateMember,
   upsertChallenge, removeChallenge, adminMessages,
 } from "@/lib/admin.functions";
+import { broadcastNotification } from "@/lib/push.functions";
 import type { AdminChallenge } from "@/lib/admin.types";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
