@@ -254,18 +254,32 @@ function Track() {
 
         {(workouts.data ?? []).length > 0 && (
           <div className="mt-4 border-t border-border pt-3">
-            <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Recent</p>
-            {workouts.data!.slice(0, 4).map((w) => (
-              <div key={w.id} className="flex items-center justify-between py-2 text-sm">
-                <span>{w.title ?? w.category}</span>
-                <span className="text-xs text-muted-foreground">
+            <p className="text-[11px] uppercase tracking-widest text-muted-foreground">Recent · tap for details</p>
+            {workouts.data!.slice(0, 6).map((w) => (
+              <button
+                key={w.id}
+                onClick={() => setDetailId(w.id)}
+                className="flex w-full items-center justify-between gap-3 py-2.5 text-left text-sm transition active:scale-[0.99]"
+              >
+                <span className="min-w-0 flex-1 truncate">{w.title ?? w.category}</span>
+                <span className="shrink-0 text-xs text-muted-foreground">
                   {(w.workout_sets ?? []).length} sets · {new Date(w.performed_at).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
                 </span>
-              </div>
+                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+              </button>
             ))}
           </div>
         )}
       </section>
+
+      <RemindersCard userId={uid} />
+
+      {detailId && (() => {
+        const w = (workouts.data ?? []).find((x) => x.id === detailId);
+        if (!w) return null;
+        return <WorkoutDetailSheet workout={w as unknown as WorkoutDetail} onClose={() => setDetailId(null)} />;
+      })()}
+
 
 
       {/* PRs */}
