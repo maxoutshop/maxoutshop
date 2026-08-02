@@ -32,7 +32,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminHome,
 });
 
-type Tab = "overview" | "members" | "challenges" | "products" | "messages";
+type Tab = "overview" | "members" | "challenges" | "products" | "messages" | "notify";
 
 function AdminHome() {
   const qc = useQueryClient();
