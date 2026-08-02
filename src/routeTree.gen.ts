@@ -27,7 +27,9 @@ import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as MessagesHandleRouteImport } from './routes/messages.$handle'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as ApiPublicPushPendingRouteImport } from './routes/api/public/push/pending'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
+import { Route as ApiPublicHooksNutritionRemindersRouteImport } from './routes/api/public/hooks/nutrition-reminders'
 
 const TrackRoute = TrackRouteImport.update({
   id: '/track',
@@ -118,10 +120,21 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicPushPendingRoute = ApiPublicPushPendingRouteImport.update({
+  id: '/api/public/push/pending',
+  path: '/api/public/push/pending',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
     path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicHooksNutritionRemindersRoute =
+  ApiPublicHooksNutritionRemindersRouteImport.update({
+    id: '/api/public/hooks/nutrition-reminders',
+    path: '/api/public/hooks/nutrition-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -143,7 +156,9 @@ export interface FileRoutesByFullPath {
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -163,7 +178,9 @@ export interface FileRoutesByTo {
   '/u/$handle': typeof UHandleRoute
   '/messages': typeof MessagesIndexRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -185,7 +202,9 @@ export interface FileRoutesById {
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
+  '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -207,7 +226,9 @@ export interface FileRouteTypes {
     | '/u/$handle'
     | '/messages/'
     | '/admin/'
+    | '/api/public/hooks/nutrition-reminders'
     | '/api/public/payments/webhook'
+    | '/api/public/push/pending'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -227,7 +248,9 @@ export interface FileRouteTypes {
     | '/u/$handle'
     | '/messages'
     | '/admin'
+    | '/api/public/hooks/nutrition-reminders'
     | '/api/public/payments/webhook'
+    | '/api/public/push/pending'
   id:
     | '__root__'
     | '/'
@@ -248,7 +271,9 @@ export interface FileRouteTypes {
     | '/u/$handle'
     | '/messages/'
     | '/_authenticated/admin/'
+    | '/api/public/hooks/nutrition-reminders'
     | '/api/public/payments/webhook'
+    | '/api/public/push/pending'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -269,7 +294,9 @@ export interface RootRouteChildren {
   ProductSlugRoute: typeof ProductSlugRoute
   UHandleRoute: typeof UHandleRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
+  ApiPublicHooksNutritionRemindersRoute: typeof ApiPublicHooksNutritionRemindersRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
+  ApiPublicPushPendingRoute: typeof ApiPublicPushPendingRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -400,11 +427,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/push/pending': {
+      id: '/api/public/push/pending'
+      path: '/api/public/push/pending'
+      fullPath: '/api/public/push/pending'
+      preLoaderRoute: typeof ApiPublicPushPendingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
       fullPath: '/api/public/payments/webhook'
       preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/hooks/nutrition-reminders': {
+      id: '/api/public/hooks/nutrition-reminders'
+      path: '/api/public/hooks/nutrition-reminders'
+      fullPath: '/api/public/hooks/nutrition-reminders'
+      preLoaderRoute: typeof ApiPublicHooksNutritionRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -439,7 +480,9 @@ const rootRouteChildren: RootRouteChildren = {
   ProductSlugRoute: ProductSlugRoute,
   UHandleRoute: UHandleRoute,
   MessagesIndexRoute: MessagesIndexRoute,
+  ApiPublicHooksNutritionRemindersRoute: ApiPublicHooksNutritionRemindersRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
+  ApiPublicPushPendingRoute: ApiPublicPushPendingRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
