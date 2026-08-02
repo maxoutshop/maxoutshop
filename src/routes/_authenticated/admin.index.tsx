@@ -54,8 +54,8 @@ function AdminHome() {
         </h1>
         <p className="mt-1 text-xs text-muted-foreground">Everything that runs MAXOUT, in one place.</p>
 
-        <div className="mt-5 grid grid-cols-5 gap-2">
-          {(["overview", "members", "challenges", "products", "messages"] as Tab[]).map((t) => (
+        <div className="mt-5 grid grid-cols-3 gap-2">
+          {(["overview", "members", "challenges", "products", "messages", "notify"] as Tab[]).map((t) => (
             <button key={t} onClick={() => setTab(t)}
               className={`rounded-full py-2 text-[11px] font-semibold capitalize transition active:scale-95 ${
                 tab === t ? "bg-foreground text-background" : "border border-border text-muted-foreground"
@@ -64,6 +64,7 @@ function AdminHome() {
             </button>
           ))}
         </div>
+
 
         {tab !== "products" && tab !== "messages" && q.isLoading && (
           <div className="mt-10 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
