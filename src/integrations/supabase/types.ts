@@ -290,6 +290,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          read_at: string | null
+          title: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          title: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          title?: string
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       personal_records: {
         Row: {
           achieved_at: string
@@ -576,6 +609,48 @@ export type Database = {
           label?: string | null
           max_redemptions?: number
           redeemed_count?: number
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          reminder_hour: number
+          reminders_enabled: boolean
+          token: string
+          tz_offset_minutes: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          reminder_hour?: number
+          reminders_enabled?: boolean
+          token?: string
+          tz_offset_minutes?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
+          reminder_hour?: number
+          reminders_enabled?: boolean
+          token?: string
+          tz_offset_minutes?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
