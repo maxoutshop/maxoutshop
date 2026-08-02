@@ -13,6 +13,8 @@ import { BottomSheet, MealSheet, Stepper, BigInput, PrimaryButton, type MealDraf
 import { GoalsSheet } from "@/components/GoalsSheet";
 import { TrainerSheet } from "@/components/TrainerSheet";
 import { WorkoutSession } from "@/components/WorkoutSession";
+import { WorkoutDetailSheet, type WorkoutDetail } from "@/components/WorkoutDetailSheet";
+import { RemindersCard } from "@/components/RemindersCard";
 import { WORKOUT_TEMPLATES, GROWTH_TIPS, type TemplateExercise } from "@/lib/workout-templates";
 
 
