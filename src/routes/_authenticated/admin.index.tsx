@@ -66,10 +66,10 @@ function AdminHome() {
         </div>
 
 
-        {tab !== "products" && tab !== "messages" && q.isLoading && (
+        {tab !== "products" && tab !== "messages" && tab !== "notify" && q.isLoading && (
           <div className="mt-10 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
         )}
-        {tab !== "products" && tab !== "messages" && q.error && (
+        {tab !== "products" && tab !== "messages" && tab !== "notify" && q.error && (
           <p className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
             {q.error instanceof Error ? q.error.message : "Could not load admin data."}
           </p>
@@ -80,10 +80,75 @@ function AdminHome() {
         {q.data && tab === "challenges" && <Challenges list={q.data.challenges} onDone={refresh} />}
         {tab === "products" && <AdminProductsPanel />}
         {tab === "messages" && <MessagesPanel />}
+        {tab === "notify" && <NotifyPanel />}
       </div>
     </AppShell>
   );
 }
+
+function NotifyPanel() {
+  const send = useServerFn(broadcastNotification);
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [url, setUrl] = useState("/");
+  const [audience, setAudience] = useState<"all" | "elite">("all");
+  const [busy, setBusy] = useState(false);
+
+  async function submit() {
+    setBusy(true);
+    try {
+      const res = await send({ data: { title, body, url, audience } });
+      toast.success(`Sent to ${res.stored} members · ${res.pushed} devices`);
+      setTitle(""); setBody("");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not send");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="mt-6">
+      <div className="rounded-3xl border border-border bg-surface p-4">
+        <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
+          <Bell className="h-3.5 w-3.5" /> Send a notification
+        </p>
+        <div className="mt-3 space-y-2">
+          <Field label="Title" value={title} onChange={setTitle} placeholder="New drop is live" />
+          <label className="block">
+            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Message</span>
+            <textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              rows={3}
+              placeholder="The Summer collection just dropped — ELITE early access ends tonight."
+              className="mt-1 w-full resize-none rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none"
+            />
+          </label>
+          <Field label="Opens (path)" value={url} onChange={setUrl} placeholder="/shop" />
+          <div className="grid grid-cols-2 gap-2">
+            {(["all", "elite"] as const).map((a) => (
+              <button key={a} onClick={() => setAudience(a)}
+                className={`rounded-full py-2.5 text-xs font-semibold capitalize transition active:scale-95 ${
+                  audience === a ? "bg-foreground text-background" : "border border-border text-muted-foreground"
+                }`}>
+                {a === "all" ? "All members" : "ELITE only"}
+              </button>
+            ))}
+          </div>
+        </div>
+        <button onClick={submit} disabled={busy || !title.trim() || !body.trim()}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-40">
+          {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send notification"}
+        </button>
+      </div>
+      <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+        Members who turned on notifications get it on their device instantly. Everyone else sees it next time they open the app.
+      </p>
+    </div>
+  );
+}
+
 
 function MessagesPanel() {
   const load = useServerFn(adminMessages);
