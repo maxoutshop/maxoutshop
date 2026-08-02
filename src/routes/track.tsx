@@ -55,7 +55,9 @@ function Track() {
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
   const [plan, setPlan] = useState<TemplateExercise[]>([]);
   const [sessionOpen, setSessionOpen] = useState(false);
+  const [detailId, setDetailId] = useState<string | null>(null);
   const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals" | "trainer">(null);
+
 
 
   const weekCount = useMemo(() => {
