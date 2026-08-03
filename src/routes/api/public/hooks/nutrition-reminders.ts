@@ -1,6 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-/** Hourly cron: nudge members who haven't hit their nutrition goals today. */
+/** Meal-time reminders: 8:00 breakfast, 12:30 lunch, 19:30 dinner (member local time). */
+const SLOTS: Array<{ minutes: number; meal: string }> = [
+  { minutes: 8 * 60, meal: "breakfast" },
+  { minutes: 12 * 60 + 30, meal: "lunch" },
+  { minutes: 19 * 60 + 30, meal: "dinner" },
+];
+
 export const Route = createFileRoute("/api/public/hooks/nutrition-reminders")({
   server: {
     handlers: {
@@ -11,17 +17,20 @@ export const Route = createFileRoute("/api/public/hooks/nutrition-reminders")({
 
         const { data: subs } = await db
           .from("push_subscriptions")
-          .select("user_id, reminder_hour, tz_offset_minutes")
+          .select("user_id, tz_offset_minutes")
           .eq("reminders_enabled", true);
 
         const now = Date.now();
-        const due = new Map<string, void>();
-        for (const s of (subs ?? []) as Array<{ user_id: string; reminder_hour: number; tz_offset_minutes: number }>) {
+        const due = new Map<string, string>();
+        for (const s of (subs ?? []) as Array<{ user_id: string; tz_offset_minutes: number }>) {
           const local = new Date(now - (s.tz_offset_minutes ?? 0) * 60_000);
-          if (local.getUTCHours() === (s.reminder_hour ?? 19)) due.set(s.user_id, undefined);
+          const mins = local.getUTCHours() * 60 + local.getUTCMinutes();
+          const hit = SLOTS.find((slot) => Math.abs(mins - slot.minutes) < 15);
+          if (hit) due.set(s.user_id, hit.meal);
         }
         const userIds = [...due.keys()];
         if (userIds.length === 0) return Response.json({ ok: true, sent: 0 });
+
 
         const { data: profiles } = await db
           .from("profiles")
