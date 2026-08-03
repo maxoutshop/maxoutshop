@@ -55,15 +55,23 @@ export const Route = createFileRoute("/api/public/hooks/nutrition-reminders")({
         let sent = 0;
         for (const p of (profiles ?? []) as Array<{ id: string; goal_calories: number; goal_protein: number }>) {
           const t = totals.get(p.id) ?? { cal: 0, pro: 0 };
+          const meal = due.get(p.id) ?? "meal";
           const calLeft = Math.max(0, (p.goal_calories ?? 2400) - t.cal);
           const proLeft = Math.max(0, (p.goal_protein ?? 180) - t.pro);
           const body =
             calLeft === 0 && proLeft === 0
               ? "Goals hit today. Lock it in and log tomorrow's first meal."
               : `${calLeft} cal and ${proLeft}g protein left today. Finish strong.`;
-          await notifyUsers([p.id], { title: "MAXOUT — fuel check", body, url: "/track", kind: "nutrition" });
+          const title =
+            meal === "breakfast"
+              ? "MAXOUT — breakfast"
+              : meal === "lunch"
+                ? "MAXOUT — lunch"
+                : "MAXOUT — dinner";
+          await notifyUsers([p.id], { title, body, url: "/track", kind: "nutrition" });
           sent++;
         }
+
 
         return Response.json({ ok: true, sent });
       },
