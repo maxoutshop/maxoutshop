@@ -17,8 +17,8 @@ export function RemindersCard({ userId }: { userId?: string }) {
           {push.error
             ? push.error
             : push.enabled
-              ? "On — we'll nudge you if you're short on calories or protein."
-              : "Get a daily nudge to hit your calories and protein."}
+              ? "On — nudges at 8:00, 12:30 and 7:30 your time."
+              : "Get nudged at 8:00, 12:30 and 7:30 to hit your macros."}
         </p>
       </div>
       <button
