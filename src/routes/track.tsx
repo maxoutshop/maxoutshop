@@ -238,7 +238,7 @@ function Track() {
           <p className="mt-1 text-xs text-accent">Live · {live.category} · {liveSets.length} sets logged</p>
         ) : (
           <>
-            <p className="mt-1 text-xs text-muted-foreground">Start from a template or freestyle it.</p>
+            <p className="mt-1 text-xs text-muted-foreground">Start from a template or customize your workout.</p>
             <div className="mt-3 space-y-2">
               {WORKOUT_TEMPLATES.slice(0, 3).map((t) => (
                 <TemplateRow key={t.id} name={t.name} focus={t.focus} count={t.exercises.length}
