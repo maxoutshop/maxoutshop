@@ -28,8 +28,8 @@ self.addEventListener("push", (event) => {
 
       await self.registration.showNotification(notice.title, {
         body: notice.body,
-        icon: "/favicon.ico",
-        badge: "/favicon.ico",
+        icon: "/favicon.png",
+        badge: "/favicon.png",
         tag: "maxout",
         renotify: true,
         data: { url: notice.url || "/" },
