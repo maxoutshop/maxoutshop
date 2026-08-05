@@ -11,9 +11,15 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { installApiProxy } from "@/lib/api-base";
 import { supabase } from "@/integrations/supabase/client";
 import { PageTransition } from "@/components/PageTransition";
 import { SplashScreen } from "@/components/SplashScreen";
+
+// Native (Capacitor) build only: point relative server calls at the published API.
+installApiProxy();
+
+
 
 
 function NotFoundComponent() {
