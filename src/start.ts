@@ -1,5 +1,4 @@
 import { createStart, createCsrfMiddleware, createMiddleware } from "@tanstack/react-start";
-import { getRequestHeader, setResponseHeader } from "@tanstack/react-start/server";
 
 import { renderErrorPage } from "./lib/error-page";
 import { attachSupabaseAuth } from "@/integrations/supabase/auth-attacher";
@@ -35,7 +34,7 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
 // Lets the native shell (static Capacitor build) call this deployment's server
 // functions and API routes. Web requests are same-origin and unaffected.
 const nativeCorsMiddleware = createMiddleware().server(async ({ next, request }) => {
-  const origin = getRequestHeader("origin");
+  const origin = request.headers.get("origin");
   if (!isNativeOrigin(origin)) {
     return next();
   }
@@ -52,10 +51,17 @@ const nativeCorsMiddleware = createMiddleware().server(async ({ next, request })
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
+  const result = await next();
+  const response = result instanceof Response ? result : result.response;
+  const headers = new Headers(response.headers);
   for (const [key, value] of Object.entries(corsHeaders)) {
-    setResponseHeader(key, value);
+    headers.set(key, value);
   }
-  return next();
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 });
 
 // Start installs this automatically when src/start.ts is absent; defining the
@@ -63,7 +69,7 @@ const nativeCorsMiddleware = createMiddleware().server(async ({ next, request })
 // from cross-site requests. The native shell is exempt (it has no cookies and
 // authenticates with an explicit Supabase bearer token).
 const csrfMiddleware = createCsrfMiddleware({
-  filter: (ctx) => ctx.handlerType === "serverFn" && !isNativeOrigin(getRequestHeader("origin")),
+  filter: (ctx) => ctx.handlerType === "serverFn" && !isNativeOrigin(ctx.request.headers.get("origin")),
 });
 
 export const startInstance = createStart(() => ({
