@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useIsFetching } from "@tanstack/react-query";
 import splashAsset from "@/assets/maxout-splash.png.asset.json";
 import { supabase } from "@/integrations/supabase/client";
+import { apiUrl } from "@/lib/api-base";
 
 /**
  * Pre-app splash screen: shows the MAXOUT logo on a dark background with a
@@ -19,6 +20,7 @@ export function SplashScreen({
   maximumMs?: number;
   fadeOutMs?: number;
 }) {
+  const splashUrl = apiUrl(splashAsset.url);
   const [phase, setPhase] = useState<"showing" | "fading" | "done">("showing");
   const [progress, setProgress] = useState(0);
 
@@ -39,7 +41,7 @@ export function SplashScreen({
     const img = new Image();
     img.onload = () => setImageReady(true);
     img.onerror = () => setImageReady(true);
-    img.src = splashAsset.url;
+    img.src = splashUrl;
     if (img.complete) setImageReady(true);
   }, []);
 
@@ -128,7 +130,7 @@ export function SplashScreen({
         aria-label="MAXOUT loading"
       >
         <img
-          src={splashAsset.url}
+          src={splashUrl}
           alt="MAXOUT"
           className="h-auto max-h-[85vh] w-auto max-w-[85vw] select-none object-contain opacity-95"
           draggable={false}
