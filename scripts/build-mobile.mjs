@@ -7,8 +7,7 @@
  * (`npm run build:web`) is untouched.
  */
 import { spawnSync } from "node:child_process";
-import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync, renameSync } from "node:fs";
-import { tmpdir } from "node:os";
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
@@ -33,10 +32,11 @@ if (!existsSync(join(clientDir, "index.html"))) {
 }
 
 // Move dist/client/* up to dist/ (via a temp dir so we never copy into ourselves).
-const staging = mkdtempSync(join(tmpdir(), "maxout-mobile-"));
+const staging = mkdtempSync(join(root, ".maxout-mobile-"));
 cpSync(clientDir, staging, { recursive: true });
 rmSync(distDir, { recursive: true, force: true });
-renameSync(staging, distDir);
+cpSync(staging, distDir, { recursive: true });
+rmSync(staging, { recursive: true, force: true });
 
 const html = readFileSync(join(distDir, "index.html"), "utf8");
 if (!/<script[^>]+src="\/assets\//.test(html)) {
