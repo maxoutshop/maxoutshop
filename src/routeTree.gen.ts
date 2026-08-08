@@ -27,6 +27,7 @@ import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as MessagesHandleRouteImport } from './routes/messages.$handle'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as ApiMobileCheckoutRouteImport } from './routes/api/mobile/checkout'
 import { Route as ApiMobileCatalogRouteImport } from './routes/api/mobile/catalog'
 import { Route as ApiPublicPushPendingRouteImport } from './routes/api/public/push/pending'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -121,6 +122,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiMobileCheckoutRoute = ApiMobileCheckoutRouteImport.update({
+  id: '/api/mobile/checkout',
+  path: '/api/mobile/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMobileCatalogRoute = ApiMobileCatalogRouteImport.update({
   id: '/api/mobile/catalog',
   path: '/api/mobile/catalog',
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
   '/api/mobile/catalog': typeof ApiMobileCatalogRoute
+  '/api/mobile/checkout': typeof ApiMobileCheckoutRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/u/$handle': typeof UHandleRoute
   '/messages': typeof MessagesIndexRoute
   '/api/mobile/catalog': typeof ApiMobileCatalogRoute
+  '/api/mobile/checkout': typeof ApiMobileCheckoutRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -210,6 +218,7 @@ export interface FileRoutesById {
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
   '/api/mobile/catalog': typeof ApiMobileCatalogRoute
+  '/api/mobile/checkout': typeof ApiMobileCheckoutRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/u/$handle'
     | '/messages/'
     | '/api/mobile/catalog'
+    | '/api/mobile/checkout'
     | '/admin/'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/payments/webhook'
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/u/$handle'
     | '/messages'
     | '/api/mobile/catalog'
+    | '/api/mobile/checkout'
     | '/admin'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/payments/webhook'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/u/$handle'
     | '/messages/'
     | '/api/mobile/catalog'
+    | '/api/mobile/checkout'
     | '/_authenticated/admin/'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/payments/webhook'
@@ -307,6 +319,7 @@ export interface RootRouteChildren {
   UHandleRoute: typeof UHandleRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
   ApiMobileCatalogRoute: typeof ApiMobileCatalogRoute
+  ApiMobileCheckoutRoute: typeof ApiMobileCheckoutRoute
   ApiPublicHooksNutritionRemindersRoute: typeof ApiPublicHooksNutritionRemindersRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicPushPendingRoute: typeof ApiPublicPushPendingRoute
@@ -440,6 +453,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/mobile/checkout': {
+      id: '/api/mobile/checkout'
+      path: '/api/mobile/checkout'
+      fullPath: '/api/mobile/checkout'
+      preLoaderRoute: typeof ApiMobileCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/mobile/catalog': {
       id: '/api/mobile/catalog'
       path: '/api/mobile/catalog'
@@ -501,6 +521,7 @@ const rootRouteChildren: RootRouteChildren = {
   UHandleRoute: UHandleRoute,
   MessagesIndexRoute: MessagesIndexRoute,
   ApiMobileCatalogRoute: ApiMobileCatalogRoute,
+  ApiMobileCheckoutRoute: ApiMobileCheckoutRoute,
   ApiPublicHooksNutritionRemindersRoute: ApiPublicHooksNutritionRemindersRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicPushPendingRoute: ApiPublicPushPendingRoute,
