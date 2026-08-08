@@ -77,8 +77,31 @@
   h1, h2, h3, h4 {
     letter-spacing: -0.01em;
     font-weight: 600;
-  }
 }
+
+/* Native (Capacitor) shell only — never affects the responsive web app. */
+html.native-app {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  touch-action: manipulation;
+}
+html.native-app body {
+  touch-action: manipulation;
+  overscroll-behavior-y: none;
+}
+html.native-app button,
+html.native-app a,
+html.native-app [role="button"] {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+}
+/* iOS auto-zooms any focused field under 16px; floor it without enlarging bigger text. */
+html.native-app input,
+html.native-app textarea,
+html.native-app select {
+  font-size: max(16px, 1em);
+}
+
 
 @utility no-scrollbar {
   &::-webkit-scrollbar { display: none; }
