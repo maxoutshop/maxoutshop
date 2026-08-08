@@ -77,7 +77,9 @@
   h1, h2, h3, h4 {
     letter-spacing: -0.01em;
     font-weight: 600;
+  }
 }
+
 
 /* Native (Capacitor) shell only — never affects the responsive web app. */
 html.native-app {
