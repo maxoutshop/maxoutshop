@@ -18,7 +18,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+      <header className="safe-area-top sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-4">
           <Link to="/" className="text-lg font-semibold tracking-[0.25em]">MAXOUT</Link>
           <Link to="/cart" className="relative -mr-2 grid h-10 w-10 place-items-center rounded-full hover:bg-secondary transition">

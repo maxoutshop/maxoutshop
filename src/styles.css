@@ -85,6 +85,10 @@
   scrollbar-width: none;
 }
 
+@utility safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
 @utility text-balance { text-wrap: balance; }
 
 @utility display {
