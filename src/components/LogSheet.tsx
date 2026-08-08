@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Sparkles, Camera, Loader2, Minus, Plus, Trash2, Pencil, Lock } from "lucide-react";
-import { parseFood } from "@/lib/nutrition.functions";
+import { parseFoodClient } from "@/lib/api-client";
+import { IS_NATIVE_BUILD } from "@/lib/api-base";
+import { captureFoodPhoto } from "@/lib/native-camera";
 
 export type MealDraft = {
   name: string;
@@ -149,7 +151,7 @@ export function MealSheet({
     setBusy(true);
     setError(null);
     try {
-      const res = await parseFood({ data: payload });
+      const res = await parseFoodClient(payload);
       if (res.error) {
         setError(res.error);
         return;
@@ -161,6 +163,24 @@ export function MealSheet({
       setError(e instanceof Error ? e.message : "Something went wrong.");
     } finally {
       setBusy(false);
+    }
+  }
+
+  async function pickPhoto() {
+    if (!isElite) {
+      onUpgrade?.();
+      return;
+    }
+    if (!IS_NATIVE_BUILD) {
+      fileRef.current?.click();
+      return;
+    }
+    try {
+      const dataUrl = await captureFoodPhoto();
+      if (dataUrl) await run({ imageDataUrl: dataUrl });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Could not open the camera.";
+      if (!/cancel/i.test(msg)) setError(msg);
     }
   }
 
@@ -209,7 +229,7 @@ export function MealSheet({
             {busy ? "Reading…" : "Estimate macros"}
           </button>
           <button
-            onClick={() => (isElite ? fileRef.current?.click() : onUpgrade?.())}
+            onClick={() => void pickPhoto()}
             disabled={busy}
             aria-label={isElite ? "Log food by photo" : "Unlock photo logging with MAXOUT ELITE"}
             className="relative grid h-11 w-11 place-items-center rounded-full border border-border active:scale-90 transition disabled:opacity-40"
