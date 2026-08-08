@@ -64,6 +64,14 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>MAXOUT uses your camera so you can snap a photo of your meal and get instant macro estimates.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>MAXOUT needs access to your photos so you can log meals and post to the community feed.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>MAXOUT saves photos you capture in the app to your photo library.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>MAXOUT needs the microphone when you record a video for the community feed.</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>
