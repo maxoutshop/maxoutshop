@@ -1,12 +1,13 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getCatalog } from "./wix.functions";
+import { fetchCatalogClient } from "./api-client";
 import { FALLBACK_CATALOG, type CatalogProduct } from "./catalog-meta";
 
 export const catalogQueryOptions = queryOptions({
   queryKey: ["wix-catalog"],
-  queryFn: () => getCatalog(),
+  queryFn: () => fetchCatalogClient(),
   staleTime: 5 * 60 * 1000,
 });
+
 
 export function useCatalog(): { products: CatalogProduct[]; isLive: boolean; isLoading: boolean } {
   const { data, isLoading } = useQuery(catalogQueryOptions);
