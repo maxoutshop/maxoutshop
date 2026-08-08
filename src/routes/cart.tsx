@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { cartActions, useStore } from "@/lib/store";
 import { findVariant, useCatalog } from "@/lib/catalog";
-import { createCheckout } from "@/lib/wix.functions";
+import { createCheckoutClient } from "@/lib/api-client";
 import { Minus, Plus, Trash2, ShoppingBag, ExternalLink, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useSession } from "@/lib/auth";
@@ -42,7 +42,7 @@ function Cart() {
       if (lines.some((l) => !l.productId)) {
         throw new Error("Some items need to be re-added before checkout.");
       }
-      const { url } = await createCheckout({ data: { lines, email: user?.email ?? undefined } });
+      const { url } = await createCheckoutClient({ lines, email: user?.email ?? undefined });
       window.open(url, "_blank", "noopener");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not start checkout. Please try again.");

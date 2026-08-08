@@ -3,7 +3,7 @@ import { AppShell } from "@/components/AppShell";
 import { ProductCard } from "@/components/ProductCard";
 import { useEffect, useMemo, useState } from "react";
 import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/store";
-import { getCatalog } from "@/lib/wix.functions";
+import { fetchCatalogClient } from "@/lib/api-client";
 import { FALLBACK_CATALOG, type CatalogProduct } from "@/lib/catalog-meta";
 import { findVariant, relatedFrom } from "@/lib/catalog";
 import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler, Lock } from "lucide-react";
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/product/$slug")({
   loader: async ({ params }) => {
     let list: CatalogProduct[] = FALLBACK_CATALOG;
     try {
-      const live = await getCatalog();
+      const live = await fetchCatalogClient();
       if (live?.length) list = live as CatalogProduct[];
     } catch {
       // fall back to the bundled catalog snapshot
