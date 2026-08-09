@@ -155,7 +155,7 @@ function Shop() {
 
         <div className="mt-3 flex items-center justify-between gap-3">
           <span className="kicker text-muted-foreground">
-            {isLoading ? "Loading" : `${filtered.length} products`}
+            {isLoading ? "Loading" : isError ? "Catalog unavailable" : `${filtered.length} products`}
           </span>
           <button
             onClick={() => setShowFilters(true)}
@@ -184,7 +184,21 @@ function Shop() {
           </div>
         )}
 
-        {isLoading ? (
+        {isError && products.length === 0 ? (
+          <div className="mt-20 text-center">
+            <h2 className="display text-3xl leading-none">Can't load the store</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              We couldn't reach the live MAXOUT catalog. Check your connection and try again.
+            </p>
+            <button
+              onClick={refetch}
+              disabled={isFetching}
+              className="mt-5 rounded-full bg-accent px-6 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent-foreground disabled:opacity-60"
+            >
+              {isFetching ? "Retrying…" : "Retry"}
+            </button>
+          </div>
+        ) : isLoading ? (
           <div className="mt-4 grid grid-cols-2 gap-3">
             {Array.from({ length: 6 }).map((_, i) => (
               <ProductTileSkeleton key={i} wide={i === 0} />
@@ -205,6 +219,7 @@ function Shop() {
             ))}
           </div>
         )}
+
       </div>
 
       {showFilters && (
