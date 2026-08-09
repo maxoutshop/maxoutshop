@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
 import {
   useProfile, useRecentMeals, useWater, useWorkouts, usePRs, useWeights, useMutate,
+  deleteWorkout, useInvalidate,
 } from "@/lib/db";
 import { useElite } from "@/lib/subscription";
 import { NutritionPanel } from "@/components/NutritionPanel";
@@ -43,6 +44,7 @@ function Track() {
   const { user, loading: sessionLoading } = useSession();
   const uid = user?.id;
   const navigate = useNavigate();
+  const invalidate = useInvalidate();
   const { isElite } = useElite(uid);
   const profile = useProfile(uid);
 
@@ -277,7 +279,19 @@ function Track() {
       {detailId && (() => {
         const w = (workouts.data ?? []).find((x) => x.id === detailId);
         if (!w) return null;
-        return <WorkoutDetailSheet workout={w as unknown as WorkoutDetail} onClose={() => setDetailId(null)} />;
+        return (
+          <WorkoutDetailSheet
+            workout={w as unknown as WorkoutDetail}
+            onClose={() => setDetailId(null)}
+            onDelete={async (id) => {
+              if (!uid) throw new Error("You must be signed in.");
+              await deleteWorkout(id, uid);
+              if (activeWorkout === id) { setActiveWorkout(null); setSessionOpen(false); }
+              setDetailId(null);
+              invalidate("workouts", "prs", "profile", "points");
+            }}
+          />
+        );
       })()}
 
 
