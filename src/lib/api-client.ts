@@ -36,9 +36,14 @@ async function nativeFetch(path: string, init?: RequestInit & { auth?: boolean }
 /** Live Wix catalog. Native builds go through /api/public/mobile/catalog. */
 export async function fetchCatalogClient(): Promise<CatalogProduct[]> {
   if (!IS_NATIVE_BUILD) return (await getCatalog()) as CatalogProduct[];
-  const json = (await nativeFetch("/api/public/mobile/catalog")) as { products?: CatalogProduct[] };
-  return json?.products ?? [];
+  // Cache-bust so newly published Wix products always reach the native shell.
+  const json = (await nativeFetch(`/api/public/mobile/catalog?t=${Date.now()}`, {
+    cache: "no-store",
+  })) as { products?: CatalogProduct[] };
+  if (!Array.isArray(json?.products)) throw new Error("Catalog unavailable right now.");
+  return json.products;
 }
+
 
 /** Wix checkout handoff URL. */
 export async function createCheckoutClient(input: {

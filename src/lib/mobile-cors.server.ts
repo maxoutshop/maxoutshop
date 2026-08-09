@@ -28,9 +28,15 @@ export function preflight(request: Request): Response {
 export function jsonResponse(request: Request, body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders(request), "Content-Type": "application/json" },
+    headers: {
+      ...corsHeaders(request),
+      "Content-Type": "application/json",
+      // Never let a CDN/webview serve a stale catalog to the native app.
+      "Cache-Control": "no-store, no-cache, must-revalidate",
+    },
   });
 }
+
 
 /** Validates a Supabase bearer token and returns the user id, or null. */
 export async function userFromBearer(request: Request): Promise<{ id: string } | null> {

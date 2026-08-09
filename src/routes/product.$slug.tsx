@@ -4,6 +4,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { useEffect, useMemo, useState } from "react";
 import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/store";
 import { fetchCatalogClient } from "@/lib/api-client";
+import { IS_NATIVE_BUILD } from "@/lib/api-base";
 import { FALLBACK_CATALOG, type CatalogProduct } from "@/lib/catalog-meta";
 import { findVariant, relatedFrom } from "@/lib/catalog";
 import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler, Lock } from "lucide-react";
@@ -12,18 +13,21 @@ import { useSession } from "@/lib/auth";
 import { useElite } from "@/lib/subscription";
 
 export const Route = createFileRoute("/product/$slug")({
+  staleTime: IS_NATIVE_BUILD ? 0 : 60 * 1000,
   loader: async ({ params }) => {
-    let list: CatalogProduct[] = FALLBACK_CATALOG;
+    let list: CatalogProduct[] = IS_NATIVE_BUILD ? [] : FALLBACK_CATALOG;
     try {
       const live = await fetchCatalogClient();
       if (live?.length) list = live as CatalogProduct[];
-    } catch {
-      // fall back to the bundled catalog snapshot
+    } catch (error) {
+      // Native must never present the bundled snapshot as current data.
+      if (IS_NATIVE_BUILD) throw error;
     }
     const p = list.find((x) => x.slug === params.slug);
     if (!p) throw notFound();
     return { product: p, related: relatedFrom(list, params.slug) };
   },
+
 
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Product not found — MAXOUT" }, { name: "robots", content: "noindex" }] };
