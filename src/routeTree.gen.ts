@@ -27,11 +27,11 @@ import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as MessagesHandleRouteImport } from './routes/messages.$handle'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
-import { Route as ApiMobileParseFoodRouteImport } from './routes/api/mobile/parse-food'
-import { Route as ApiMobileCheckoutRouteImport } from './routes/api/mobile/checkout'
-import { Route as ApiMobileCatalogRouteImport } from './routes/api/mobile/catalog'
 import { Route as ApiPublicPushPendingRouteImport } from './routes/api/public/push/pending'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
+import { Route as ApiPublicMobileParseFoodRouteImport } from './routes/api/public/mobile/parse-food'
+import { Route as ApiPublicMobileCheckoutRouteImport } from './routes/api/public/mobile/checkout'
+import { Route as ApiPublicMobileCatalogRouteImport } from './routes/api/public/mobile/catalog'
 import { Route as ApiPublicHooksNutritionRemindersRouteImport } from './routes/api/public/hooks/nutrition-reminders'
 
 const TrackRoute = TrackRouteImport.update({
@@ -123,21 +123,6 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const ApiMobileParseFoodRoute = ApiMobileParseFoodRouteImport.update({
-  id: '/api/mobile/parse-food',
-  path: '/api/mobile/parse-food',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMobileCheckoutRoute = ApiMobileCheckoutRouteImport.update({
-  id: '/api/mobile/checkout',
-  path: '/api/mobile/checkout',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMobileCatalogRoute = ApiMobileCatalogRouteImport.update({
-  id: '/api/mobile/catalog',
-  path: '/api/mobile/catalog',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicPushPendingRoute = ApiPublicPushPendingRouteImport.update({
   id: '/api/public/push/pending',
   path: '/api/public/push/pending',
@@ -149,6 +134,22 @@ const ApiPublicPaymentsWebhookRoute =
     path: '/api/public/payments/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMobileParseFoodRoute =
+  ApiPublicMobileParseFoodRouteImport.update({
+    id: '/api/public/mobile/parse-food',
+    path: '/api/public/mobile/parse-food',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicMobileCheckoutRoute = ApiPublicMobileCheckoutRouteImport.update({
+  id: '/api/public/mobile/checkout',
+  path: '/api/public/mobile/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicMobileCatalogRoute = ApiPublicMobileCatalogRouteImport.update({
+  id: '/api/public/mobile/catalog',
+  path: '/api/public/mobile/catalog',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksNutritionRemindersRoute =
   ApiPublicHooksNutritionRemindersRouteImport.update({
     id: '/api/public/hooks/nutrition-reminders',
@@ -173,11 +174,11 @@ export interface FileRoutesByFullPath {
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
-  '/api/mobile/catalog': typeof ApiMobileCatalogRoute
-  '/api/mobile/checkout': typeof ApiMobileCheckoutRoute
-  '/api/mobile/parse-food': typeof ApiMobileParseFoodRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
+  '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
+  '/api/public/mobile/checkout': typeof ApiPublicMobileCheckoutRoute
+  '/api/public/mobile/parse-food': typeof ApiPublicMobileParseFoodRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
@@ -198,11 +199,11 @@ export interface FileRoutesByTo {
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages': typeof MessagesIndexRoute
-  '/api/mobile/catalog': typeof ApiMobileCatalogRoute
-  '/api/mobile/checkout': typeof ApiMobileCheckoutRoute
-  '/api/mobile/parse-food': typeof ApiMobileParseFoodRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
+  '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
+  '/api/public/mobile/checkout': typeof ApiPublicMobileCheckoutRoute
+  '/api/public/mobile/parse-food': typeof ApiPublicMobileParseFoodRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
@@ -225,11 +226,11 @@ export interface FileRoutesById {
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
-  '/api/mobile/catalog': typeof ApiMobileCatalogRoute
-  '/api/mobile/checkout': typeof ApiMobileCheckoutRoute
-  '/api/mobile/parse-food': typeof ApiMobileParseFoodRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
+  '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
+  '/api/public/mobile/checkout': typeof ApiPublicMobileCheckoutRoute
+  '/api/public/mobile/parse-food': typeof ApiPublicMobileParseFoodRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
 }
@@ -252,11 +253,11 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/u/$handle'
     | '/messages/'
-    | '/api/mobile/catalog'
-    | '/api/mobile/checkout'
-    | '/api/mobile/parse-food'
     | '/admin/'
     | '/api/public/hooks/nutrition-reminders'
+    | '/api/public/mobile/catalog'
+    | '/api/public/mobile/checkout'
+    | '/api/public/mobile/parse-food'
     | '/api/public/payments/webhook'
     | '/api/public/push/pending'
   fileRoutesByTo: FileRoutesByTo
@@ -277,11 +278,11 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/u/$handle'
     | '/messages'
-    | '/api/mobile/catalog'
-    | '/api/mobile/checkout'
-    | '/api/mobile/parse-food'
     | '/admin'
     | '/api/public/hooks/nutrition-reminders'
+    | '/api/public/mobile/catalog'
+    | '/api/public/mobile/checkout'
+    | '/api/public/mobile/parse-food'
     | '/api/public/payments/webhook'
     | '/api/public/push/pending'
   id:
@@ -303,11 +304,11 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/u/$handle'
     | '/messages/'
-    | '/api/mobile/catalog'
-    | '/api/mobile/checkout'
-    | '/api/mobile/parse-food'
     | '/_authenticated/admin/'
     | '/api/public/hooks/nutrition-reminders'
+    | '/api/public/mobile/catalog'
+    | '/api/public/mobile/checkout'
+    | '/api/public/mobile/parse-food'
     | '/api/public/payments/webhook'
     | '/api/public/push/pending'
   fileRoutesById: FileRoutesById
@@ -330,10 +331,10 @@ export interface RootRouteChildren {
   ProductSlugRoute: typeof ProductSlugRoute
   UHandleRoute: typeof UHandleRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
-  ApiMobileCatalogRoute: typeof ApiMobileCatalogRoute
-  ApiMobileCheckoutRoute: typeof ApiMobileCheckoutRoute
-  ApiMobileParseFoodRoute: typeof ApiMobileParseFoodRoute
   ApiPublicHooksNutritionRemindersRoute: typeof ApiPublicHooksNutritionRemindersRoute
+  ApiPublicMobileCatalogRoute: typeof ApiPublicMobileCatalogRoute
+  ApiPublicMobileCheckoutRoute: typeof ApiPublicMobileCheckoutRoute
+  ApiPublicMobileParseFoodRoute: typeof ApiPublicMobileParseFoodRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicPushPendingRoute: typeof ApiPublicPushPendingRoute
 }
@@ -466,27 +467,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/api/mobile/parse-food': {
-      id: '/api/mobile/parse-food'
-      path: '/api/mobile/parse-food'
-      fullPath: '/api/mobile/parse-food'
-      preLoaderRoute: typeof ApiMobileParseFoodRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/mobile/checkout': {
-      id: '/api/mobile/checkout'
-      path: '/api/mobile/checkout'
-      fullPath: '/api/mobile/checkout'
-      preLoaderRoute: typeof ApiMobileCheckoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/mobile/catalog': {
-      id: '/api/mobile/catalog'
-      path: '/api/mobile/catalog'
-      fullPath: '/api/mobile/catalog'
-      preLoaderRoute: typeof ApiMobileCatalogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/push/pending': {
       id: '/api/public/push/pending'
       path: '/api/public/push/pending'
@@ -499,6 +479,27 @@ declare module '@tanstack/react-router' {
       path: '/api/public/payments/webhook'
       fullPath: '/api/public/payments/webhook'
       preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/mobile/parse-food': {
+      id: '/api/public/mobile/parse-food'
+      path: '/api/public/mobile/parse-food'
+      fullPath: '/api/public/mobile/parse-food'
+      preLoaderRoute: typeof ApiPublicMobileParseFoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/mobile/checkout': {
+      id: '/api/public/mobile/checkout'
+      path: '/api/public/mobile/checkout'
+      fullPath: '/api/public/mobile/checkout'
+      preLoaderRoute: typeof ApiPublicMobileCheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/mobile/catalog': {
+      id: '/api/public/mobile/catalog'
+      path: '/api/public/mobile/catalog'
+      fullPath: '/api/public/mobile/catalog'
+      preLoaderRoute: typeof ApiPublicMobileCatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/nutrition-reminders': {
@@ -540,10 +541,10 @@ const rootRouteChildren: RootRouteChildren = {
   ProductSlugRoute: ProductSlugRoute,
   UHandleRoute: UHandleRoute,
   MessagesIndexRoute: MessagesIndexRoute,
-  ApiMobileCatalogRoute: ApiMobileCatalogRoute,
-  ApiMobileCheckoutRoute: ApiMobileCheckoutRoute,
-  ApiMobileParseFoodRoute: ApiMobileParseFoodRoute,
   ApiPublicHooksNutritionRemindersRoute: ApiPublicHooksNutritionRemindersRoute,
+  ApiPublicMobileCatalogRoute: ApiPublicMobileCatalogRoute,
+  ApiPublicMobileCheckoutRoute: ApiPublicMobileCheckoutRoute,
+  ApiPublicMobileParseFoodRoute: ApiPublicMobileParseFoodRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicPushPendingRoute: ApiPublicPushPendingRoute,
 }
