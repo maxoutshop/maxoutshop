@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
  * Native (Capacitor) AI food parsing. Preserves the same auth + MAXOUT ELITE
  * gate as the `parseFood` server function; secrets stay server-side.
  */
-export const Route = createFileRoute("/api/mobile/parse-food")({
+export const Route = createFileRoute("/api/public/mobile/parse-food")({
   server: {
     handlers: {
       OPTIONS: async ({ request }) => {

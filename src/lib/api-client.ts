@@ -33,10 +33,10 @@ async function nativeFetch(path: string, init?: RequestInit & { auth?: boolean }
   return json;
 }
 
-/** Live Wix catalog. Native builds go through /api/mobile/catalog. */
+/** Live Wix catalog. Native builds go through /api/public/mobile/catalog. */
 export async function fetchCatalogClient(): Promise<CatalogProduct[]> {
   if (!IS_NATIVE_BUILD) return (await getCatalog()) as CatalogProduct[];
-  const json = (await nativeFetch("/api/mobile/catalog")) as { products?: CatalogProduct[] };
+  const json = (await nativeFetch("/api/public/mobile/catalog")) as { products?: CatalogProduct[] };
   return json?.products ?? [];
 }
 
@@ -46,7 +46,7 @@ export async function createCheckoutClient(input: {
   email?: string;
 }): Promise<{ url: string }> {
   if (!IS_NATIVE_BUILD) return await createCheckout({ data: input });
-  return (await nativeFetch("/api/mobile/checkout", {
+  return (await nativeFetch("/api/public/mobile/checkout", {
     method: "POST",
     body: JSON.stringify(input),
   })) as { url: string };
@@ -58,7 +58,7 @@ export async function parseFoodClient(input: {
   imageDataUrl?: string;
 }): Promise<{ items: ParsedFoodItem[]; error?: string }> {
   if (!IS_NATIVE_BUILD) return await parseFood({ data: input });
-  return (await nativeFetch("/api/mobile/parse-food", {
+  return (await nativeFetch("/api/public/mobile/parse-food", {
     method: "POST",
     body: JSON.stringify(input),
     auth: true,

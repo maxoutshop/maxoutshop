@@ -8,7 +8,7 @@ type Line = {
 };
 
 /** Native (Capacitor) Wix checkout handoff. Mirrors the `createCheckout` server fn. */
-export const Route = createFileRoute("/api/mobile/checkout")({
+export const Route = createFileRoute("/api/public/mobile/checkout")({
   server: {
     handlers: {
       OPTIONS: async ({ request }) => {
