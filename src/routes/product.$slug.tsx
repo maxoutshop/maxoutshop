@@ -4,6 +4,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { useEffect, useMemo, useState } from "react";
 import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/store";
 import { fetchCatalogClient } from "@/lib/api-client";
+import { IS_NATIVE_BUILD } from "@/lib/api-base";
 import { FALLBACK_CATALOG, type CatalogProduct } from "@/lib/catalog-meta";
 import { findVariant, relatedFrom } from "@/lib/catalog";
 import { Heart, Minus, Plus, ChevronDown, ChevronUp, Truck, RotateCcw, Ruler, Lock } from "lucide-react";
