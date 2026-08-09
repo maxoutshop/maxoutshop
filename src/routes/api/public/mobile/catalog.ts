@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
  * Native (Capacitor) catalog endpoint. TanStack server functions are
  * same-origin RPCs, so the static native build talks to plain HTTP routes.
  */
-export const Route = createFileRoute("/api/mobile/catalog")({
+export const Route = createFileRoute("/api/public/mobile/catalog")({
   server: {
     handlers: {
       OPTIONS: async ({ request }) => {

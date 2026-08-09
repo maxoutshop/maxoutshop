@@ -211,6 +211,19 @@ export async function awardPoints(userId: string, delta: number, reason: string)
   await supabase.from("points_ledger").insert({ user_id: userId, delta, reason });
 }
 
+/** Permanently deletes one of the signed-in user's workouts (sets cascade). */
+export async function deleteWorkout(workoutId: string, userId: string) {
+  const { error, count } = await supabase
+    .from("workouts")
+    .delete({ count: "exact" })
+    .eq("id", workoutId)
+    .eq("user_id", userId);
+  if (error) throw error;
+  if (!count) throw new Error("That workout could not be deleted.");
+  return true;
+}
+
+
 export function useMutate<TVars>(fn: (vars: TVars) => Promise<unknown>, keys: string[]) {
   const invalidate = useInvalidate();
   return useMutation({
