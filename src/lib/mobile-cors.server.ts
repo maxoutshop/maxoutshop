@@ -1,5 +1,5 @@
 /**
- * CORS helpers for the `/api/mobile/*` routes used by the Capacitor shell.
+ * CORS helpers for the `/api/public/mobile/*` routes used by the Capacitor shell.
  * The native webview is served from `capacitor://localhost`, so every call is
  * cross-origin and needs explicit headers plus an OPTIONS preflight response.
  */
