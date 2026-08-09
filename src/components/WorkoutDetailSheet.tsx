@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { BottomSheet } from "@/components/LogSheet";
-import { Dumbbell, Clock, Layers, Weight } from "lucide-react";
+import { Dumbbell, Clock, Layers, Weight, Trash2, AlertTriangle } from "lucide-react";
 
 export type WorkoutDetail = {
   id: string;
@@ -17,7 +18,18 @@ export type WorkoutDetail = {
   }>;
 };
 
-export function WorkoutDetailSheet({ workout, onClose }: { workout: WorkoutDetail; onClose: () => void }) {
+export function WorkoutDetailSheet({
+  workout,
+  onClose,
+  onDelete,
+}: {
+  workout: WorkoutDetail;
+  onClose: () => void;
+  onDelete?: (id: string) => Promise<void>;
+}) {
+  const [confirming, setConfirming] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const sets = (workout.workout_sets ?? []).slice().sort((a, b) => a.set_index - b.set_index);
 
   const groups = new Map<string, typeof sets>();
@@ -85,6 +97,56 @@ export function WorkoutDetailSheet({ workout, onClose }: { workout: WorkoutDetai
           </p>
         )}
       </div>
+
+      {onDelete && (
+        <div className="mt-5 border-t border-border pt-4">
+          {!confirming ? (
+            <button
+              onClick={() => { setError(null); setConfirming(true); }}
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-border px-4 py-3 text-sm font-medium text-muted-foreground transition active:scale-[0.99]"
+            >
+              <Trash2 className="h-4 w-4" /> Delete workout
+            </button>
+          ) : (
+            <div className="rounded-3xl border border-border bg-background p-4">
+              <p className="flex items-start gap-2 text-sm font-semibold">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+                Delete "{workout.title ?? workout.category}" from{" "}
+                {date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}?
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                This permanently removes the session and its {sets.length} logged {sets.length === 1 ? "set" : "sets"}. This can't be undone.
+              </p>
+              {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
+              <div className="mt-3 flex gap-2">
+                <button
+                  disabled={deleting}
+                  onClick={() => setConfirming(false)}
+                  className="flex-1 rounded-full border border-border px-4 py-2.5 text-sm font-medium disabled:opacity-50"
+                >
+                  Keep it
+                </button>
+                <button
+                  disabled={deleting}
+                  onClick={async () => {
+                    setDeleting(true);
+                    setError(null);
+                    try {
+                      await onDelete(workout.id);
+                    } catch (e) {
+                      setError(e instanceof Error ? e.message : "Couldn't delete that workout.");
+                      setDeleting(false);
+                    }
+                  }}
+                  className="flex-1 rounded-full bg-destructive px-4 py-2.5 text-sm font-semibold text-destructive-foreground disabled:opacity-50"
+                >
+                  {deleting ? "Deleting…" : "Delete"}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </BottomSheet>
   );
 }
