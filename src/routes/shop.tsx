@@ -55,7 +55,7 @@ function Shop() {
   const [onSale, setOnSale] = useState(false);
   const [newOnly, setNewOnly] = useState(false);
   const [inStockOnly, setInStockOnly] = useState(false);
-  const { products, isLoading } = useCatalog();
+  const { products, isLoading, isFetching, isError, refetch } = useCatalog();
 
   const filtered = useMemo(() => {
     let list = [...products];
