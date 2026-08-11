@@ -26,6 +26,7 @@ export const Route = createFileRoute("/auth")({
 
 function Auth() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const { user, loading } = useSession();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -39,9 +40,14 @@ function Auth() {
   useEffect(() => {
     if (!loading && user) {
       localStorage.setItem("maxout_welcomed", "1");
+      if (next) {
+        window.location.replace(next);
+        return;
+      }
       navigate({ to: "/profile", replace: true });
     }
-  }, [loading, user, navigate]);
+  }, [loading, user, navigate, next]);
+
 
 
   async function submit(e: React.FormEvent) {
