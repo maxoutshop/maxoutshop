@@ -7,7 +7,14 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>): { next?: string } => {
+    const raw = s['next'];
+    const next = typeof raw === "string" && raw.startsWith("/") && !raw.startsWith("//") ? raw : undefined;
+    return next ? { next } : {};
+  },
+
   head: () => ({
+
     meta: [
       { title: "Join MAXOUT — Member Access" },
       { name: "description", content: "Sign in to MAXOUT for workout tracking, meal logging, challenges and member rewards." },
@@ -22,6 +29,7 @@ export const Route = createFileRoute("/auth")({
 
 function Auth() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const { user, loading } = useSession();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -35,9 +43,14 @@ function Auth() {
   useEffect(() => {
     if (!loading && user) {
       localStorage.setItem("maxout_welcomed", "1");
+      if (next) {
+        window.location.replace(next);
+        return;
+      }
       navigate({ to: "/profile", replace: true });
     }
-  }, [loading, user, navigate]);
+  }, [loading, user, navigate, next]);
+
 
 
   async function submit(e: React.FormEvent) {

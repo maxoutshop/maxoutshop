@@ -5,14 +5,19 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
+
 
 // `npm run build:mobile` sets MOBILE_BUILD=1 to produce a client-only SPA bundle
 // for the Capacitor shell. The web (SSR) build is completely unaffected.
 const isMobileBuild = process.env["MOBILE_BUILD"] === "1";
 
 export default defineConfig({
+  // MCP HTTP endpoint + OAuth metadata routes (generated at build time).
+  vite: { plugins: [mcpPlugin()] },
   // Nitro (Cloudflare worker) output is meaningless for a native shell.
   nitro: isMobileBuild ? false : undefined,
+
   tanstackStart: isMobileBuild
     ? {
         // Client-only shell: renders <html> once at build time and hydrates

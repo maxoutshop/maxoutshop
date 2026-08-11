@@ -15,6 +15,7 @@ import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as EliteRouteImport } from './routes/elite'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CartRouteImport } from './routes/cart'
@@ -26,7 +27,11 @@ import { Route as UHandleRouteImport } from './routes/u.$handle'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as MessagesHandleRouteImport } from './routes/messages.$handle'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicPushPendingRouteImport } from './routes/api/public/push/pending'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicMobileParseFoodRouteImport } from './routes/api/public/mobile/parse-food'
@@ -62,6 +67,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const OrdersRoute = OrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EliteRoute = EliteRouteImport.update({
@@ -118,10 +128,33 @@ const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
   path: '/checkout/return',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicPushPendingRoute = ApiPublicPushPendingRouteImport.update({
   id: '/api/public/push/pending',
@@ -163,17 +196,22 @@ export interface FileRoutesByFullPath {
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
+  '/mcp': typeof McpRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/messages/$handle': typeof MessagesHandleRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
@@ -188,17 +226,22 @@ export interface FileRoutesByTo {
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
+  '/mcp': typeof McpRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/messages/$handle': typeof MessagesHandleRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages': typeof MessagesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
@@ -215,17 +258,22 @@ export interface FileRoutesById {
   '/cart': typeof CartRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
+  '/mcp': typeof McpRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/track': typeof TrackRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/messages/$handle': typeof MessagesHandleRoute
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
@@ -242,17 +290,22 @@ export interface FileRouteTypes {
     | '/cart'
     | '/community'
     | '/elite'
+    | '/mcp'
     | '/orders'
     | '/profile'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/checkout/return'
     | '/messages/$handle'
     | '/product/$slug'
     | '/u/$handle'
     | '/messages/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/admin/'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/mobile/catalog'
@@ -267,17 +320,22 @@ export interface FileRouteTypes {
     | '/cart'
     | '/community'
     | '/elite'
+    | '/mcp'
     | '/orders'
     | '/profile'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/checkout/return'
     | '/messages/$handle'
     | '/product/$slug'
     | '/u/$handle'
     | '/messages'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/admin'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/mobile/catalog'
@@ -293,17 +351,22 @@ export interface FileRouteTypes {
     | '/cart'
     | '/community'
     | '/elite'
+    | '/mcp'
     | '/orders'
     | '/profile'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
     | '/track'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/checkout/return'
     | '/messages/$handle'
     | '/product/$slug'
     | '/u/$handle'
     | '/messages/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/mobile/catalog'
@@ -320,17 +383,22 @@ export interface RootRouteChildren {
   CartRoute: typeof CartRoute
   CommunityRoute: typeof CommunityRoute
   EliteRoute: typeof EliteRoute
+  McpRoute: typeof McpRoute
   OrdersRoute: typeof OrdersRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrackRoute: typeof TrackRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   MessagesHandleRoute: typeof MessagesHandleRoute
   ProductSlugRoute: typeof ProductSlugRoute
   UHandleRoute: typeof UHandleRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicHooksNutritionRemindersRoute: typeof ApiPublicHooksNutritionRemindersRoute
   ApiPublicMobileCatalogRoute: typeof ApiPublicMobileCatalogRoute
   ApiPublicMobileCheckoutRoute: typeof ApiPublicMobileCheckoutRoute
@@ -381,6 +449,13 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders'
       preLoaderRoute: typeof OrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/elite': {
@@ -460,12 +535,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutReturnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/push/pending': {
       id: '/api/public/push/pending'
@@ -530,17 +633,23 @@ const rootRouteChildren: RootRouteChildren = {
   CartRoute: CartRoute,
   CommunityRoute: CommunityRoute,
   EliteRoute: EliteRoute,
+  McpRoute: McpRoute,
   OrdersRoute: OrdersRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrackRoute: TrackRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
   MessagesHandleRoute: MessagesHandleRoute,
   ProductSlugRoute: ProductSlugRoute,
   UHandleRoute: UHandleRoute,
   MessagesIndexRoute: MessagesIndexRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicHooksNutritionRemindersRoute: ApiPublicHooksNutritionRemindersRoute,
   ApiPublicMobileCatalogRoute: ApiPublicMobileCatalogRoute,
   ApiPublicMobileCheckoutRoute: ApiPublicMobileCheckoutRoute,
@@ -551,3 +660,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
