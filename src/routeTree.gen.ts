@@ -27,6 +27,7 @@ import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as MessagesHandleRouteImport } from './routes/messages.$handle'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicPushPendingRouteImport } from './routes/api/public/push/pending'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicMobileParseFoodRouteImport } from './routes/api/public/mobile/parse-food'
@@ -123,6 +124,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/admin/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPushPendingRoute = ApiPublicPushPendingRouteImport.update({
   id: '/api/public/push/pending',
   path: '/api/public/push/pending',
@@ -174,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
@@ -199,6 +206,7 @@ export interface FileRoutesByTo {
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages': typeof MessagesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
@@ -226,6 +234,7 @@ export interface FileRoutesById {
   '/product/$slug': typeof ProductSlugRoute
   '/u/$handle': typeof UHandleRoute
   '/messages/': typeof MessagesIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/hooks/nutrition-reminders': typeof ApiPublicHooksNutritionRemindersRoute
   '/api/public/mobile/catalog': typeof ApiPublicMobileCatalogRoute
@@ -253,6 +262,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/u/$handle'
     | '/messages/'
+    | '/.lovable/oauth/consent'
     | '/admin/'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/mobile/catalog'
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/u/$handle'
     | '/messages'
+    | '/.lovable/oauth/consent'
     | '/admin'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/mobile/catalog'
@@ -304,6 +315,7 @@ export interface FileRouteTypes {
     | '/product/$slug'
     | '/u/$handle'
     | '/messages/'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/admin/'
     | '/api/public/hooks/nutrition-reminders'
     | '/api/public/mobile/catalog'
@@ -331,6 +343,7 @@ export interface RootRouteChildren {
   ProductSlugRoute: typeof ProductSlugRoute
   UHandleRoute: typeof UHandleRoute
   MessagesIndexRoute: typeof MessagesIndexRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   ApiPublicHooksNutritionRemindersRoute: typeof ApiPublicHooksNutritionRemindersRoute
   ApiPublicMobileCatalogRoute: typeof ApiPublicMobileCatalogRoute
   ApiPublicMobileCheckoutRoute: typeof ApiPublicMobileCheckoutRoute
@@ -467,6 +480,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/push/pending': {
       id: '/api/public/push/pending'
       path: '/api/public/push/pending'
@@ -541,6 +561,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductSlugRoute: ProductSlugRoute,
   UHandleRoute: UHandleRoute,
   MessagesIndexRoute: MessagesIndexRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   ApiPublicHooksNutritionRemindersRoute: ApiPublicHooksNutritionRemindersRoute,
   ApiPublicMobileCatalogRoute: ApiPublicMobileCatalogRoute,
   ApiPublicMobileCheckoutRoute: ApiPublicMobileCheckoutRoute,
