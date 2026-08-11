@@ -7,7 +7,11 @@ import { Loader2, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s['next'] === "string" && s['next'].startsWith("/") && !s['next'].startsWith("//") ? s['next'] : undefined,
+  }),
   head: () => ({
+
     meta: [
       { title: "Join MAXOUT — Member Access" },
       { name: "description", content: "Sign in to MAXOUT for workout tracking, meal logging, challenges and member rewards." },
