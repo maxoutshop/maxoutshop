@@ -1,0 +1,234 @@
+{
+  "version": 1,
+  "sdk_version": "0.26.2",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://xocxpcbgfcufuwlwyjtz.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "maxout",
+      "version": "0.1.0",
+      "title": "MAXOUT"
+    },
+    "tools": [
+      {
+        "name": "log_meal",
+        "title": "Log a meal",
+        "description": "Log a food item with its macros to the signed-in member's MAXOUT nutrition diary.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80,
+              "description": "Food name, e.g. 'Chicken burrito bowl'."
+            },
+            "calories": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5000
+            },
+            "protein": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 500
+            },
+            "carbs": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000
+            },
+            "fat": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 500
+            },
+            "meal_type": {
+              "default": "snack",
+              "type": "string",
+              "enum": [
+                "breakfast",
+                "lunch",
+                "dinner",
+                "snack"
+              ]
+            }
+          },
+          "required": [
+            "name",
+            "calories"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_nutrition_day",
+        "title": "Get a day of nutrition",
+        "description": "List the signed-in member's logged meals for a given day (default today) with calorie and macro totals versus their goals.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "date": {
+              "description": "Day in YYYY-MM-DD (UTC). Defaults to today.",
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_workouts",
+        "title": "List recent workouts",
+        "description": "List the signed-in member's most recent MAXOUT workouts, optionally with every logged set.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 5,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            },
+            "include_sets": {
+              "default": true,
+              "type": "boolean"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_personal_records",
+        "title": "List personal records",
+        "description": "List the signed-in member's personal records (PRs) by exercise.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "exercise": {
+              "description": "Filter to one exercise name.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "limit": {
+              "default": 20,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "log_personal_record",
+        "title": "Log a personal record",
+        "description": "Record a new personal record (PR) for the signed-in member.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "exercise": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 60
+            },
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2000
+            },
+            "unit": {
+              "default": "lb",
+              "type": "string",
+              "enum": [
+                "lb",
+                "kg",
+                "reps",
+                "sec",
+                "mi"
+              ]
+            }
+          },
+          "required": [
+            "exercise",
+            "value"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "log_bodyweight",
+        "title": "Log bodyweight",
+        "description": "Log a bodyweight entry for the signed-in member.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "weight": {
+              "type": "number",
+              "minimum": 50,
+              "maximum": 700
+            },
+            "unit": {
+              "default": "lb",
+              "type": "string",
+              "enum": [
+                "lb",
+                "kg"
+              ]
+            }
+          },
+          "required": [
+            "weight"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
