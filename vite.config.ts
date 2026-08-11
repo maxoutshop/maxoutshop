@@ -13,8 +13,11 @@ import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/tanstack/vite";
 const isMobileBuild = process.env["MOBILE_BUILD"] === "1";
 
 export default defineConfig({
+  // MCP HTTP endpoint + OAuth metadata routes (generated at build time).
+  vite: { plugins: [mcpPlugin()] },
   // Nitro (Cloudflare worker) output is meaningless for a native shell.
   nitro: isMobileBuild ? false : undefined,
+
   tanstackStart: isMobileBuild
     ? {
         // Client-only shell: renders <html> once at build time and hydrates
