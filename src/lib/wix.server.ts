@@ -103,12 +103,39 @@ function parseDescription(html = "") {
   };
 }
 
-function imagesOf(p: Record<string, any>): string[] {
-  const items = (p["media"]?.items ?? []) as Array<{ image?: { url?: string } }>;
-  const urls = items.map((i) => i.image?.url).filter((u): u is string => !!u);
-  const main = p["media"]?.mainMedia?.image?.url as string | undefined;
+type WixMedia = {
+  mainMedia?: { image?: { url?: string } };
+  items?: Array<{ image?: { url?: string } }>;
+};
+
+/**
+ * Wix media -> ordered image urls. `mainMedia` always leads; for a color
+ * choice that main image is the color-specific shot.
+ */
+function mediaUrls(media?: WixMedia | null): string[] {
+  if (!media) return [];
+  const urls = (media.items ?? []).map((i) => i.image?.url).filter((u): u is string => !!u);
+  const main = media.mainMedia?.image?.url;
   const all = main ? [main, ...urls.filter((u) => u !== main)] : urls;
-  return all.slice(0, 6);
+  return [...new Set(all)].slice(0, 10);
+}
+
+function imagesOf(p: Record<string, any>): string[] {
+  return mediaUrls(p["media"] as WixMedia | undefined);
+}
+
+/**
+ * Color-specific galleries. Wix exposes the association on
+ * productOptions[].choices[].media (mainMedia + items) — no filename guessing.
+ */
+function colorImagesOf(colorOpt: any): Record<string, string[]> | undefined {
+  const out: Record<string, string[]> = {};
+  for (const c of colorOpt?.choices ?? []) {
+    const name = (c.description ?? c.value) as string;
+    const urls = mediaUrls(c.media as WixMedia | undefined);
+    if (name && urls.length) out[name] = urls;
+  }
+  return Object.keys(out).length ? out : undefined;
 }
 
 function isNewByDate(date?: string | null): boolean {
@@ -165,6 +192,7 @@ function mapProduct(
     salePrice: discounted < price ? discounted : undefined,
     saleTag: discounted < price ? "Sale" : undefined,
     images: imagesOf(p),
+    colorImages: colorImagesOf(colorOpt),
     category: (meta.category ?? guessCategory(name)) as CatalogProduct["category"],
     collection: meta.collection ?? guessCollection(name),
     sizes: (sizeOpt?.choices ?? []).map((c: any) => c.description ?? c.value),
