@@ -52,7 +52,6 @@ function ProductPage() {
     product: CatalogProduct;
     related: CatalogProduct[];
   };
-  const [imgIdx, setImgIdx] = useState(0);
   const [size, setSize] = useState<string | null>(product.sizes.length === 1 ? product.sizes[0]! : null);
   const [color, setColor] = useState<string | null>(product.colors[0]?.name ?? null);
   const [qty, setQty] = useState(1);
@@ -60,6 +59,13 @@ function ProductPage() {
   const wished = useStore((s) => s.wishlist.includes(product.slug));
 
   useEffect(() => { recentActions.push(product.slug); }, [product.slug]);
+
+  // Wix stores color-specific media on productOptions[].choices[].media;
+  // fall back to the general product gallery when a color has none.
+  const gallery = useMemo(() => {
+    const byColor = color ? product.colorImages?.[color] : undefined;
+    return byColor?.length ? byColor : product.images;
+  }, [product.colorImages, product.images, color]);
 
   const variant = useMemo(
     () => findVariant(product, size ?? undefined, color ?? undefined),
@@ -76,21 +82,9 @@ function ProductPage() {
   return (
     <AppShell>
       <div className="-mx-4">
-        <div className="relative bg-secondary">
-          <img src={product.images[imgIdx]} alt={product.name} className="aspect-[3/4] w-full object-cover" />
-          {product.images.length > 1 && (
-            <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
-              {product.images.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setImgIdx(i)}
-                  className={`h-1.5 rounded-full transition-all ${i === imgIdx ? "w-6 bg-foreground" : "w-1.5 bg-foreground/40"}`}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <ProductGallery images={gallery} alt={product.name} resetKey={color ?? "default"} />
       </div>
+
 
       <div className="pt-5">
         <p className="text-[11px] font-semibold tracking-[0.25em] text-muted-foreground uppercase">{product.collection}</p>
