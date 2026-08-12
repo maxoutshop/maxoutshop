@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { AppShell } from "@/components/AppShell";
 import { ProductCard } from "@/components/ProductCard";
+import { ProductGallery } from "@/components/ProductGallery";
 import { useEffect, useMemo, useState } from "react";
 import { cartActions, recentActions, useStore, wishlistActions } from "@/lib/store";
 import { fetchCatalogClient } from "@/lib/api-client";
