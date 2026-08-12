@@ -14,6 +14,11 @@ export type CatalogProduct = Product & {
   dropDate?: string | null;
   hidden?: boolean;
   sourceUrl?: string;
+  /**
+   * Color name -> ordered image urls, sourced from the Wix
+   * productOptions[].choices[].media association.
+   */
+  colorImages?: Record<string, string[]>;
 };
 
 type Meta = Pick<Product, "category" | "collection" | "bestSeller" | "newArrival" | "earlyAccess">;
