@@ -165,9 +165,7 @@ export async function syncMembershipForUser(input: {
   email?: string | undefined;
 }): Promise<MembershipState> {
   const stripe = createStripeClient(input.env);
-  const { upsertSubscription, refreshEliteFlag, statusGrantsAccess, adminDb } = await import(
-    "@/lib/membership.server"
-  );
+  const { upsertSubscription, refreshEliteFlag, statusGrantsAccess } = await import("@/lib/membership.server");
 
   const customerId = await resolveOrCreateCustomer(stripe, { userId: input.userId, email: input.email });
   const list = await stripe.subscriptions.list({ customer: customerId, status: "all", limit: 20 });
@@ -187,10 +185,6 @@ export async function syncMembershipForUser(input: {
   let source: MembershipState["source"] = "none";
   if (paid) source = "stripe";
   else if (isElite) source = "grant";
-
-  // Comped members are ELITE without Stripe — keep that intact.
-  const db = adminDb();
-  await db.from("profiles").select("id").eq("id", input.userId).limit(1);
 
   return {
     isElite,
