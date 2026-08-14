@@ -299,3 +299,77 @@ export async function deleteReward(id: string) {
   const { error } = await db.from("rewards").delete().eq("id", id);
   if (error) throw new Error(error.message);
 }
+
+/** Reward redemption requests submitted by members (admin fulfilment queue). */
+export async function listRedemptions(status: string): Promise<import("./admin.types").AdminRedemption[]> {
+  const db = adminDb();
+  let req = db.from("reward_redemptions")
+    .select("id, user_id, reward_id, points_spent, status, admin_notes, created_at, rewards(title)")
+    .order("created_at", { ascending: false })
+    .limit(200);
+  if (status && status !== "all") req = req.eq("status", status);
+  const { data: rows, error } = await req;
+  if (error) throw new Error(error.message);
+
+  const ids = [...new Set((rows ?? []).map((r: any) => r.user_id))];
+  const [{ data: profiles }, authList] = await Promise.all([
+    ids.length ? db.from("profiles").select("id, display_name, username").in("id", ids) : Promise.resolve({ data: [] as any[] }),
+    db.auth.admin.listUsers({ page: 1, perPage: 1000 }),
+  ]);
+  const byId = new Map<string, any>((profiles ?? []).map((p: any) => [p.id, p]));
+  const emails = new Map<string, string | null>();
+  for (const u of authList?.data?.users ?? []) emails.set(u.id, u.email ?? null);
+
+  return (rows ?? []).map((r: any) => ({
+    id: r.id,
+    userId: r.user_id,
+    memberName: byId.get(r.user_id)?.display_name ?? byId.get(r.user_id)?.username ?? null,
+    memberEmail: emails.get(r.user_id) ?? null,
+    rewardTitle: r.rewards?.title ?? "Reward",
+    pointsSpent: r.points_spent,
+    status: r.status,
+    adminNotes: r.admin_notes,
+    createdAt: r.created_at,
+  }));
+}
+
+/**
+ * Move a request through the queue. Cancelling refunds the points the member
+ * spent and puts the stock back so nothing is lost when we can't fulfil it.
+ */
+export async function setRedemptionStatus(id: string, status: "pending" | "fulfilled" | "canceled", notes: string) {
+  const db = adminDb();
+  const { data: row, error: rErr } = await db.from("reward_redemptions")
+    .select("id, user_id, reward_id, points_spent, status").eq("id", id).maybeSingle();
+  if (rErr) throw new Error(rErr.message);
+  if (!row) throw new Error("Request not found.");
+
+  if (status === "canceled" && row.status !== "canceled") {
+    const { error: lErr } = await db.from("points_ledger").insert({
+      user_id: row.user_id,
+      delta: row.points_spent,
+      reason: "Redemption canceled — points refunded",
+      event_key: `refund:${row.id}`,
+      base_delta: row.points_spent,
+      multiplier: 1,
+    });
+    if (lErr) throw new Error(lErr.message);
+    const { data: reward } = await db.from("rewards").select("stock").eq("id", row.reward_id).maybeSingle();
+    if (reward && reward.stock !== null) {
+      await db.from("rewards").update({ stock: reward.stock + 1 }).eq("id", row.reward_id);
+    }
+  }
+
+  const { error } = await db.from("reward_redemptions")
+    .update({ status, admin_notes: notes || null }).eq("id", id);
+  if (error) throw new Error(error.message);
+
+  const label = status === "fulfilled" ? "Reward on the way" : status === "canceled" ? "Redemption canceled" : "Redemption updated";
+  const body = status === "canceled"
+    ? `Your points were refunded.${notes ? " " + notes : ""}`
+    : notes || "Check your rewards for details.";
+  await db.rpc("notify_user", {
+    _user_id: row.user_id, _kind: "reward", _title: label, _body: body,
+    _url: "/rewards", _actor: null, _dedupe: `redeem-status:${id}:${status}`,
+  });
+}

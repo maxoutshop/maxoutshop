@@ -50,3 +50,15 @@ export type AdminReward = {
 };
 
 export type PointsSettings = { workoutPoints: number; prPoints: number };
+
+export type AdminRedemption = {
+  id: string;
+  userId: string;
+  memberName: string | null;
+  memberEmail: string | null;
+  rewardTitle: string;
+  pointsSpent: number;
+  status: string;
+  adminNotes: string | null;
+  createdAt: string;
+};
