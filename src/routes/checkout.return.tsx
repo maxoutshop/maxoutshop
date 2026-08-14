@@ -2,13 +2,16 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Check, Crown, Loader2, AlertCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { syncMembership } from "@/utils/payments.functions";
-import { getStripeEnvironment } from "@/lib/stripe";
+import { refreshMembership } from "@/lib/elite-client";
 
 export const Route = createFileRoute("/checkout/return")({
   ssr: false,
-  validateSearch: (search: Record<string, unknown>): { session_id?: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { session_id?: string; canceled?: boolean; native?: boolean } => ({
     session_id: typeof search["session_id"] === "string" ? search["session_id"] : undefined,
+    canceled: search["canceled"] === "1" || search["canceled"] === 1 || search["canceled"] === true,
+    native: search["native"] === "1" || search["native"] === 1 || search["native"] === true,
   }),
   head: () => ({
     meta: [
@@ -26,11 +29,15 @@ export const Route = createFileRoute("/checkout/return")({
 function CheckoutReturn() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [state, setState] = useState<"working" | "done" | "pending" | "error">("working");
+  const { canceled, native } = Route.useSearch();
+  const [state, setState] = useState<"working" | "done" | "pending" | "error" | "canceled">(
+    canceled ? "canceled" : "working",
+  );
   const [message, setMessage] = useState<string | null>(null);
   const started = useRef(false);
 
   useEffect(() => {
+    if (canceled) return;
     if (started.current) return;
     started.current = true;
 
@@ -39,12 +46,7 @@ function CheckoutReturn() {
       // Poll — the Stripe webhook and our direct sync race each other.
       for (let attempt = 0; attempt < 6 && !cancelled; attempt++) {
         try {
-          const res = await syncMembership({ data: { environment: getStripeEnvironment() } });
-          if ("error" in res) {
-            setState("error");
-            setMessage(res.error);
-            return;
-          }
+          const res = await refreshMembership();
           if (res.isElite) {
             await qc.invalidateQueries();
             setState("done");
@@ -61,7 +63,7 @@ function CheckoutReturn() {
     return () => {
       cancelled = true;
     };
-  }, [qc]);
+  }, [qc, canceled]);
 
   return (
     <div className="grid min-h-screen place-items-center px-6">
@@ -74,6 +76,21 @@ function CheckoutReturn() {
           </>
         )}
 
+        {state === "canceled" && (
+          <>
+            <h1 className="text-lg font-semibold">Checkout cancelled</h1>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Nothing was charged and your membership hasn't changed.
+            </p>
+            <Link
+              to="/elite"
+              className="mt-5 flex w-full items-center justify-center rounded-full border border-border py-3.5 text-sm font-semibold"
+            >
+              Back to membership
+            </Link>
+          </>
+        )}
+
         {state === "done" && (
           <>
             <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
@@ -83,6 +100,11 @@ function CheckoutReturn() {
             <p className="mt-1 text-xs text-muted-foreground">
               Photo food logging and early drops are unlocked.
             </p>
+            {native && (
+              <p className="mt-2 text-[11px] text-muted-foreground">
+                You can close this window and return to the MAXOUT app.
+              </p>
+            )}
             <button
               onClick={() => navigate({ to: "/track" })}
               className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3.5 text-sm font-semibold text-primary-foreground"
