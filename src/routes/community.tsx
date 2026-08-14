@@ -45,12 +45,6 @@ function Community() {
   const posts = usePosts(uid);
   const unread = useUnreadCount(uid);
 
-  const join = useMutate(async (challengeId: string) => {
-    const { error } = await supabase.from("challenge_participants").insert({ challenge_id: challengeId, user_id: uid! });
-    if (error) throw error;
-  }, ["my-challenges", "profile"]);
-
-  const joinedIds = new Set((mine.data ?? []).map((m) => m.challenge_id));
 
   const feed = useMemo(() => {
     const all = posts.data ?? [];
