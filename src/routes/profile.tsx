@@ -3,13 +3,15 @@ import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
-import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone, Settings, Camera, X } from "lucide-react";
+import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone, Settings, Camera, X, Zap, Crown, Loader2, Sparkles, Gift } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, initials } from "@/lib/auth";
 import { useProfile, useMyChallenges, usePRs, useWorkouts, useRoles, uploadAvatar, useMutate } from "@/lib/db";
-import { useElite } from "@/lib/subscription";
+import { useElite, useMembershipSync } from "@/lib/subscription";
+import { usePointsSummary } from "@/lib/rewards";
+import { openEliteManagement } from "@/lib/elite-client";
 
 
 export const Route = createFileRoute("/profile")({
@@ -34,7 +36,24 @@ function Profile() {
 
   const wishlistCount = useStore((s) => s.wishlist.length);
   const profile = useProfile(user?.id);
-  const { isElite, comped } = useElite(user?.id);
+  const { isElite, comped, entitlement } = useElite(user?.id);
+  useMembershipSync(user?.id);
+  const points = usePointsSummary(user?.id);
+  const [managing, setManaging] = useState(false);
+  const [manageError, setManageError] = useState<string | null>(null);
+
+  async function manageElite() {
+    setManaging(true);
+    setManageError(null);
+    try {
+      await openEliteManagement();
+    } catch (e) {
+      setManageError(e instanceof Error ? e.message : "Could not open membership management");
+    } finally {
+      setManaging(false);
+    }
+  }
+
   const roles = useRoles(user?.id);
   const isAdmin = (roles.data ?? []).includes("admin");
   const challenges = useMyChallenges(user?.id);
@@ -211,6 +230,8 @@ function Profile() {
         )}
 
 
+        <Row icon={<Sparkles className="h-4 w-4" />} label="MAXOUT Coach" hint={isElite ? undefined : "ELITE"} to="/coach" />
+        <Row icon={<Gift className="h-4 w-4" />} label="MAXOUT Points & rewards" hint={String(points.data?.balance ?? 0)} to="/rewards" />
         <Row icon={<Package className="h-4 w-4" />} label="Orders" to="/orders" />
         <Row icon={<Heart className="h-4 w-4" />} label="Wishlist" hint={String(wishlistCount)} to="/shop" />
         <Row icon={<Activity className="h-4 w-4" />} label="Fitness progress" to="/track" />
