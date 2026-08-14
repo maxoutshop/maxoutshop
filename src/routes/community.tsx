@@ -9,6 +9,10 @@ import { usePosts, useChallenges, useMyChallenges, useMutate, uploadPostMedia, M
 import { useUnreadCount } from "@/lib/social";
 
 export const Route = createFileRoute("/community")({
+  // `draft` lets other screens (like the workout summary) hand a prefilled post over.
+  validateSearch: (search: Record<string, unknown>) => ({
+    draft: typeof search["draft"] === "string" ? (search["draft"] as string).slice(0, 500) : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Community — MAXOUT Challenges & Feed" },
