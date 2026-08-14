@@ -13,6 +13,7 @@ import { Route as TrackRouteImport } from './routes/track'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -57,6 +58,11 @@ const ShopRoute = ShopRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgressRoute = ProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -199,6 +205,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -229,6 +236,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -261,6 +269,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
+  '/progress': typeof ProgressRoute
   '/reset-password': typeof ResetPasswordRoute
   '/shop': typeof ShopRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -293,6 +302,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/orders'
     | '/profile'
+    | '/progress'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
@@ -323,6 +333,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/orders'
     | '/profile'
+    | '/progress'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
@@ -354,6 +365,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/orders'
     | '/profile'
+    | '/progress'
     | '/reset-password'
     | '/shop'
     | '/sitemap.xml'
@@ -386,6 +398,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   OrdersRoute: typeof OrdersRoute
   ProfileRoute: typeof ProfileRoute
+  ProgressRoute: typeof ProgressRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ShopRoute: typeof ShopRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -435,6 +448,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/progress': {
+      id: '/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof ProgressRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -636,6 +656,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   OrdersRoute: OrdersRoute,
   ProfileRoute: ProfileRoute,
+  ProgressRoute: ProgressRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ShopRoute: ShopRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
