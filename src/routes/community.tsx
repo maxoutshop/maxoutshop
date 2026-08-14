@@ -38,12 +38,11 @@ const FILTERS = ["All", "PR", "Fit Check", "Progress", "Workout", "Challenge"] a
 function Community() {
   const { user, loading: sessionLoading } = useSession();
   const uid = user?.id;
+  const { draft } = Route.useSearch();
   const [tab, setTab] = useState<"feed" | "challenges">("feed");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
-  const [composing, setComposing] = useState(false);
+  const [composing, setComposing] = useState(!!draft);
   const posts = usePosts(uid);
-  const challenges = useChallenges();
-  const mine = useMyChallenges(uid);
   const unread = useUnreadCount(uid);
 
   const join = useMutate(async (challengeId: string) => {
