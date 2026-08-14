@@ -123,7 +123,9 @@ export async function setComped(userId: string, months: number | null) {
   const db = adminDb();
   const { refreshEliteFlag } = await import("./membership.server");
   if (months === null) {
-    await db.from("elite_grants").delete().eq("user_id", userId).eq("code", "ADMIN-COMP");
+    // Revoke every grant (admin comp, promo code, friends & family) — not just admin comps.
+    const { error } = await db.from("elite_grants").delete().eq("user_id", userId);
+    if (error) throw new Error(error.message);
   } else {
     // elite_grants.code references promo_codes.code, so make sure the comp code exists.
     await db.from("promo_codes").upsert(
@@ -134,7 +136,12 @@ export async function setComped(userId: string, months: number | null) {
     expires.setMonth(expires.getMonth() + months);
     await db.from("elite_grants").insert({ user_id: userId, code: "ADMIN-COMP", expires_at: expires.toISOString() });
   }
-  return await refreshEliteFlag(userId);
+  const isElite = await refreshEliteFlag(userId);
+  if (months === null && isElite) {
+    throw new Error("Grants removed, but this member still has ELITE from a paid Stripe subscription. Cancel their subscription to revoke access.");
+  }
+  return isElite;
+
 }
 
 export async function adminStats() {
