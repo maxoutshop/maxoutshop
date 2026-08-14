@@ -93,3 +93,19 @@ export const EARN_RULES = [
   { label: "Set a new personal record", points: 50 },
   { label: "Complete a challenge", points: "Varies by challenge" },
 ];
+
+export type PointsRules = { workoutPoints: number; prPoints: number };
+
+const DEFAULT_RULES: PointsRules = { workoutPoints: 25, prPoints: 50 };
+
+/** Admin-configurable earning rules (public read). */
+export async function fetchPointsRules(): Promise<PointsRules> {
+  const { data, error } = await supabase
+    .from("points_settings").select("workout_points, pr_points").limit(1).maybeSingle();
+  if (error || !data) return DEFAULT_RULES;
+  return { workoutPoints: data.workout_points ?? 25, prPoints: data.pr_points ?? 50 };
+}
+
+export function usePointsRules() {
+  return useQuery({ queryKey: ["points-rules"], queryFn: fetchPointsRules, staleTime: 5 * 60_000 });
+}
