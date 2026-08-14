@@ -21,7 +21,10 @@ import { WorkoutComplete } from "@/components/WorkoutComplete";
 import { SavedMealsSheet } from "@/components/SavedMealsSheet";
 import { detectPRs, claimPoints, type DetectedPR } from "@/lib/pr";
 import { useUserTemplates, saveTemplate, deleteTemplate, lastWorkoutPlan, templateToPlan } from "@/lib/templates";
-import { copyDayMeals } from "@/lib/saved-meals";
+import {
+  copyDayMeals, useSavedMeals, saveMealTemplate, logSavedMeal,
+  toggleFavoriteMeal, deleteSavedMeal, type SavedMeal,
+} from "@/lib/saved-meals";
 import { syncChallengeProgress } from "@/lib/challenges";
 import { LineChart, Sparkles, Gift, Bookmark, CopyPlus } from "lucide-react";
 
