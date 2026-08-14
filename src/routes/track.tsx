@@ -20,6 +20,7 @@ import { WORKOUT_TEMPLATES, GROWTH_TIPS, type TemplateExercise } from "@/lib/wor
 import { WorkoutComplete } from "@/components/WorkoutComplete";
 import { SavedMealsSheet } from "@/components/SavedMealsSheet";
 import { detectPRs, claimPoints, type DetectedPR } from "@/lib/pr";
+import { fetchPointsRules } from "@/lib/rewards";
 import { useUserTemplates, saveTemplate, deleteTemplate, lastWorkoutPlan, templateToPlan } from "@/lib/templates";
 import {
   copyDayMeals, useSavedMeals, saveMealTemplate, logSavedMeal,
