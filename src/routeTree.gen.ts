@@ -40,6 +40,7 @@ import { Route as ApiPublicMobileParseFoodRouteImport } from './routes/api/publi
 import { Route as ApiPublicMobileCheckoutRouteImport } from './routes/api/public/mobile/checkout'
 import { Route as ApiPublicMobileCatalogRouteImport } from './routes/api/public/mobile/catalog'
 import { Route as ApiPublicHooksNutritionRemindersRouteImport } from './routes/api/public/hooks/nutrition-reminders'
+import { Route as ApiPublicMobileElitePortalRouteImport } from './routes/api/public/mobile/elite/portal'
 import { Route as ApiPublicMobileEliteCheckoutRouteImport } from './routes/api/public/mobile/elite/checkout'
 
 const TrackRoute = TrackRouteImport.update({
@@ -202,6 +203,12 @@ const ApiPublicHooksNutritionRemindersRoute =
     path: '/api/public/hooks/nutrition-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMobileElitePortalRoute =
+  ApiPublicMobileElitePortalRouteImport.update({
+    id: '/api/public/mobile/elite/portal',
+    path: '/api/public/mobile/elite/portal',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicMobileEliteCheckoutRoute =
   ApiPublicMobileEliteCheckoutRouteImport.update({
     id: '/api/public/mobile/elite/checkout',
@@ -241,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
   '/api/public/mobile/elite/checkout': typeof ApiPublicMobileEliteCheckoutRoute
+  '/api/public/mobile/elite/portal': typeof ApiPublicMobileElitePortalRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -274,6 +282,7 @@ export interface FileRoutesByTo {
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
   '/api/public/mobile/elite/checkout': typeof ApiPublicMobileEliteCheckoutRoute
+  '/api/public/mobile/elite/portal': typeof ApiPublicMobileElitePortalRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -309,6 +318,7 @@ export interface FileRoutesById {
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
   '/api/public/mobile/elite/checkout': typeof ApiPublicMobileEliteCheckoutRoute
+  '/api/public/mobile/elite/portal': typeof ApiPublicMobileElitePortalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/webhook'
     | '/api/public/push/pending'
     | '/api/public/mobile/elite/checkout'
+    | '/api/public/mobile/elite/portal'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -377,6 +388,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/webhook'
     | '/api/public/push/pending'
     | '/api/public/mobile/elite/checkout'
+    | '/api/public/mobile/elite/portal'
   id:
     | '__root__'
     | '/'
@@ -411,6 +423,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/webhook'
     | '/api/public/push/pending'
     | '/api/public/mobile/elite/checkout'
+    | '/api/public/mobile/elite/portal'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -445,6 +458,7 @@ export interface RootRouteChildren {
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   ApiPublicPushPendingRoute: typeof ApiPublicPushPendingRoute
   ApiPublicMobileEliteCheckoutRoute: typeof ApiPublicMobileEliteCheckoutRoute
+  ApiPublicMobileElitePortalRoute: typeof ApiPublicMobileElitePortalRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -666,6 +680,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksNutritionRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/mobile/elite/portal': {
+      id: '/api/public/mobile/elite/portal'
+      path: '/api/public/mobile/elite/portal'
+      fullPath: '/api/public/mobile/elite/portal'
+      preLoaderRoute: typeof ApiPublicMobileElitePortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/mobile/elite/checkout': {
       id: '/api/public/mobile/elite/checkout'
       path: '/api/public/mobile/elite/checkout'
@@ -720,6 +741,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   ApiPublicPushPendingRoute: ApiPublicPushPendingRoute,
   ApiPublicMobileEliteCheckoutRoute: ApiPublicMobileEliteCheckoutRoute,
+  ApiPublicMobileElitePortalRoute: ApiPublicMobileElitePortalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
