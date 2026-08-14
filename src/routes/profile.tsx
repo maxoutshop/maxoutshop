@@ -127,21 +127,70 @@ function Profile() {
         <Stat value={String((challenges.data ?? []).length)} label="Challenges" />
       </div>
 
-
+      {/* MAXOUT Points wallet */}
       <Link
-        to="/elite"
-        className="mt-4 flex items-center justify-between rounded-3xl border border-accent/40 bg-accent/5 p-5"
+        to="/rewards"
+        className="mt-4 flex items-center justify-between rounded-3xl border border-border bg-surface p-5"
       >
         <div>
-          <p className="text-sm font-semibold tracking-tight">MAXOUT ELITE</p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {isElite ? (comped ? "Comped membership — active" : "Membership active — manage billing") : "Unlock photo food logging with AI macros"}
+          <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">MAXOUT Points</p>
+          <p className="mt-1 text-3xl font-semibold tabular-nums tracking-tight">
+            {(points.data?.balance ?? 0).toLocaleString()}
           </p>
+          {isElite && (
+            <span className="mt-2 inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent">
+              <Zap className="h-3 w-3" /> Elite 1.5x points
+            </span>
+          )}
         </div>
         <span className="rounded-full bg-foreground px-3 py-1.5 text-[11px] font-semibold text-background">
-          {isElite ? (comped ? "View" : "Manage") : "Join"}
+          Rewards
         </span>
       </Link>
+
+      {/* MAXOUT ELITE membership */}
+      <div className="mt-4 rounded-3xl border border-accent/40 bg-accent/5 p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold tracking-tight">MAXOUT ELITE</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {isElite
+                ? comped
+                  ? "Comped membership — active"
+                  : `${entitlement.planName ?? (entitlement.plan === "yearly" ? "Yearly" : "Monthly")}${
+                      entitlement.expiresAt
+                        ? entitlement.cancelAtPeriodEnd
+                          ? ` — access through ${new Date(entitlement.expiresAt).toLocaleDateString()}`
+                          : ` — renews ${new Date(entitlement.expiresAt).toLocaleDateString()}`
+                        : " — active"
+                    }`
+                : "AI coach, photo food logging, 1.5x points and early drops"}
+            </p>
+          </div>
+          <Crown className="h-5 w-5 shrink-0 text-accent" />
+        </div>
+        <div className="mt-4 flex gap-2">
+          {isElite && !comped && (
+            <button
+              onClick={manageElite}
+              disabled={managing}
+              className="flex flex-1 items-center justify-center gap-2 rounded-full bg-foreground py-2.5 text-[11px] font-semibold uppercase tracking-widest text-background disabled:opacity-50"
+            >
+              {managing && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Manage ELITE
+            </button>
+          )}
+          <Link
+            to="/elite"
+            className={`flex flex-1 items-center justify-center rounded-full py-2.5 text-[11px] font-semibold uppercase tracking-widest ${
+              isElite ? "border border-border" : "bg-foreground text-background"
+            }`}
+          >
+            {isElite ? "Membership" : "Join MAXOUT ELITE"}
+          </Link>
+        </div>
+        {manageError && <p className="mt-3 text-[11px] text-destructive">{manageError}</p>}
+      </div>
+
 
       {profile.data?.is_ambassador && (
         <div className="mt-4 rounded-3xl border border-accent/40 bg-accent/5 p-5">
