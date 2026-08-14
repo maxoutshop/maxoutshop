@@ -17,7 +17,7 @@ export function ProductTile({
   const wished = useStore((s) => s.wishlist.includes(product.slug));
   const { user } = useSession();
   const { isElite } = useElite(user?.id);
-  const locked = !!product.earlyAccess && !isElite;
+  const locked = (!!product.earlyAccess || !!product.eliteOnly) && !isElite;
   const price = product.salePrice ?? product.price;
 
   return (
