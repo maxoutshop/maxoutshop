@@ -153,45 +153,9 @@ function Community() {
           </div>
         </>
       ) : (
-        <div className="mt-5 space-y-3">
-          {(challenges.data ?? []).map((c) => {
-            const joined = joinedIds.has(c.id);
-            return (
-              <div key={c.id} className="overflow-hidden rounded-3xl border border-border bg-surface">
-                {c.image_url && <img src={c.image_url} alt={c.title} className="h-32 w-full object-cover" loading="lazy" />}
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
-                        <Flame className="h-3 w-3" /> Live
-                      </p>
-                      <h3 className="mt-1 text-lg font-semibold">{c.title}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{c.description}</p>
-                    </div>
-                    <Trophy className="h-5 w-5 shrink-0 text-accent" />
-                  </div>
-                  <div className="mt-4 flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">{c.goal_label}</span>
-                    {user ? (
-                      <button
-                        disabled={joined}
-                        onClick={() => join.mutate(c.id)}
-                        className={`rounded-full px-4 py-1.5 font-semibold ${joined ? "border border-border text-muted-foreground" : "bg-primary text-primary-foreground"}`}
-                      >
-                        {joined ? "Joined" : "Join"}
-                      </button>
-                    ) : (
-                      <Link to="/auth" className="rounded-full bg-primary px-4 py-1.5 font-semibold text-primary-foreground">
-                        Join
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <ChallengeBoard uid={uid} />
       )}
+
 
       {user && tab === "feed" && (
         <button
