@@ -5,8 +5,9 @@ import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus,
 import { useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
-import { usePosts, useChallenges, useMyChallenges, useMutate, uploadPostMedia, MAX_POST_MEDIA_MB } from "@/lib/db";
+import { usePosts, useMutate, uploadPostMedia, MAX_POST_MEDIA_MB } from "@/lib/db";
 import { useUnreadCount } from "@/lib/social";
+import { ChallengeBoard } from "@/components/ChallengeBoard";
 
 export const Route = createFileRoute("/community")({
   // `draft` lets other screens (like the workout summary) hand a prefilled post over.
