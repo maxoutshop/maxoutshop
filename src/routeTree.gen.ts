@@ -40,6 +40,7 @@ import { Route as ApiPublicMobileParseFoodRouteImport } from './routes/api/publi
 import { Route as ApiPublicMobileCheckoutRouteImport } from './routes/api/public/mobile/checkout'
 import { Route as ApiPublicMobileCatalogRouteImport } from './routes/api/public/mobile/catalog'
 import { Route as ApiPublicHooksNutritionRemindersRouteImport } from './routes/api/public/hooks/nutrition-reminders'
+import { Route as ApiPublicMobileEliteStatusRouteImport } from './routes/api/public/mobile/elite/status'
 import { Route as ApiPublicMobileElitePortalRouteImport } from './routes/api/public/mobile/elite/portal'
 import { Route as ApiPublicMobileEliteCheckoutRouteImport } from './routes/api/public/mobile/elite/checkout'
 
@@ -203,6 +204,12 @@ const ApiPublicHooksNutritionRemindersRoute =
     path: '/api/public/hooks/nutrition-reminders',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMobileEliteStatusRoute =
+  ApiPublicMobileEliteStatusRouteImport.update({
+    id: '/api/public/mobile/elite/status',
+    path: '/api/public/mobile/elite/status',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicMobileElitePortalRoute =
   ApiPublicMobileElitePortalRouteImport.update({
     id: '/api/public/mobile/elite/portal',
@@ -249,6 +256,7 @@ export interface FileRoutesByFullPath {
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
   '/api/public/mobile/elite/checkout': typeof ApiPublicMobileEliteCheckoutRoute
   '/api/public/mobile/elite/portal': typeof ApiPublicMobileElitePortalRoute
+  '/api/public/mobile/elite/status': typeof ApiPublicMobileEliteStatusRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -283,6 +291,7 @@ export interface FileRoutesByTo {
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
   '/api/public/mobile/elite/checkout': typeof ApiPublicMobileEliteCheckoutRoute
   '/api/public/mobile/elite/portal': typeof ApiPublicMobileElitePortalRoute
+  '/api/public/mobile/elite/status': typeof ApiPublicMobileEliteStatusRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -319,6 +328,7 @@ export interface FileRoutesById {
   '/api/public/push/pending': typeof ApiPublicPushPendingRoute
   '/api/public/mobile/elite/checkout': typeof ApiPublicMobileEliteCheckoutRoute
   '/api/public/mobile/elite/portal': typeof ApiPublicMobileElitePortalRoute
+  '/api/public/mobile/elite/status': typeof ApiPublicMobileEliteStatusRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -355,6 +365,7 @@ export interface FileRouteTypes {
     | '/api/public/push/pending'
     | '/api/public/mobile/elite/checkout'
     | '/api/public/mobile/elite/portal'
+    | '/api/public/mobile/elite/status'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -389,6 +400,7 @@ export interface FileRouteTypes {
     | '/api/public/push/pending'
     | '/api/public/mobile/elite/checkout'
     | '/api/public/mobile/elite/portal'
+    | '/api/public/mobile/elite/status'
   id:
     | '__root__'
     | '/'
@@ -424,6 +436,7 @@ export interface FileRouteTypes {
     | '/api/public/push/pending'
     | '/api/public/mobile/elite/checkout'
     | '/api/public/mobile/elite/portal'
+    | '/api/public/mobile/elite/status'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -459,6 +472,7 @@ export interface RootRouteChildren {
   ApiPublicPushPendingRoute: typeof ApiPublicPushPendingRoute
   ApiPublicMobileEliteCheckoutRoute: typeof ApiPublicMobileEliteCheckoutRoute
   ApiPublicMobileElitePortalRoute: typeof ApiPublicMobileElitePortalRoute
+  ApiPublicMobileEliteStatusRoute: typeof ApiPublicMobileEliteStatusRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -680,6 +694,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksNutritionRemindersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/mobile/elite/status': {
+      id: '/api/public/mobile/elite/status'
+      path: '/api/public/mobile/elite/status'
+      fullPath: '/api/public/mobile/elite/status'
+      preLoaderRoute: typeof ApiPublicMobileEliteStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/mobile/elite/portal': {
       id: '/api/public/mobile/elite/portal'
       path: '/api/public/mobile/elite/portal'
@@ -742,6 +763,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPushPendingRoute: ApiPublicPushPendingRoute,
   ApiPublicMobileEliteCheckoutRoute: ApiPublicMobileEliteCheckoutRoute,
   ApiPublicMobileElitePortalRoute: ApiPublicMobileElitePortalRoute,
+  ApiPublicMobileEliteStatusRoute: ApiPublicMobileEliteStatusRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
