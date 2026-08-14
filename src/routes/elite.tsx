@@ -4,7 +4,7 @@ import { Camera, Check, Crown, Loader2, Sparkles, ArrowLeft, Ticket } from "luci
 import { useQueryClient } from "@tanstack/react-query";
 import { redeemPromoCode } from "@/lib/promo.functions";
 import { useSession } from "@/lib/auth";
-import { useElite } from "@/lib/subscription";
+import { useElite, useMembershipSync } from "@/lib/subscription";
 import { ELITE_PRICES } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import { openEliteBillingPortal, startEliteCheckout } from "@/lib/elite-client";
@@ -40,6 +40,7 @@ function ElitePage() {
   const { user } = useSession();
   const navigate = useNavigate();
   const { isElite, subscription, comped, grant, lockedForPayment } = useElite(user?.id);
+  useMembershipSync(user?.id);
   const [plan, setPlan] = useState<"monthly" | "yearly">("monthly");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
