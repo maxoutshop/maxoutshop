@@ -168,13 +168,15 @@ function Community() {
         </button>
       )}
 
-      {composing && uid && <Composer uid={uid} onClose={() => setComposing(false)} />}
+      {composing && uid && (
+        <Composer uid={uid} initialBody={draft ?? ""} onClose={() => setComposing(false)} />
+      )}
     </AppShell>
   );
 }
 
-function Composer({ uid, onClose }: { uid: string; onClose: () => void }) {
-  const [body, setBody] = useState("");
+function Composer({ uid, initialBody, onClose }: { uid: string; initialBody?: string; onClose: () => void }) {
+  const [body, setBody] = useState(initialBody ?? "");
   const [tag, setTag] = useState<string>(TAGS[0].key);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
