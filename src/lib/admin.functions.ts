@@ -116,3 +116,87 @@ export const adminMessages = createServerFn({ method: "POST" })
     await a.assertAdmin(context.userId);
     return a.listMessages(data.search);
   });
+
+export const adminPointsMembers = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { search?: string }) => ({ search: String(d?.search ?? "").trim().slice(0, 120) }))
+  .handler(async ({ data, context }): Promise<import("./admin.types").AdminPointsMember[]> => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    return a.listPointsMembers(data.search);
+  });
+
+export const adjustMemberPoints = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { userId: string; delta: number; reason?: string }) => {
+    const delta = Math.trunc(Number(d?.delta ?? 0));
+    if (!delta || Math.abs(delta) > 1000000) throw new Error("Enter a point amount.");
+    return { userId: String(d?.userId ?? ""), delta, reason: String(d?.reason ?? "").slice(0, 120) };
+  })
+  .handler(async ({ data, context }) => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    await a.adjustPoints(data.userId, data.delta, data.reason);
+    return { ok: true };
+  });
+
+export const adminPointsConfig = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }): Promise<{
+    settings: import("./admin.types").PointsSettings;
+    rewards: import("./admin.types").AdminReward[];
+  }> => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    const [settings, rewards] = await Promise.all([a.getPointsSettings(), a.listRewardsAdmin()]);
+    return { settings, rewards };
+  });
+
+export const savePointsRules = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { workoutPoints: number; prPoints: number }) => {
+    const clamp = (n: unknown) => Math.max(0, Math.min(1000, Math.trunc(Number(n) || 0)));
+    return { workoutPoints: clamp(d?.workoutPoints), prPoints: clamp(d?.prPoints) };
+  })
+  .handler(async ({ data, context }) => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    await a.savePointsSettings(data);
+    return { ok: true };
+  });
+
+export const upsertReward = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: {
+    id?: string; title: string; description?: string; kind?: string;
+    pointsCost: number; active?: boolean; stock?: number | null;
+  }) => {
+    const title = String(d?.title ?? "").trim().slice(0, 120);
+    if (!title) throw new Error("Title is required.");
+    const stockRaw = d?.stock;
+    return {
+      id: d.id ? String(d.id) : undefined,
+      title,
+      description: String(d?.description ?? "").slice(0, 400),
+      kind: String(d?.kind ?? "perk").slice(0, 40),
+      pointsCost: Math.max(0, Math.trunc(Number(d?.pointsCost) || 0)),
+      active: d?.active !== false,
+      stock: stockRaw === null || stockRaw === undefined || stockRaw === ("" as never) ? null : Math.max(0, Math.trunc(Number(stockRaw) || 0)),
+    };
+  })
+  .handler(async ({ data, context }) => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    const id = await a.saveReward(data);
+    return { ok: true, id };
+  });
+
+export const removeReward = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string }) => ({ id: String(d?.id ?? "") }))
+  .handler(async ({ data, context }) => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    await a.deleteReward(data.id);
+    return { ok: true };
+  });

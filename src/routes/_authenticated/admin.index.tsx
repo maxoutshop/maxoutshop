@@ -5,7 +5,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import {
   ArrowLeft, Shield, Search, Trash2, Crown, BadgeCheck, Plus, Flag,
-  Users, Loader2, X, Eraser, Bell,
+  Users, Loader2, X, Eraser, Bell, Coins, Gift, Minus,
 } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { AdminProductsPanel } from "@/components/AdminProductsPanel";
@@ -15,6 +15,8 @@ import { toast } from "sonner";
 import {
   adminOverview, setAdmin, addAdminByEmail, removeAccount, moderateMember,
   upsertChallenge, removeChallenge, adminMessages,
+  adminPointsMembers, adjustMemberPoints, adminPointsConfig, savePointsRules,
+  upsertReward, removeReward,
 } from "@/lib/admin.functions";
 import { broadcastNotification } from "@/lib/push.functions";
 import type { AdminChallenge } from "@/lib/admin.types";
@@ -33,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminHome,
 });
 
-type Tab = "overview" | "members" | "challenges" | "products" | "messages" | "notify";
+type Tab = "overview" | "members" | "points" | "challenges" | "products" | "messages" | "notify";
 
 function AdminHome() {
   const qc = useQueryClient();
@@ -56,7 +58,7 @@ function AdminHome() {
         <p className="mt-1 text-xs text-muted-foreground">Everything that runs MAXOUT, in one place.</p>
 
         <div className="mt-5 grid grid-cols-3 gap-2">
-          {(["overview", "members", "challenges", "products", "messages", "notify"] as Tab[]).map((t) => (
+          {(["overview", "members", "points", "challenges", "products", "messages", "notify"] as Tab[]).map((t) => (
             <button key={t} onClick={() => setTab(t)}
               className={`rounded-full py-2 text-[11px] font-semibold capitalize transition active:scale-95 ${
                 tab === t ? "bg-foreground text-background" : "border border-border text-muted-foreground"
@@ -67,10 +69,10 @@ function AdminHome() {
         </div>
 
 
-        {tab !== "products" && tab !== "messages" && tab !== "notify" && q.isLoading && (
+        {(tab === "overview" || tab === "members" || tab === "challenges") && q.isLoading && (
           <div className="mt-10 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
         )}
-        {tab !== "products" && tab !== "messages" && tab !== "notify" && q.error && (
+        {(tab === "overview" || tab === "members" || tab === "challenges") && q.error && (
           <p className="mt-6 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
             {q.error instanceof Error ? q.error.message : "Could not load admin data."}
           </p>
@@ -78,10 +80,12 @@ function AdminHome() {
 
         {q.data && tab === "overview" && <Overview stats={q.data.stats} />}
         {q.data && tab === "members" && <Members members={q.data.members} onDone={refresh} />}
+        {tab === "points" && <PointsPanel />}
         {q.data && tab === "challenges" && <Challenges list={q.data.challenges} onDone={refresh} />}
         {tab === "products" && <AdminProductsPanel />}
         {tab === "messages" && <MessagesPanel />}
         {tab === "notify" && <NotifyPanel />}
+
       </div>
     </AppShell>
   );
@@ -150,6 +154,234 @@ function NotifyPanel() {
   );
 }
 
+
+const EMPTY_REWARD = { title: "", description: "", kind: "perk", pointsCost: 500, active: true, stock: "" };
+
+function PointsPanel() {
+  const qc = useQueryClient();
+  const loadMembers = useServerFn(adminPointsMembers);
+  const loadConfig = useServerFn(adminPointsConfig);
+  const adjust = useServerFn(adjustMemberPoints);
+  const saveRules = useServerFn(savePointsRules);
+  const saveReward = useServerFn(upsertReward);
+  const delReward = useServerFn(removeReward);
+
+  const [term, setTerm] = useState("");
+  const [search, setSearch] = useState("");
+  const [open, setOpen] = useState<string | null>(null);
+  const [amount, setAmount] = useState("");
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const [workoutPoints, setWorkoutPoints] = useState("");
+  const [prPoints, setPrPoints] = useState("");
+  const [rewardForm, setRewardForm] = useState<typeof EMPTY_REWARD & { id?: string }>(EMPTY_REWARD);
+  const [rewardOpen, setRewardOpen] = useState(false);
+
+  const members = useQuery({
+    queryKey: ["admin-points-members", search],
+    queryFn: () => loadMembers({ data: { search } }),
+  });
+  const config = useQuery({
+    queryKey: ["admin-points-config"],
+    queryFn: async () => {
+      const c = await loadConfig({ data: undefined as never });
+      setWorkoutPoints(String(c.settings.workoutPoints));
+      setPrPoints(String(c.settings.prPoints));
+      return c;
+    },
+  });
+
+  async function run(key: string, fn: () => Promise<unknown>, msg: string, keys: string[]) {
+    setBusy(key);
+    try {
+      await fn();
+      toast.success(msg);
+      for (const k of keys) qc.invalidateQueries({ queryKey: [k] });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  function applyAdjust(userId: string, sign: 1 | -1) {
+    const n = Math.abs(Math.trunc(Number(amount) || 0));
+    if (!n) { toast.error("Enter a point amount."); return; }
+    run(`p${userId}`, () => adjust({ data: { userId, delta: sign * n, reason } }), "Points updated", ["admin-points-members"])
+      .then(() => { setAmount(""); setReason(""); setOpen(null); });
+  }
+
+  return (
+    <div className="mt-6 space-y-6">
+      {/* Earning rules */}
+      <div className="rounded-3xl border border-border bg-surface p-4">
+        <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
+          <Coins className="h-3.5 w-3.5" /> Point earnings
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <Field label="Workout finished" type="number" value={workoutPoints} onChange={setWorkoutPoints} />
+          <Field label="New personal record" type="number" value={prPoints} onChange={setPrPoints} />
+        </div>
+        <button
+          disabled={busy === "rules" || config.isLoading}
+          onClick={() => run("rules", () => saveRules({ data: { workoutPoints: Number(workoutPoints) || 0, prPoints: Number(prPoints) || 0 } }), "Earning rules saved", ["admin-points-config", "points-rules"])}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground disabled:opacity-40"
+        >
+          {busy === "rules" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save earning rules"}
+        </button>
+        <p className="mt-2 text-[11px] text-muted-foreground">
+          ELITE members still earn 1.5× on everything. Challenge rewards are set per challenge.
+        </p>
+      </div>
+
+      {/* Rewards catalog */}
+      <div>
+        <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
+          <Gift className="h-3.5 w-3.5" /> Rewards
+        </p>
+
+        {!rewardOpen && (
+          <button onClick={() => { setRewardForm(EMPTY_REWARD); setRewardOpen(true); }}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground active:scale-[0.98] transition">
+            <Plus className="h-4 w-4" /> New reward
+          </button>
+        )}
+
+        {rewardOpen && (
+          <div className="mt-3 rounded-3xl border border-border bg-surface p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold">{rewardForm.id ? "Edit reward" : "New reward"}</p>
+              <button onClick={() => { setRewardOpen(false); setRewardForm(EMPTY_REWARD); }}>
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+            <div className="mt-3 space-y-2">
+              <Field label="Title" value={rewardForm.title} onChange={(v) => setRewardForm({ ...rewardForm, title: v })} placeholder="$10 shop credit" />
+              <Field label="Description" value={rewardForm.description} onChange={(v) => setRewardForm({ ...rewardForm, description: v })} placeholder="Applied to your next order" />
+              <div className="grid grid-cols-2 gap-2">
+                <Field label="Points cost" type="number" value={String(rewardForm.pointsCost)} onChange={(v) => setRewardForm({ ...rewardForm, pointsCost: Number(v) || 0 })} />
+                <Field label="Stock (blank = ∞)" type="number" value={rewardForm.stock} onChange={(v) => setRewardForm({ ...rewardForm, stock: v })} />
+              </div>
+              <Field label="Kind" value={rewardForm.kind} onChange={(v) => setRewardForm({ ...rewardForm, kind: v })} placeholder="perk / credit / product" />
+              <button onClick={() => setRewardForm({ ...rewardForm, active: !rewardForm.active })}
+                className={`w-full rounded-full py-2.5 text-xs font-semibold transition active:scale-95 ${
+                  rewardForm.active ? "bg-foreground text-background" : "border border-border text-muted-foreground"
+                }`}>
+                {rewardForm.active ? "Live in the rewards store" : "Hidden"}
+              </button>
+            </div>
+            <button
+              disabled={busy === "reward" || !rewardForm.title.trim()}
+              onClick={() => run("reward", () => saveReward({ data: {
+                id: rewardForm.id,
+                title: rewardForm.title,
+                description: rewardForm.description,
+                kind: rewardForm.kind,
+                pointsCost: rewardForm.pointsCost,
+                active: rewardForm.active,
+                stock: rewardForm.stock === "" ? null : Number(rewardForm.stock),
+              } }), "Reward saved", ["admin-points-config", "rewards"]).then(() => { setRewardOpen(false); setRewardForm(EMPTY_REWARD); })}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-semibold text-primary-foreground disabled:opacity-40"
+            >
+              {busy === "reward" ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save reward"}
+            </button>
+          </div>
+        )}
+
+        <div className="mt-3 space-y-2">
+          {config.isLoading && <div className="flex justify-center py-6"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}
+          {(config.data?.rewards ?? []).map((r) => (
+            <div key={r.id} className="rounded-3xl border border-border bg-surface p-4">
+              <div className="flex items-start gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{r.title}</p>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">
+                    {r.pointsCost} pts · {r.stock === null ? "unlimited" : `${r.stock} left`} · {r.active ? "live" : "hidden"}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-3 flex gap-1.5">
+                <Action onClick={() => {
+                  setRewardForm({
+                    id: r.id, title: r.title, description: r.description ?? "", kind: r.kind,
+                    pointsCost: r.pointsCost, active: r.active, stock: r.stock === null ? "" : String(r.stock),
+                  });
+                  setRewardOpen(true);
+                }}>Edit</Action>
+                <Action danger onClick={() => run(`dr${r.id}`, () => delReward({ data: { id: r.id } }), "Reward deleted", ["admin-points-config", "rewards"])}>
+                  <Trash2 className="h-3 w-3" /> Delete
+                </Action>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Member balances */}
+      <div>
+        <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
+          <Users className="h-3.5 w-3.5" /> Member balances
+        </p>
+        <form onSubmit={(e) => { e.preventDefault(); setSearch(term.trim()); }}
+          className="mt-3 flex items-center gap-2 rounded-full border border-border bg-surface px-4">
+          <Search className="h-4 w-4 text-muted-foreground" />
+          <input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search members"
+            className="h-11 flex-1 bg-transparent text-sm outline-none" />
+        </form>
+
+        {members.isLoading && <div className="mt-6 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}
+
+        <div className="mt-3 space-y-2">
+          {(members.data ?? []).map((m) => (
+            <div key={m.id} className="rounded-3xl border border-border bg-surface p-4">
+              <div className="flex items-center gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold">{m.displayName ?? m.username ?? "Member"}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">{m.email ?? m.username ?? m.id.slice(0, 8)}</p>
+                </div>
+                <p className="shrink-0 text-sm font-semibold">{m.points} <span className="text-[10px] uppercase tracking-widest text-muted-foreground">pts</span></p>
+              </div>
+
+              {open !== m.id ? (
+                <div className="mt-3">
+                  <Action onClick={() => { setOpen(m.id); setAmount(""); setReason(""); }}>
+                    <Coins className="h-3 w-3" /> Adjust points
+                  </Action>
+                </div>
+              ) : (
+                <div className="mt-3 space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <Field label="Amount" type="number" value={amount} onChange={setAmount} placeholder="100" />
+                    <Field label="Reason" value={reason} onChange={setReason} placeholder="Event bonus" />
+                  </div>
+                  <div className="flex gap-2">
+                    <button disabled={busy === `p${m.id}`} onClick={() => applyAdjust(m.id, 1)}
+                      className="flex flex-1 items-center justify-center gap-1 rounded-full bg-primary py-2.5 text-xs font-semibold text-primary-foreground disabled:opacity-40">
+                      <Plus className="h-3 w-3" /> Add
+                    </button>
+                    <button disabled={busy === `p${m.id}`} onClick={() => applyAdjust(m.id, -1)}
+                      className="flex flex-1 items-center justify-center gap-1 rounded-full border border-border py-2.5 text-xs font-semibold text-muted-foreground disabled:opacity-40">
+                      <Minus className="h-3 w-3" /> Remove
+                    </button>
+                    <button onClick={() => setOpen(null)} className="rounded-full border border-border px-4 text-xs text-muted-foreground">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+          {!members.isLoading && (members.data ?? []).length === 0 && (
+            <p className="rounded-2xl border border-dashed border-border px-4 py-6 text-center text-xs text-muted-foreground">
+              No members found.
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function MessagesPanel() {
   const load = useServerFn(adminMessages);

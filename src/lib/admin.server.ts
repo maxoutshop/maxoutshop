@@ -197,3 +197,105 @@ export async function listMessages(search: string): Promise<import("./admin.type
     to: who(m.recipient_id),
   }));
 }
+
+/** ---- MAXOUT Points administration ---- */
+
+export async function listPointsMembers(search: string): Promise<import("./admin.types").AdminPointsMember[]> {
+  const db = adminDb();
+  let req = db.from("profiles").select("id, username, display_name, points").order("points", { ascending: false }).limit(200);
+  if (search) req = req.or(`username.ilike.%${search}%,display_name.ilike.%${search}%`);
+  const { data: profiles } = await req;
+  const { data: auth } = await db.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  const emails = new Map<string, string | null>();
+  for (const u of auth?.users ?? []) emails.set(u.id, u.email ?? null);
+  let rows = (profiles ?? []).map((p: any) => ({
+    id: p.id,
+    email: emails.get(p.id) ?? null,
+    username: p.username,
+    displayName: p.display_name,
+    points: p.points ?? 0,
+  }));
+  if (search) {
+    const t = search.toLowerCase();
+    const byEmail = [...emails.entries()].filter(([, e]) => (e ?? "").toLowerCase().includes(t)).map(([id]) => id);
+    if (byEmail.length) {
+      const have = new Set(rows.map((r: { id: string }) => r.id));
+      const missing = byEmail.filter((id) => !have.has(id));
+      if (missing.length) {
+        const { data: extra } = await db.from("profiles").select("id, username, display_name, points").in("id", missing);
+        rows = rows.concat((extra ?? []).map((p: any) => ({
+          id: p.id, email: emails.get(p.id) ?? null, username: p.username, displayName: p.display_name, points: p.points ?? 0,
+        })));
+      }
+    }
+  }
+  return rows;
+}
+
+/** Write a manual ledger entry — the DB trigger applies it to the balance. */
+export async function adjustPoints(userId: string, delta: number, reason: string) {
+  const db = adminDb();
+  const { error } = await db.from("points_ledger").insert({
+    user_id: userId,
+    delta,
+    reason: reason || (delta >= 0 ? "Admin adjustment" : "Admin deduction"),
+    event_key: `admin:${userId}:${Date.now()}`,
+    base_delta: delta,
+    multiplier: 1,
+  });
+  if (error) throw new Error(error.message);
+}
+
+export async function getPointsSettings(): Promise<import("./admin.types").PointsSettings> {
+  const db = adminDb();
+  const { data } = await db.from("points_settings").select("workout_points, pr_points").limit(1).maybeSingle();
+  return { workoutPoints: data?.workout_points ?? 25, prPoints: data?.pr_points ?? 50 };
+}
+
+export async function savePointsSettings(s: import("./admin.types").PointsSettings) {
+  const db = adminDb();
+  const { error } = await db.from("points_settings")
+    .update({ workout_points: s.workoutPoints, pr_points: s.prPoints })
+    .eq("id", true);
+  if (error) throw new Error(error.message);
+}
+
+export async function listRewardsAdmin(): Promise<import("./admin.types").AdminReward[]> {
+  const db = adminDb();
+  const { data } = await db.from("rewards").select("*").order("points_cost", { ascending: true });
+  return (data ?? []).map((r: any) => ({
+    id: r.id, title: r.title, description: r.description, kind: r.kind,
+    pointsCost: r.points_cost, active: !!r.active, stock: r.stock,
+  }));
+}
+
+export type RewardInput = {
+  id?: string; title: string; description?: string; kind: string;
+  pointsCost: number; active: boolean; stock: number | null;
+};
+
+export async function saveReward(input: RewardInput) {
+  const db = adminDb();
+  const row = {
+    title: input.title,
+    description: input.description || null,
+    kind: input.kind,
+    points_cost: input.pointsCost,
+    active: input.active,
+    stock: input.stock,
+  };
+  if (input.id) {
+    const { error } = await db.from("rewards").update(row).eq("id", input.id);
+    if (error) throw new Error(error.message);
+    return input.id;
+  }
+  const { data, error } = await db.from("rewards").insert(row).select("id").single();
+  if (error) throw new Error(error.message);
+  return data?.id ?? null;
+}
+
+export async function deleteReward(id: string) {
+  const db = adminDb();
+  const { error } = await db.from("rewards").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}

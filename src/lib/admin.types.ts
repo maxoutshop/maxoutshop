@@ -30,3 +30,23 @@ export type AdminMessage = {
   from: { id: string; name: string | null; username: string | null };
   to: { id: string; name: string | null; username: string | null };
 };
+
+export type AdminPointsMember = {
+  id: string;
+  email: string | null;
+  username: string | null;
+  displayName: string | null;
+  points: number;
+};
+
+export type AdminReward = {
+  id: string;
+  title: string;
+  description: string | null;
+  kind: string;
+  pointsCost: number;
+  active: boolean;
+  stock: number | null;
+};
+
+export type PointsSettings = { workoutPoints: number; prPoints: number };

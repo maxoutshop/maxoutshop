@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { useSession } from "@/lib/auth";
 import { useElite } from "@/lib/subscription";
 import { useInvalidate } from "@/lib/db";
-import { usePointsSummary, useRewards, useRedemptions, redeemReward, EARN_RULES } from "@/lib/rewards";
+import { usePointsSummary, useRewards, useRedemptions, redeemReward, usePointsRules } from "@/lib/rewards";
 import { fmtNum } from "@/lib/workout-math";
 
 const TITLE = "MAXOUT Points — Member rewards";
@@ -33,6 +33,13 @@ function Rewards() {
   const { isElite } = useElite(uid);
   const rewards = useRewards();
   const redemptions = useRedemptions(uid);
+  const rules = usePointsRules();
+  const earnRules: { label: string; points: number | string }[] = [
+    { label: "Finish a workout", points: rules.data?.workoutPoints ?? 25 },
+    { label: "Set a new personal record", points: rules.data?.prPoints ?? 50 },
+    { label: "Complete a challenge", points: "Varies by challenge" },
+  ];
+
   const invalidate = useInvalidate();
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
@@ -95,7 +102,7 @@ function Rewards() {
 
         <h2 className="mt-8 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">How to earn</h2>
         <div className="mt-3 divide-y divide-border rounded-3xl border border-border bg-surface">
-          {EARN_RULES.map((r) => (
+          {earnRules.map((r) => (
             <div key={r.label} className="flex items-center justify-between px-5 py-3.5 text-sm">
               <span className="inline-flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-accent" />{r.label}</span>
               <span className="text-xs font-semibold text-muted-foreground">
