@@ -61,11 +61,22 @@ function Track() {
   const prs = usePRs(uid);
   const weights = useWeights(uid);
 
+  const templates = useUserTemplates(uid);
+  const savedMeals = useSavedMeals(uid);
+
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
   const [plan, setPlan] = useState<TemplateExercise[]>([]);
   const [sessionOpen, setSessionOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals" | "trainer">(null);
+  const [summary, setSummary] = useState<null | {
+    workoutId: string; title: string; category: string; durationMin: number;
+    sets: Array<{ exercise: string; weight: number | null; reps: number | null }>;
+    prs: DetectedPR[]; points: number;
+  }>(null);
+  const [sheet, setSheet] = useState<
+    null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals" | "trainer" | "saved-meals"
+  >(null);
+
 
 
 
