@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-/** Native (Capacitor) Stripe Billing Portal session. */
+/**
+ * Native (Capacitor) MANAGE ELITE. Wix bills the membership, so this returns
+ * the Wix members-area subscriptions page for the signed-in member.
+ */
 export const Route = createFileRoute("/api/public/mobile/elite/portal")({
   server: {
     handlers: {
@@ -14,25 +17,11 @@ export const Route = createFileRoute("/api/public/mobile/elite/portal")({
           const user = await userFromBearer(request);
           if (!user) return jsonResponse(request, { error: "Unauthorized" }, 401);
 
-          const body = (await request.json().catch(() => ({}))) as { environment?: string; email?: string };
-          const { normalizeEnv, createBillingPortal } = await import("@/lib/elite.server");
-          const { getStripeErrorMessage } = await import("@/lib/stripe.server");
-          const origin = new URL(request.url).origin;
-
-          try {
-            const url = await createBillingPortal({
-              env: normalizeEnv(body.environment),
-              userId: user.id,
-              email: body.email,
-              returnUrl: `${origin}/checkout/return?native=1&managed=1`,
-            });
-            return jsonResponse(request, { url });
-          } catch (error) {
-            return jsonResponse(request, { error: getStripeErrorMessage(error) }, 502);
-          }
+          const { WIX_MANAGE_URL } = await import("@/lib/wix-elite.server");
+          return jsonResponse(request, { url: WIX_MANAGE_URL });
         } catch (error) {
           console.error("[api/mobile/elite/portal] failed", error);
-          return jsonResponse(request, { error: "Could not open billing" }, 500);
+          return jsonResponse(request, { error: "Could not open membership management" }, 500);
         }
       },
     },
