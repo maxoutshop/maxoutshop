@@ -210,12 +210,18 @@ function Track() {
     let points = 0;
     try {
       if (sets.length) {
+        const rules = await fetchPointsRules();
         detected = await detectPRs(uid, sets);
-        if (await claimPoints(25, "Workout completed", `workout:${live.id}`)) points += 25;
+        if (rules.workoutPoints > 0 && await claimPoints(rules.workoutPoints, "Workout completed", `workout:${live.id}`)) {
+          points += rules.workoutPoints;
+        }
         for (const pr of detected) {
-          if (await claimPoints(50, `PR · ${pr.exercise}`, `pr:${pr.id}:${Math.round(pr.value * 10)}`)) points += 50;
+          if (rules.prPoints > 0 && await claimPoints(rules.prPoints, `PR · ${pr.exercise}`, `pr:${pr.id}:${Math.round(pr.value * 10)}`)) {
+            points += rules.prPoints;
+          }
         }
       }
+
       await syncChallengeProgress();
     } catch (e) {
       console.error("[workout] finish", e);
