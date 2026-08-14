@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { Check, Crown, Loader2, AlertCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { refreshMembership } from "@/lib/elite-client";
-import { IS_NATIVE_BUILD } from "@/lib/api-base";
 
 export const Route = createFileRoute("/checkout/return")({
   ssr: false,
