@@ -17,6 +17,13 @@ import { WorkoutSession } from "@/components/WorkoutSession";
 import { WorkoutDetailSheet, type WorkoutDetail } from "@/components/WorkoutDetailSheet";
 import { RemindersCard } from "@/components/RemindersCard";
 import { WORKOUT_TEMPLATES, GROWTH_TIPS, type TemplateExercise } from "@/lib/workout-templates";
+import { WorkoutComplete } from "@/components/WorkoutComplete";
+import { SavedMealsSheet } from "@/components/SavedMealsSheet";
+import { detectPRs, claimPoints, type DetectedPR } from "@/lib/pr";
+import { useUserTemplates, saveTemplate, deleteTemplate, lastWorkoutPlan, templateToPlan } from "@/lib/templates";
+import { copyDayMeals } from "@/lib/saved-meals";
+import { syncChallengeProgress } from "@/lib/challenges";
+import { LineChart, Sparkles, Gift, Bookmark, CopyPlus } from "lucide-react";
 
 
 
