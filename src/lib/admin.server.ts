@@ -219,7 +219,7 @@ export async function listPointsMembers(search: string): Promise<import("./admin
     const t = search.toLowerCase();
     const byEmail = [...emails.entries()].filter(([, e]) => (e ?? "").toLowerCase().includes(t)).map(([id]) => id);
     if (byEmail.length) {
-      const have = new Set(rows.map((r) => r.id));
+      const have = new Set(rows.map((r: { id: string }) => r.id));
       const missing = byEmail.filter((id) => !have.has(id));
       if (missing.length) {
         const { data: extra } = await db.from("profiles").select("id, username, display_name, points").in("id", missing);
