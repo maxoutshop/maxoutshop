@@ -385,26 +385,32 @@ export type Database = {
       }
       points_ledger: {
         Row: {
+          base_delta: number | null
           created_at: string
           delta: number
           event_key: string | null
           id: string
+          multiplier: number
           reason: string
           user_id: string
         }
         Insert: {
+          base_delta?: number | null
           created_at?: string
           delta: number
           event_key?: string | null
           id?: string
+          multiplier?: number
           reason: string
           user_id: string
         }
         Update: {
+          base_delta?: number | null
           created_at?: string
           delta?: number
           event_key?: string | null
           id?: string
+          multiplier?: number
           reason?: string
           user_id?: string
         }
@@ -521,9 +527,14 @@ export type Database = {
           created_at: string
           drop_date: string | null
           early_access: boolean
+          elite_access_at: string | null
+          elite_only: boolean
+          elite_price: number | null
           hidden: boolean
           id: string
           new_arrival: boolean
+          public_access_at: string | null
+          restock_priority_minutes: number
           slug: string
           updated_at: string
         }
@@ -534,9 +545,14 @@ export type Database = {
           created_at?: string
           drop_date?: string | null
           early_access?: boolean
+          elite_access_at?: string | null
+          elite_only?: boolean
+          elite_price?: number | null
           hidden?: boolean
           id?: string
           new_arrival?: boolean
+          public_access_at?: string | null
+          restock_priority_minutes?: number
           slug: string
           updated_at?: string
         }
@@ -547,9 +563,14 @@ export type Database = {
           created_at?: string
           drop_date?: string | null
           early_access?: boolean
+          elite_access_at?: string | null
+          elite_only?: boolean
+          elite_price?: number | null
           hidden?: boolean
           id?: string
           new_arrival?: boolean
+          public_access_at?: string | null
+          restock_priority_minutes?: number
           slug?: string
           updated_at?: string
         }
@@ -913,6 +934,33 @@ export type Database = {
         }
         Relationships: []
       }
+      streak_freezes: {
+        Row: {
+          created_at: string
+          cycle_start: string
+          id: string
+          protected_day: string
+          used_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          cycle_start: string
+          id?: string
+          protected_day: string
+          used_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          cycle_start?: string
+          id?: string
+          protected_day?: string
+          used_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean | null
@@ -1003,6 +1051,33 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_reports: {
+        Row: {
+          created_at: string
+          id: string
+          payload: Json
+          updated_at: string
+          user_id: string
+          week_start: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          payload: Json
+          updated_at?: string
+          user_id: string
+          week_start: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          payload?: Json
+          updated_at?: string
+          user_id?: string
+          week_start?: string
+        }
+        Relationships: []
+      }
       wishlist_items: {
         Row: {
           created_at: string
@@ -1027,6 +1102,63 @@ export type Database = {
           preferred_size?: string | null
           slug?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      wix_memberships: {
+        Row: {
+          auto_renew_canceled: boolean
+          billing_interval: string
+          created_at: string
+          ends_at: string | null
+          id: string
+          last_verified_at: string
+          plan_id: string
+          plan_name: string | null
+          raw: Json | null
+          started_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          wix_contact_id: string | null
+          wix_member_id: string | null
+          wix_order_id: string
+        }
+        Insert: {
+          auto_renew_canceled?: boolean
+          billing_interval?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          last_verified_at?: string
+          plan_id: string
+          plan_name?: string | null
+          raw?: Json | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          wix_contact_id?: string | null
+          wix_member_id?: string | null
+          wix_order_id: string
+        }
+        Update: {
+          auto_renew_canceled?: boolean
+          billing_interval?: string
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          last_verified_at?: string
+          plan_id?: string
+          plan_name?: string | null
+          raw?: Json | null
+          started_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          wix_contact_id?: string | null
+          wix_member_id?: string | null
+          wix_order_id?: string
         }
         Relationships: []
       }
