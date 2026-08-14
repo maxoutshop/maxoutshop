@@ -56,6 +56,14 @@ export const askCoach = createServerFn({ method: "POST" })
   })
   .handler(async ({ data, context }): Promise<{ reply?: string; error?: string }> => {
     try {
+      // Unlimited AI coaching is a MAXOUT ELITE feature — verified server-side.
+      const { requireElite } = await import("./wix-elite.server");
+      const {
+        data: { user },
+      } = await context.supabase.auth.getUser();
+      const entitlement = await requireElite(context.userId, user?.email ?? undefined);
+      if (!entitlement.isElite) return { error: "MAXOUT ELITE required" };
+
       const { buildCoachContext, runCoachChat } = await import("./coach-chat.server");
       const snapshot = await buildCoachContext(context.supabase, context.userId);
       const reply = await runCoachChat(snapshot, data.messages);
