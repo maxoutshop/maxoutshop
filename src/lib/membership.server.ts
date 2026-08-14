@@ -73,26 +73,22 @@ export async function upsertSubscription(subscription: any, env: StripeEnvName, 
   return userId;
 }
 
-/** Recompute whether a member currently has ELITE (paid or comped) and mirror it onto their profile. */
+/**
+ * Recompute whether a member currently has ELITE and mirror it onto the profile.
+ * Billing truth is Wix Pricing Plans; comped grants and grandfathered Stripe
+ * subscriptions are honoured by `readEntitlement`.
+ */
 export async function refreshEliteFlag(userId: string): Promise<boolean> {
-  const db = adminDb();
-
-  const { data: subs } = await db
-    .from("subscriptions")
-    .select("status, current_period_end")
-    .eq("user_id", userId);
-
-  const paid = (subs ?? []).some((s: any) => statusGrantsAccess(s.status, s.current_period_end));
-
-  const { data: grants } = await db.from("elite_grants").select("expires_at").eq("user_id", userId);
-  const comped = (grants ?? []).some((g: any) => !g.expires_at || new Date(g.expires_at) > new Date());
-
-  const isElite = paid || comped;
-  await db.from("profiles").update({ is_elite: isElite }).eq("id", userId);
-  return isElite;
+  const { readEntitlement } = await import("./wix-elite.server");
+  const entitlement = await readEntitlement(userId);
+  await adminDb().from("profiles").update({ is_elite: entitlement.isElite }).eq("id", userId);
+  return entitlement.isElite;
 }
 
 /** Server-side entitlement gate for premium features. */
-export async function requireElite(userId: string): Promise<boolean> {
-  return await refreshEliteFlag(userId);
+export async function requireElite(userId: string, email?: string): Promise<boolean> {
+  const { requireElite: gate } = await import("./wix-elite.server");
+  const entitlement = await gate(userId, email);
+  return entitlement.isElite;
 }
+

@@ -58,6 +58,8 @@ export const saveProductMeta = createServerFn({ method: "POST" })
       bestSeller?: boolean;
       newArrival?: boolean;
       earlyAccess?: boolean;
+      eliteOnly?: boolean;
+      elitePrice?: number | null;
       hidden?: boolean;
       dropDate?: string | null;
     }) => input,
@@ -76,6 +78,8 @@ export const saveProductMeta = createServerFn({ method: "POST" })
       best_seller: data.bestSeller ?? false,
       new_arrival: data.newArrival ?? false,
       early_access: data.earlyAccess ?? false,
+      elite_only: data.eliteOnly ?? false,
+      elite_price: data.elitePrice ?? null,
       hidden: data.hidden ?? false,
       drop_date: data.dropDate ?? null,
     });

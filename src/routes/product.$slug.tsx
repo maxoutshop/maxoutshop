@@ -75,7 +75,7 @@ function ProductPage() {
   const soldOut = !!variant && !variant.inStock;
   const { user } = useSession();
   const { isElite } = useElite(user?.id);
-  const eliteLocked = !!product.earlyAccess && !isElite;
+  const eliteLocked = (!!product.earlyAccess || !!product.eliteOnly) && !isElite;
   const canAdd = !!size && !!color && !soldOut && !eliteLocked;
 
 

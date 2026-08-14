@@ -9,6 +9,7 @@ import {
 } from "@/lib/analytics";
 import { totalVolume, fmtNum, streakFromDates, bestEstimated1RM } from "@/lib/workout-math";
 import { muscleGroupFor } from "@/lib/muscle-groups";
+import { EliteInsights } from "@/components/EliteInsights";
 
 const TITLE = "Progress — MAXOUT";
 const DESC = "Training volume, streaks, bodyweight trend and strength gains across your MAXOUT history.";
@@ -34,7 +35,7 @@ function Progress() {
   const { user, loading } = useSession();
   const uid = user?.id;
   const [range, setRange] = useState<Range>("90d");
-  const [tab, setTab] = useState<"overview" | "strength" | "body">("overview");
+  const [tab, setTab] = useState<"overview" | "strength" | "body" | "elite">("overview");
 
   return (
     <AppShell>
@@ -65,8 +66,8 @@ function Progress() {
               ))}
             </div>
 
-            <div className="mt-4 grid grid-cols-3 gap-1 rounded-full border border-border p-1">
-              {(["overview", "strength", "body"] as const).map((t) => (
+            <div className="mt-4 grid grid-cols-4 gap-1 rounded-full border border-border p-1">
+              {(["overview", "strength", "body", "elite"] as const).map((t) => (
                 <button key={t} onClick={() => setTab(t)}
                   className={`rounded-full py-2 text-xs font-semibold capitalize transition ${
                     tab === t ? "bg-foreground text-background" : "text-muted-foreground"}`}>
@@ -78,6 +79,7 @@ function Progress() {
             {tab === "overview" && <Overview uid={uid} range={range} />}
             {tab === "strength" && <Strength uid={uid} range={range} />}
             {tab === "body" && <Body uid={uid} range={range} />}
+            {tab === "elite" && <EliteInsights uid={uid} />}
           </>
         )}
       </div>

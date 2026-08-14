@@ -9,7 +9,7 @@ export function ProductCard({ product }: { product: Product }) {
   const wished = useStore((s) => s.wishlist.includes(product.slug));
   const { user } = useSession();
   const { isElite } = useElite(user?.id);
-  const locked = !!product.earlyAccess && !isElite;
+  const locked = (!!product.earlyAccess || !!product.eliteOnly) && !isElite;
   return (
     <Link
       to="/product/$slug"

@@ -160,7 +160,9 @@ function normalizeMeta(
   const earlyAccess = row ? row.early_access : (fallback?.earlyAccess ?? false);
   const dropDate = row ? row.drop_date : null;
   const hidden = row ? row.hidden : false;
-  return { category, collection, bestSeller, newArrival, earlyAccess, dropDate, hidden };
+  const eliteOnly = row ? row.elite_only : false;
+  const elitePrice = row?.elite_price != null ? Number(row.elite_price) : undefined;
+  return { category, collection, bestSeller, newArrival, earlyAccess, dropDate, hidden, eliteOnly, elitePrice };
 }
 
 function mapProduct(
@@ -206,6 +208,8 @@ function mapProduct(
     bestSeller: meta.bestSeller,
     newArrival: meta.newArrival,
     earlyAccess: meta.earlyAccess,
+    eliteOnly: meta.eliteOnly,
+    ...(meta.elitePrice != null ? { elitePrice: meta.elitePrice } : {}),
     dropDate: meta.dropDate,
     hidden: meta.hidden,
     inStock: p.stock?.inStock !== false,

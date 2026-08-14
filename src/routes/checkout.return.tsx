@@ -43,7 +43,7 @@ function CheckoutReturn() {
 
     let cancelled = false;
     (async () => {
-      // Poll — the Stripe webhook and our direct sync race each other.
+      // Poll — Wix may take a moment to mark the plan order active.
       for (let attempt = 0; attempt < 6 && !cancelled; attempt++) {
         try {
           const res = await refreshMembership();

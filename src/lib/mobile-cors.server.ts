@@ -38,8 +38,10 @@ export function jsonResponse(request: Request, body: unknown, status = 200): Res
 }
 
 
-/** Validates a Supabase bearer token and returns the user id, or null. */
-export async function userFromBearer(request: Request): Promise<{ id: string } | null> {
+/** Validates a Supabase bearer token and returns the user id + email, or null. */
+export async function userFromBearer(
+  request: Request,
+): Promise<{ id: string; email?: string } | null> {
   const auth = request.headers.get("authorization") ?? "";
   const token = auth.toLowerCase().startsWith("bearer ") ? auth.slice(7).trim() : "";
   if (!token) return null;
@@ -52,6 +54,6 @@ export async function userFromBearer(request: Request): Promise<{ id: string } |
     headers: { apikey: key, Authorization: `Bearer ${token}` },
   });
   if (!res.ok) return null;
-  const user = (await res.json()) as { id?: string };
-  return user?.id ? { id: user.id } : null;
+  const user = (await res.json()) as { id?: string; email?: string };
+  return user?.id ? { id: user.id, ...(user.email ? { email: user.email } : {}) } : null;
 }

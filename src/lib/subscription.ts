@@ -1,84 +1,64 @@
 import { useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IS_NATIVE_BUILD } from "@/lib/api-base";
-import { supabase } from "@/integrations/supabase/client";
-import { getStripeEnvironment } from "@/lib/stripe";
+import { getEliteEntitlement } from "@/utils/elite.functions";
+import type { MembershipState } from "@/lib/elite-client";
 
-function env() {
-  try {
-    return getStripeEnvironment();
-  } catch {
-    return null;
-  }
-}
+export type Entitlement = MembershipState;
 
-/** Access rules: active/trialing grant access; a canceled sub keeps access until
- *  the period ends; a failed payment (past_due/unpaid) revokes access immediately. */
+const EMPTY: Entitlement = {
+  isElite: false,
+  source: "none",
+  plan: null,
+  planName: null,
+  status: null,
+  expiresAt: null,
+  cancelAtPeriodEnd: false,
+  manageUrl: "https://www.maxoutshop.com/account/my-subscriptions",
+  linked: false,
+};
+
+/**
+ * THE single ELITE entitlement source for the whole app.
+ *
+ * Billing lives in Wix Pricing Plans; the server mirrors it into
+ * `wix_memberships` and answers here. The client never decides who is ELITE —
+ * every sensitive feature re-checks server-side as well.
+ */
 export function useElite(userId?: string) {
-  const environment = env();
   const query = useQuery({
-    queryKey: ["subscription", userId, environment],
-    enabled: !!userId && !!environment,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("subscriptions")
-        .select("*")
-        .eq("user_id", userId!)
-        .eq("environment", environment!)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-  });
-
-  const grant = useQuery({
-    queryKey: ["elite-grant", userId],
+    queryKey: ["entitlement", userId],
     enabled: !!userId,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("elite_grants")
-        .select("*")
-        .eq("user_id", userId!)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
+    staleTime: 60_000,
+    queryFn: async () => (await getEliteEntitlement()) as Entitlement,
   });
 
-  const sub = query.data;
-  const future = !sub?.current_period_end || new Date(sub.current_period_end) > new Date();
-  const paid =
-    !!sub &&
-    ((["active", "trialing"].includes(sub.status) && future) ||
-      (sub.status === "canceled" && !!sub.current_period_end && new Date(sub.current_period_end) > new Date()));
-
-  const comp = grant.data;
-  const compActive = !!comp && (!comp.expires_at || new Date(comp.expires_at) > new Date());
-
-  const paymentFailed = !!sub && ["past_due", "unpaid", "incomplete"].includes(sub.status);
+  const e = query.data ?? EMPTY;
 
   return {
     ...query,
-    loading: query.isLoading || grant.isLoading,
-    subscription: sub,
-    grant: compActive ? comp : null,
-    /** Comped via promo code and not paying — hide billing management. */
-    comped: compActive && !paid,
-    isElite: paid || compActive,
-    paymentFailed,
-    /** Access was cut because the renewal payment failed. */
-    lockedForPayment: paymentFailed && !compActive,
+    loading: query.isLoading,
+    entitlement: e,
+    isElite: e.isElite,
+    source: e.source,
+    plan: e.plan,
+    planName: e.planName,
+    status: e.status,
+    expiresAt: e.expiresAt,
+    cancelAtPeriodEnd: e.cancelAtPeriodEnd,
+    manageUrl: e.manageUrl,
+    /** Comped via promo code / admin grant — no Wix billing to manage. */
+    comped: e.source === "grant",
+    /** Kept for older call sites; Wix plans have no "payment failed" lockout state. */
+    lockedForPayment: false,
+    paymentFailed: false,
   };
 }
 
 /**
- * Keeps entitlement honest with the server: refreshes from Stripe when the page
- * mounts, when the tab regains focus, and when the native app resumes (e.g.
- * after returning from Stripe Checkout in the in-app browser).
+ * Keeps entitlement honest with the server: re-verifies against Wix when the
+ * page mounts, when the tab regains focus, and when the native app resumes
+ * (e.g. after returning from the Wix hosted plan checkout).
  */
 export function useMembershipSync(userId?: string) {
   const qc = useQueryClient();
@@ -95,13 +75,13 @@ export function useMembershipSync(userId?: string) {
       last.current = now;
       try {
         const { refreshMembership } = await import("@/lib/elite-client");
-        await refreshMembership();
+        const state = await refreshMembership();
         if (!disposed) {
-          await qc.invalidateQueries({ queryKey: ["subscription"] });
-          await qc.invalidateQueries({ queryKey: ["elite-grant"] });
+          qc.setQueryData(["entitlement", userId], state);
+          await qc.invalidateQueries({ queryKey: ["entitlement"] });
         }
       } catch {
-        // Offline or Stripe hiccup — the cached server state stays in place.
+        // Offline or Wix hiccup — the mirrored server state stays in place.
       }
     };
 

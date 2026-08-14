@@ -11,6 +11,7 @@ type Draft = {
   bestSeller: boolean;
   newArrival: boolean;
   earlyAccess: boolean;
+  eliteOnly?: boolean;
   hidden: boolean;
 };
 
@@ -40,6 +41,7 @@ export function AdminProductsPanel() {
           bestSeller: !!p.bestSeller,
           newArrival: !!p.newArrival,
           earlyAccess: !!p.earlyAccess,
+          eliteOnly: !!p.eliteOnly,
           hidden: !!p.hidden,
         };
       }
@@ -71,6 +73,7 @@ export function AdminProductsPanel() {
         bestSeller: d.bestSeller,
         newArrival: d.newArrival,
         earlyAccess: d.earlyAccess,
+        eliteOnly: !!d.eliteOnly,
         hidden: d.hidden,
         dropDate: d.dropDate || null,
       }});
@@ -112,6 +115,7 @@ export function AdminProductsPanel() {
             bestSeller: !!p.bestSeller,
             newArrival: !!p.newArrival,
             earlyAccess: !!p.earlyAccess,
+            eliteOnly: !!p.eliteOnly,
             hidden: !!p.hidden,
           };
           return (
@@ -152,6 +156,7 @@ export function AdminProductsPanel() {
                 <Toggle label="Best seller" value={d.bestSeller} onChange={(v) => updateField(p.slug, { bestSeller: v })} />
                 <Toggle label="New arrival" value={d.newArrival} onChange={(v) => updateField(p.slug, { newArrival: v })} />
                 <Toggle label="Early access" value={d.earlyAccess} onChange={(v) => updateField(p.slug, { earlyAccess: v })} />
+                <Toggle label="ELITE only" value={!!d.eliteOnly} onChange={(v) => updateField(p.slug, { eliteOnly: v })} />
                 <Toggle label="Hidden in app" value={d.hidden} onChange={(v) => updateField(p.slug, { hidden: v })} />
               </div>
 

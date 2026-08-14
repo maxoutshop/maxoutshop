@@ -1,5 +1,5 @@
 /**
- * Transport-aware MAXOUT ELITE billing client.
+ * Transport-aware MAXOUT ELITE client — billing runs on Wix Pricing Plans.
  *
  * Web  → TanStack server functions (same origin).
  * iOS  → `/api/public/mobile/elite/*` on the published site, with a Supabase
@@ -7,17 +7,20 @@
  */
 import { IS_NATIVE_BUILD, apiUrl } from "./api-base";
 import { supabase } from "@/integrations/supabase/client";
-import { getStripeEnvironment } from "./stripe";
-import { createEliteCheckout, createPortalSession, syncMembership } from "@/utils/payments.functions";
+import { getEliteEntitlement, startWixEliteCheckout, syncEliteMembership } from "@/utils/elite.functions";
 
 export type BillingInterval = "monthly" | "yearly";
 
 export type MembershipState = {
   isElite: boolean;
+  source: "wix" | "grant" | "legacy_stripe" | "none";
+  plan: BillingInterval | null;
+  planName: string | null;
   status: string | null;
-  currentPeriodEnd: string | null;
+  expiresAt: string | null;
   cancelAtPeriodEnd: boolean;
-  paymentFailed: boolean;
+  manageUrl: string;
+  linked: boolean;
 };
 
 async function nativePost<T>(path: string, body: Record<string, unknown>): Promise<T> {
@@ -38,11 +41,6 @@ async function nativePost<T>(path: string, body: Record<string, unknown>): Promi
   return json as T;
 }
 
-async function userEmail(): Promise<string | undefined> {
-  const { data } = await supabase.auth.getSession();
-  return data.session?.user?.email ?? undefined;
-}
-
 /** Opens a URL: in-app browser on native, same tab on web. */
 export async function openBillingUrl(url: string): Promise<void> {
   if (IS_NATIVE_BUILD) {
@@ -53,70 +51,36 @@ export async function openBillingUrl(url: string): Promise<void> {
   window.location.href = url;
 }
 
-/**
- * Starts (or resumes) an ELITE purchase. Returns what happened so the UI can
- * explain it — never grants access by itself.
- */
-export async function startEliteCheckout(interval: BillingInterval): Promise<"checkout" | "manage"> {
-  const environment = getStripeEnvironment();
-
+/** Sends the member to the Wix hosted checkout for the chosen ELITE plan. */
+export async function startEliteCheckout(interval: BillingInterval): Promise<"checkout"> {
   if (IS_NATIVE_BUILD) {
-    const res = await nativePost<{ mode: "checkout" | "already_subscribed"; url?: string; portalUrl?: string }>(
-      "/api/public/mobile/elite/checkout",
-      { interval, environment, email: await userEmail() },
-    );
-    await openBillingUrl((res.mode === "checkout" ? res.url : res.portalUrl)!);
-    return res.mode === "checkout" ? "checkout" : "manage";
+    const res = await nativePost<{ url: string }>("/api/public/mobile/elite/checkout", { interval });
+    await openBillingUrl(res.url);
+    return "checkout";
   }
 
-  const origin = window.location.origin;
-  const res = await createEliteCheckout({
-    data: {
-      interval,
-      environment,
-      returnUrl: `${origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
-      cancelUrl: `${origin}/elite?canceled=1`,
-    },
-  });
+  const returnUrl = `${window.location.origin}/checkout/return?elite=1`;
+  const res = await startWixEliteCheckout({ data: { interval, returnUrl } });
   if ("error" in res) throw new Error(res.error);
-  if ("managePortalUrl" in res) {
-    await openBillingUrl(res.managePortalUrl);
-    return "manage";
-  }
   await openBillingUrl(res.url);
   return "checkout";
 }
 
-/** Stripe Billing Portal — manage payment method, cancel, view invoices. */
-export async function openEliteBillingPortal(): Promise<void> {
-  const environment = getStripeEnvironment();
-
+/** MANAGE ELITE — the Wix members area where the plan can be viewed or cancelled. */
+export async function openEliteManagement(): Promise<void> {
   if (IS_NATIVE_BUILD) {
-    const res = await nativePost<{ url: string }>("/api/public/mobile/elite/portal", {
-      environment,
-      email: await userEmail(),
-    });
+    const res = await nativePost<{ url: string }>("/api/public/mobile/elite/portal", {});
     await openBillingUrl(res.url);
     return;
   }
-
-  const res = await createPortalSession({ data: { returnUrl: window.location.href, environment } });
-  if ("error" in res) throw new Error(res.error);
-  window.open(res.url, "_blank");
+  const state = await getEliteEntitlement();
+  window.open(state.manageUrl, "_blank");
 }
 
 /** Server-truth membership refresh (post-checkout, on resume, self-heal). */
 export async function refreshMembership(): Promise<MembershipState> {
-  const environment = getStripeEnvironment();
-
   if (IS_NATIVE_BUILD) {
-    return await nativePost<MembershipState>("/api/public/mobile/elite/status", {
-      environment,
-      email: await userEmail(),
-    });
+    return await nativePost<MembershipState>("/api/public/mobile/elite/status", {});
   }
-
-  const res = await syncMembership({ data: { environment } });
-  if ("error" in res) throw new Error(res.error);
-  return res;
+  return (await syncEliteMembership()) as MembershipState;
 }

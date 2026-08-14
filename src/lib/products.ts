@@ -15,6 +15,10 @@ export type Product = {
   bestSeller?: boolean;
   newArrival?: boolean;
   earlyAccess?: boolean;
+  /** ELITE-only piece: hidden from non-members' checkout. */
+  eliteOnly?: boolean;
+  /** Member price for ELITE, when lower than retail. */
+  elitePrice?: number;
   sourceUrl: string;
 };
 
