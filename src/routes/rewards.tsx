@@ -33,6 +33,13 @@ function Rewards() {
   const { isElite } = useElite(uid);
   const rewards = useRewards();
   const redemptions = useRedemptions(uid);
+  const rules = usePointsRules();
+  const earnRules: { label: string; points: number | string }[] = [
+    { label: "Finish a workout", points: rules.data?.workoutPoints ?? 25 },
+    { label: "Set a new personal record", points: rules.data?.prPoints ?? 50 },
+    { label: "Complete a challenge", points: "Varies by challenge" },
+  ];
+
   const invalidate = useInvalidate();
   const [busy, setBusy] = useState<string | null>(null);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
