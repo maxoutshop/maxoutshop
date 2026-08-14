@@ -1,13 +1,24 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Camera, Check, Crown, Loader2, Sparkles, ArrowLeft, Ticket } from "lucide-react";
+import {
+  Camera,
+  Check,
+  Crown,
+  Loader2,
+  Sparkles,
+  ArrowLeft,
+  Ticket,
+  LineChart,
+  Flame,
+  ShoppingBag,
+  FileText,
+  Zap,
+} from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { redeemPromoCode } from "@/lib/promo.functions";
 import { useSession } from "@/lib/auth";
 import { useElite, useMembershipSync } from "@/lib/subscription";
-import { ELITE_PRICES } from "@/lib/stripe";
-import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
-import { openEliteBillingPortal, startEliteCheckout } from "@/lib/elite-client";
+import { openEliteManagement, startEliteCheckout } from "@/lib/elite-client";
 
 export const Route = createFileRoute("/elite")({
   head: () => ({
@@ -16,12 +27,12 @@ export const Route = createFileRoute("/elite")({
       {
         name: "description",
         content:
-          "Unlock MAXOUT ELITE: snap a photo of your plate and get instant AI macros, plus elite-only member perks.",
+          "Unlock MAXOUT ELITE: AI photo food logging, advanced analytics, weekly reports, 1.5x points and member-only shop perks.",
       },
       { property: "og:title", content: "MAXOUT ELITE — Premium Membership" },
       {
         property: "og:description",
-        content: "Photo food logging with AI macros and elite-only perks for MAXOUT members.",
+        content: "AI coaching, deep analytics, streak protection and elite-only drops for MAXOUT members.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -30,16 +41,25 @@ export const Route = createFileRoute("/elite")({
   component: ElitePage,
 });
 
+const ELITE_PRICES = {
+  monthly: { label: "Monthly", amount: "$9.99", per: "/mo" },
+  yearly: { label: "Yearly", amount: "$89.99", per: "/yr" },
+} as const;
+
 const PERKS = [
   { icon: Camera, title: "Photo food logging", body: "Snap your plate — AI reads the items and macros." },
-  { icon: Sparkles, title: "Unlimited AI estimates", body: "Describe any meal and log it in one tap." },
-  { icon: Crown, title: "Elite badge + early drops", body: "Stand out in the feed and shop drops first." },
+  { icon: Sparkles, title: "Unlimited AI coach", body: "Programming, form cues and nutrition, tuned to your data." },
+  { icon: LineChart, title: "Advanced analytics", body: "Volume, strength curves and muscle-group balance over time." },
+  { icon: FileText, title: "Weekly reports", body: "Every Monday: training, nutrition and what to fix next." },
+  { icon: Zap, title: "1.5x member points", body: "Every point you earn is multiplied while you're ELITE." },
+  { icon: Flame, title: "Streak protection", body: "Miss a day? A freeze keeps your streak alive." },
+  { icon: ShoppingBag, title: "Shop perks", body: "Early access to drops, elite-only pieces and member pricing." },
 ];
 
 function ElitePage() {
   const { user } = useSession();
   const navigate = useNavigate();
-  const { isElite, subscription, comped, grant, lockedForPayment } = useElite(user?.id);
+  const { isElite, comped, entitlement } = useElite(user?.id);
   useMembershipSync(user?.id);
   const [plan, setPlan] = useState<"monthly" | "yearly">("monthly");
   const [busy, setBusy] = useState(false);
@@ -60,7 +80,7 @@ function ElitePage() {
       }
       setCodeMsg("Code applied — welcome to ELITE.");
       setCode("");
-      await qc.invalidateQueries({ queryKey: ["elite-grant"] });
+      await qc.invalidateQueries({ queryKey: ["entitlement"] });
     } catch {
       setCodeMsg("Could not redeem that code. Try again.");
     } finally {
@@ -68,15 +88,13 @@ function ElitePage() {
     }
   }
 
-
-
   async function manage() {
     setBusy(true);
     setError(null);
     try {
-      await openEliteBillingPortal();
+      await openEliteManagement();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not open billing");
+      setError(e instanceof Error ? e.message : "Could not open membership management");
     } finally {
       setBusy(false);
     }
@@ -86,7 +104,6 @@ function ElitePage() {
     setBusy(true);
     setError(null);
     try {
-      // Server decides: new checkout, or billing portal if already subscribed.
       await startEliteCheckout(plan);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not start checkout");
@@ -95,11 +112,15 @@ function ElitePage() {
     }
   }
 
+  const ends = entitlement.expiresAt ? new Date(entitlement.expiresAt).toLocaleDateString() : null;
+
   return (
     <div className="min-h-screen pb-28">
-      <PaymentTestModeBanner />
       <div className="px-5 pt-5">
-        <button onClick={() => navigate({ to: "/track" })} className="mb-6 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+        <button
+          onClick={() => navigate({ to: "/track" })}
+          className="mb-6 inline-flex items-center gap-1.5 text-xs text-muted-foreground"
+        >
           <ArrowLeft className="h-3.5 w-3.5" /> Back
         </button>
 
@@ -108,7 +129,7 @@ function ElitePage() {
         </div>
         <h1 className="mt-4 text-4xl font-semibold tracking-tight">MAXOUT ELITE</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          Log food by photo. Let the AI do the math. Train like it's your job.
+          The full MAXOUT system — AI coaching, deep analytics, member perks. Train like it's your job.
         </p>
 
         <div className="mt-7 space-y-3">
@@ -141,14 +162,14 @@ function ElitePage() {
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               {comped
-                ? grant?.expires_at
-                  ? `Comped membership — active until ${new Date(grant.expires_at).toLocaleDateString()}.`
+                ? ends
+                  ? `Comped membership — active until ${ends}.`
                   : "Comped membership — no billing on this account."
-                : subscription?.cancel_at_period_end
-                ? `Access ends ${new Date(subscription.current_period_end!).toLocaleDateString()}.`
-                : subscription?.current_period_end
-                  ? `Renews ${new Date(subscription.current_period_end).toLocaleDateString()}.`
-                  : "Membership active."}
+                : entitlement.cancelAtPeriodEnd
+                  ? `${entitlement.planName ?? "Membership"} — access ends ${ends ?? "at period end"}.`
+                  : ends
+                    ? `${entitlement.planName ?? "Membership"} — renews ${ends}.`
+                    : `${entitlement.planName ?? "Membership"} active.`}
             </p>
             {!comped && (
               <button
@@ -159,22 +180,6 @@ function ElitePage() {
                 {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Manage membership
               </button>
             )}
-          </div>
-        )}
-
-        {user && lockedForPayment && (
-          <div className="mt-7 rounded-3xl border border-destructive/40 bg-destructive/10 p-5">
-            <p className="text-sm font-semibold">Payment failed — ELITE is paused</p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              We couldn't charge your card, so premium features are locked. Update your payment method to restore access instantly.
-            </p>
-            <button
-              onClick={manage}
-              disabled={busy}
-              className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-xs font-semibold text-primary-foreground disabled:opacity-50"
-            >
-              {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Update payment method
-            </button>
           </div>
         )}
 
@@ -205,7 +210,10 @@ function ElitePage() {
             >
               {busy && <Loader2 className="h-4 w-4 animate-spin" />} JOIN MAXOUT ELITE
             </button>
-            <p className="mt-3 text-center text-[11px] text-muted-foreground">Cancel anytime — access runs to the end of your billing period.</p>
+            <p className="mt-3 text-center text-[11px] text-muted-foreground">
+              Billed securely by MAXOUT on maxoutshop.com. Cancel anytime — access runs to the end of your billing
+              period.
+            </p>
 
             <div className="mt-6 rounded-3xl border border-border bg-surface p-4">
               <p className="inline-flex items-center gap-1.5 text-xs font-semibold">
@@ -234,9 +242,10 @@ function ElitePage() {
           </div>
         )}
 
-
         {error && (
-          <p className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">{error}</p>
+          <p className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">
+            {error}
+          </p>
         )}
       </div>
     </div>
