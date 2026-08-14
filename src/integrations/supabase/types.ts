@@ -44,23 +44,29 @@ export type Database = {
       challenge_participants: {
         Row: {
           challenge_id: string
+          completed_at: string | null
           id: string
           joined_at: string
           progress: number
+          reward_claimed_at: string | null
           user_id: string
         }
         Insert: {
           challenge_id: string
+          completed_at?: string | null
           id?: string
           joined_at?: string
           progress?: number
+          reward_claimed_at?: string | null
           user_id: string
         }
         Update: {
           challenge_id?: string
+          completed_at?: string | null
           id?: string
           joined_at?: string
           progress?: number
+          reward_claimed_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -75,36 +81,45 @@ export type Database = {
       }
       challenges: {
         Row: {
+          active: boolean
           created_at: string
           description: string | null
           ends_on: string | null
           goal_label: string | null
           id: string
           image_url: string | null
+          metric: string
           reward_points: number
           starts_on: string
+          target_value: number
           title: string
         }
         Insert: {
+          active?: boolean
           created_at?: string
           description?: string | null
           ends_on?: string | null
           goal_label?: string | null
           id?: string
           image_url?: string | null
+          metric?: string
           reward_points?: number
           starts_on?: string
+          target_value?: number
           title: string
         }
         Update: {
+          active?: boolean
           created_at?: string
           description?: string | null
           ends_on?: string | null
           goal_label?: string | null
           id?: string
           image_url?: string | null
+          metric?: string
           reward_points?: number
           starts_on?: string
+          target_value?: number
           title?: string
         }
         Relationships: []
@@ -292,8 +307,10 @@ export type Database = {
       }
       notifications: {
         Row: {
+          actor_id: string | null
           body: string
           created_at: string
+          dedupe_key: string | null
           id: string
           kind: string
           read_at: string | null
@@ -302,8 +319,10 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          actor_id?: string | null
           body: string
           created_at?: string
+          dedupe_key?: string | null
           id?: string
           kind?: string
           read_at?: string | null
@@ -312,8 +331,10 @@ export type Database = {
           user_id: string
         }
         Update: {
+          actor_id?: string | null
           body?: string
           created_at?: string
+          dedupe_key?: string | null
           id?: string
           kind?: string
           read_at?: string | null
@@ -329,6 +350,9 @@ export type Database = {
           created_at: string
           exercise: string
           id: string
+          kind: string
+          reps: number | null
+          source: string
           unit: string
           user_id: string
           value: number
@@ -338,6 +362,9 @@ export type Database = {
           created_at?: string
           exercise: string
           id?: string
+          kind?: string
+          reps?: number | null
+          source?: string
           unit?: string
           user_id: string
           value: number
@@ -347,6 +374,9 @@ export type Database = {
           created_at?: string
           exercise?: string
           id?: string
+          kind?: string
+          reps?: number | null
+          source?: string
           unit?: string
           user_id?: string
           value?: number
@@ -357,6 +387,7 @@ export type Database = {
         Row: {
           created_at: string
           delta: number
+          event_key: string | null
           id: string
           reason: string
           user_id: string
@@ -364,6 +395,7 @@ export type Database = {
         Insert: {
           created_at?: string
           delta: number
+          event_key?: string | null
           id?: string
           reason: string
           user_id: string
@@ -371,6 +403,7 @@ export type Database = {
         Update: {
           created_at?: string
           delta?: number
+          event_key?: string | null
           id?: string
           reason?: string
           user_id?: string
@@ -654,6 +687,232 @@ export type Database = {
         }
         Relationships: []
       }
+      recently_viewed: {
+        Row: {
+          id: string
+          slug: string
+          user_id: string
+          viewed_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          user_id: string
+          viewed_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          user_id?: string
+          viewed_at?: string
+        }
+        Relationships: []
+      }
+      reward_redemptions: {
+        Row: {
+          admin_notes: string | null
+          created_at: string
+          id: string
+          points_spent: number
+          reward_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          points_spent: number
+          reward_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          created_at?: string
+          id?: string
+          points_spent?: number
+          reward_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reward_redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "rewards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rewards: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          kind: string
+          points_cost: number
+          stock: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          points_cost?: number
+          stock?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          points_cost?: number
+          stock?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      saved_meal_items: {
+        Row: {
+          calories: number
+          carbs: number
+          fat: number
+          id: string
+          name: string
+          position: number
+          protein: number
+          quantity: string | null
+          saved_meal_id: string
+          user_id: string
+        }
+        Insert: {
+          calories?: number
+          carbs?: number
+          fat?: number
+          id?: string
+          name: string
+          position?: number
+          protein?: number
+          quantity?: string | null
+          saved_meal_id: string
+          user_id: string
+        }
+        Update: {
+          calories?: number
+          carbs?: number
+          fat?: number
+          id?: string
+          name?: string
+          position?: number
+          protein?: number
+          quantity?: string | null
+          saved_meal_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_meal_items_saved_meal_id_fkey"
+            columns: ["saved_meal_id"]
+            isOneToOne: false
+            referencedRelation: "saved_meals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_meals: {
+        Row: {
+          created_at: string
+          favorite: boolean
+          id: string
+          meal_type: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          favorite?: boolean
+          id?: string
+          meal_type?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          favorite?: boolean
+          id?: string
+          meal_type?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      shop_preferences: {
+        Row: {
+          preferred_sizes: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          preferred_sizes?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          preferred_sizes?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      stock_watches: {
+        Row: {
+          color: string | null
+          created_at: string
+          id: string
+          last_seen_available: boolean
+          notified_at: string | null
+          size: string | null
+          slug: string
+          user_id: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          last_seen_available?: boolean
+          notified_at?: string | null
+          size?: string | null
+          slug: string
+          user_id: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          id?: string
+          last_seen_available?: boolean
+          notified_at?: string | null
+          size?: string | null
+          slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean | null
@@ -744,6 +1003,33 @@ export type Database = {
         }
         Relationships: []
       }
+      wishlist_items: {
+        Row: {
+          created_at: string
+          id: string
+          preferred_color: string | null
+          preferred_size: string | null
+          slug: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          preferred_color?: string | null
+          preferred_size?: string | null
+          slug: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          preferred_color?: string | null
+          preferred_size?: string | null
+          slug?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       workout_sets: {
         Row: {
           created_at: string
@@ -785,11 +1071,89 @@ export type Database = {
           },
         ]
       }
+      workout_template_exercises: {
+        Row: {
+          created_at: string
+          exercise: string
+          id: string
+          position: number
+          rest_seconds: number
+          target_reps: string
+          target_sets: number
+          template_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          exercise: string
+          id?: string
+          position?: number
+          rest_seconds?: number
+          target_reps?: string
+          target_sets?: number
+          template_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          exercise?: string
+          id?: string
+          position?: number
+          rest_seconds?: number
+          target_reps?: string
+          target_sets?: number
+          template_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_template_exercises_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workout_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_templates: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          focus: string | null
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          focus?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          focus?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       workouts: {
         Row: {
           category: string
           created_at: string
           duration_min: number | null
+          finished_at: string | null
           id: string
           notes: string | null
           performed_at: string
@@ -800,6 +1164,7 @@ export type Database = {
           category: string
           created_at?: string
           duration_min?: number | null
+          finished_at?: string | null
           id?: string
           notes?: string | null
           performed_at?: string
@@ -810,6 +1175,7 @@ export type Database = {
           category?: string
           created_at?: string
           duration_min?: number | null
+          finished_at?: string | null
           id?: string
           notes?: string | null
           performed_at?: string
@@ -823,6 +1189,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_points: {
+        Args: {
+          _delta: number
+          _event_key: string
+          _reason: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      claim_points_event: {
+        Args: { _delta: number; _event_key: string; _reason: string }
+        Returns: boolean
+      }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
@@ -833,6 +1212,23 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      notify_user: {
+        Args: {
+          _actor: string
+          _body: string
+          _dedupe: string
+          _kind: string
+          _title: string
+          _url: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
+      redeem_reward: { Args: { _reward_id: string }; Returns: string }
+      sync_challenge_progress: {
+        Args: { _user_id?: string }
+        Returns: undefined
       }
     }
     Enums: {
