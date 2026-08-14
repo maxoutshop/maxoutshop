@@ -200,3 +200,26 @@ export const removeReward = createServerFn({ method: "POST" })
     await a.deleteReward(data.id);
     return { ok: true };
   });
+
+export const adminRedemptions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { status?: string }) => ({ status: String(d?.status ?? "pending") }))
+  .handler(async ({ data, context }): Promise<import("./admin.types").AdminRedemption[]> => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    return a.listRedemptions(data.status);
+  });
+
+export const setRedemptionStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string; status: "pending" | "fulfilled" | "canceled"; notes?: string }) => ({
+    id: String(d?.id ?? ""),
+    status: d.status,
+    notes: String(d?.notes ?? "").slice(0, 300),
+  }))
+  .handler(async ({ data, context }) => {
+    const a = await import("./admin.server");
+    await a.assertAdmin(context.userId);
+    await a.setRedemptionStatus(data.id, data.status, data.notes);
+    return { ok: true };
+  });
