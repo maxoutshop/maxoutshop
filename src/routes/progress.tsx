@@ -8,7 +8,7 @@ import {
   useExerciseHistory, useLoggedExercises, type Range,
 } from "@/lib/analytics";
 import { totalVolume, fmtNum, streakFromDates, bestEstimated1RM } from "@/lib/workout-math";
-import { muscleGroupOf, MUSCLE_GROUPS } from "@/lib/muscle-groups";
+import { muscleGroupFor } from "@/lib/muscle-groups";
 
 const TITLE = "Progress — MAXOUT";
 const DESC = "Training volume, streaks, bodyweight trend and strength gains across your MAXOUT history.";
@@ -95,7 +95,7 @@ function Overview({ uid, range }: { uid: string; range: Range }) {
     const streak = streakFromDates(rows.map((w) => w.performed_at));
     const groups = new Map<string, number>();
     for (const s of sets) {
-      const g = muscleGroupOf(s.exercise);
+      const g = muscleGroupFor(s.exercise);
       groups.set(g, (groups.get(g) ?? 0) + 1);
     }
     const weeks = new Map<string, number>();
@@ -150,7 +150,7 @@ function Overview({ uid, range }: { uid: string; range: Range }) {
             return (
               <div key={g}>
                 <div className="flex justify-between text-xs">
-                  <span className="capitalize">{MUSCLE_GROUPS[g as keyof typeof MUSCLE_GROUPS] ?? g}</span>
+                  <span className="capitalize">{g}</span>
                   <span className="tabular-nums text-muted-foreground">{pct}% · {count} sets</span>
                 </div>
                 <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-border">
@@ -193,7 +193,7 @@ function Strength({ uid, range }: { uid: string; range: Range }) {
   const sets = history.data ?? [];
   const byDay = new Map<string, typeof sets>();
   for (const s of sets) {
-    const day = s.performed_at.slice(0, 10);
+    const day = s.workouts.performed_at.slice(0, 10);
     byDay.set(day, [...(byDay.get(day) ?? []), s]);
   }
   const points = [...byDay.entries()]
