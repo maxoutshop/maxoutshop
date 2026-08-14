@@ -20,6 +20,7 @@ import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as EliteRouteImport } from './routes/elite'
 import { Route as CommunityRouteImport } from './routes/community'
+import { Route as CoachRouteImport } from './routes/coach'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -98,6 +99,11 @@ const EliteRoute = EliteRouteImport.update({
 const CommunityRoute = CommunityRouteImport.update({
   id: '/community',
   path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoachRoute = CoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -233,6 +239,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
+  '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
   '/mcp': typeof McpRoute
@@ -269,6 +276,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
+  '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
   '/mcp': typeof McpRoute
@@ -307,6 +315,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
+  '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
   '/mcp': typeof McpRoute
@@ -345,6 +354,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cart'
+    | '/coach'
     | '/community'
     | '/elite'
     | '/mcp'
@@ -381,6 +391,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/cart'
+    | '/coach'
     | '/community'
     | '/elite'
     | '/mcp'
@@ -418,6 +429,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/cart'
+    | '/coach'
     | '/community'
     | '/elite'
     | '/mcp'
@@ -456,6 +468,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CartRoute: typeof CartRoute
+  CoachRoute: typeof CoachRoute
   CommunityRoute: typeof CommunityRoute
   EliteRoute: typeof EliteRoute
   McpRoute: typeof McpRoute
@@ -565,6 +578,13 @@ declare module '@tanstack/react-router' {
       path: '/community'
       fullPath: '/community'
       preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coach': {
+      id: '/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof CoachRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -754,6 +774,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CartRoute: CartRoute,
+  CoachRoute: CoachRoute,
   CommunityRoute: CommunityRoute,
   EliteRoute: EliteRoute,
   McpRoute: McpRoute,
