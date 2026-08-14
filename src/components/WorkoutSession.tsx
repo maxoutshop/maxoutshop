@@ -3,6 +3,7 @@ import {
   X, Check, Plus, Minus, Timer, Trash2, ChevronDown, ChevronUp, Dumbbell, Search,
 } from "lucide-react";
 import { EXERCISE_LIBRARY, type TemplateExercise } from "@/lib/workout-templates";
+import { usePreviousPerformance } from "@/lib/analytics";
 
 export type LiveSet = {
   id: string;
@@ -31,13 +32,16 @@ function useElapsed(startedAt: string) {
 }
 
 export function WorkoutSession({
-  title, category, startedAt, sets, plan: initialPlan, onAddSet, onDeleteSet, onFinish, onClose,
+  title, category, startedAt, sets, plan: initialPlan, userId, workoutId,
+  onAddSet, onDeleteSet, onFinish, onClose,
 }: {
   title: string;
   category: string;
   startedAt: string;
   sets: LiveSet[];
   plan: TemplateExercise[];
+  userId?: string;
+  workoutId?: string;
   onAddSet: (v: { exercise: string; weight: number; reps: number }) => void;
   onDeleteSet: (id: string) => void;
   onFinish: () => void;
@@ -101,6 +105,8 @@ export function WorkoutSession({
             <ExerciseCard
               key={ex.name}
               ex={ex}
+              userId={userId}
+              workoutId={workoutId}
               sets={sets.filter((s) => s.exercise === ex.name)}
               open={openEx === ex.name}
               onToggle={() => setOpenEx((o) => (o === ex.name ? null : ex.name))}
@@ -180,11 +186,13 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function ExerciseCard({
-  ex, sets, open, onToggle, onLog, onDeleteSet, onRemove,
+  ex, sets, open, userId, workoutId, onToggle, onLog, onDeleteSet, onRemove,
 }: {
   ex: TemplateExercise;
   sets: LiveSet[];
   open: boolean;
+  userId?: string;
+  workoutId?: string;
   onToggle: () => void;
   onLog: (v: { weight: number; reps: number }) => void;
   onDeleteSet: (id: string) => void;
@@ -195,12 +203,26 @@ function ExerciseCard({
   const [reps, setReps] = useState<number>(last?.reps ?? 8);
   const synced = useRef(false);
 
+  // What the athlete did the last time they trained this lift.
+  const previous = usePreviousPerformance(userId, ex.name, workoutId);
+  const prevSets = previous.data?.sets ?? [];
+  const prevBest = prevSets.reduce<{ weight: number | null; reps: number | null } | null>(
+    (best, s) => (!best || (s.weight ?? 0) > (best.weight ?? 0) ? s : best), null,
+  );
+
   useEffect(() => {
     if (last && !synced.current) {
       setWeight(last.weight ?? 135);
       setReps(last.reps ?? 8);
     }
   }, [last?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // With nothing logged yet this session, start from last time's top set.
+  useEffect(() => {
+    if (last || synced.current || !prevBest?.weight) return;
+    setWeight(prevBest.weight);
+    if (prevBest.reps) setReps(prevBest.reps);
+  }, [prevBest?.weight, prevBest?.reps, last]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const done = sets.length;
   const target = ex.sets || 0;
@@ -226,6 +248,22 @@ function ExerciseCard({
 
       {open && (
         <div className="border-t border-border px-5 pb-5 pt-4">
+          {prevSets.length > 0 && (
+            <div className="mb-4 rounded-2xl border border-border bg-background px-4 py-3">
+              <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                Last time · {new Date(previous.data!.performedAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+              </p>
+              <p className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm tabular-nums">
+                {prevSets.map((s) => (
+                  <span key={s.id} className="text-muted-foreground">
+                    <span className="font-semibold text-foreground">{fmt(s.weight ?? 0)}</span>
+                    <span className="mx-1">×</span>{s.reps}
+                  </span>
+                ))}
+              </p>
+            </div>
+          )}
+
           {sets.length > 0 && (
             <div className="mb-4 space-y-1.5">
               {sets.map((s, i) => (

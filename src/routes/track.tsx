@@ -17,6 +17,16 @@ import { WorkoutSession } from "@/components/WorkoutSession";
 import { WorkoutDetailSheet, type WorkoutDetail } from "@/components/WorkoutDetailSheet";
 import { RemindersCard } from "@/components/RemindersCard";
 import { WORKOUT_TEMPLATES, GROWTH_TIPS, type TemplateExercise } from "@/lib/workout-templates";
+import { WorkoutComplete } from "@/components/WorkoutComplete";
+import { SavedMealsSheet } from "@/components/SavedMealsSheet";
+import { detectPRs, claimPoints, type DetectedPR } from "@/lib/pr";
+import { useUserTemplates, saveTemplate, deleteTemplate, lastWorkoutPlan, templateToPlan } from "@/lib/templates";
+import {
+  copyDayMeals, useSavedMeals, saveMealTemplate, logSavedMeal,
+  toggleFavoriteMeal, deleteSavedMeal, type SavedMeal,
+} from "@/lib/saved-meals";
+import { syncChallengeProgress } from "@/lib/challenges";
+import { LineChart, Sparkles, Gift, Bookmark, CopyPlus } from "lucide-react";
 
 
 
@@ -54,11 +64,22 @@ function Track() {
   const prs = usePRs(uid);
   const weights = useWeights(uid);
 
+  const templates = useUserTemplates(uid);
+  const savedMeals = useSavedMeals(uid);
+
   const [activeWorkout, setActiveWorkout] = useState<string | null>(null);
   const [plan, setPlan] = useState<TemplateExercise[]>([]);
   const [sessionOpen, setSessionOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals" | "trainer">(null);
+  const [summary, setSummary] = useState<null | {
+    workoutId: string; title: string; category: string; durationMin: number;
+    sets: Array<{ exercise: string; weight: number | null; reps: number | null }>;
+    prs: DetectedPR[]; points: number;
+  }>(null);
+  const [sheet, setSheet] = useState<
+    null | "quick" | "meal" | "pr" | "weight" | "workout" | "goals" | "trainer" | "saved-meals"
+  >(null);
+
 
 
 
@@ -163,8 +184,51 @@ function Track() {
   const allSets = (workouts.data ?? []).flatMap((w) => w.workout_sets ?? []);
   const exerciseNames = Array.from(new Set(allSets.map((s) => s.exercise))).slice(0, 8);
   const liveSets = (live?.workout_sets ?? []).slice().sort((a, b) => a.set_index - b.set_index);
+  const yesterdayMeals = (meals.data ?? []).filter((m) => {
+    const start = new Date(); start.setHours(0, 0, 0, 0);
+    const ts = new Date(m.logged_at).getTime();
+    return ts < start.getTime();
+  });
 
+  /**
+   * Finishing a workout stamps the duration, runs automatic PR detection and
+   * awards points. Every award is keyed to the workout or PR row, so tapping
+   * finish twice can never double-pay.
+   */
+  async function finishWorkout() {
+    if (!uid || !live) return;
+    const startedAt = new Date(live.performed_at).getTime();
+    const durationMin = Math.max(1, Math.round((Date.now() - startedAt) / 60000));
+    const sets = liveSets.map((s) => ({ exercise: s.exercise, weight: s.weight, reps: s.reps }));
 
+    setSessionOpen(false);
+    await supabase.from("workouts")
+      .update({ finished_at: new Date().toISOString(), duration_min: durationMin })
+      .eq("id", live.id).eq("user_id", uid);
+
+    let detected: DetectedPR[] = [];
+    let points = 0;
+    try {
+      if (sets.length) {
+        detected = await detectPRs(uid, sets);
+        if (await claimPoints(25, "Workout completed", `workout:${live.id}`)) points += 25;
+        for (const pr of detected) {
+          if (await claimPoints(50, `PR · ${pr.exercise}`, `pr:${pr.id}:${Math.round(pr.value * 10)}`)) points += 50;
+        }
+      }
+      await syncChallengeProgress();
+    } catch (e) {
+      console.error("[workout] finish", e);
+    }
+
+    setSummary({
+      workoutId: live.id, title: live.title ?? live.category, category: live.category,
+      durationMin, sets, prs: detected, points,
+    });
+    setActiveWorkout(null);
+    setPlan([]);
+    invalidate("workouts", "prs", "profile", "points", "points-summary", "challenge-board", "notifications", "notifications-unread");
+  }
 
   if (live && sessionOpen) {
     return (
@@ -172,15 +236,53 @@ function Track() {
         title={live.title ?? live.category}
         category={live.category}
         startedAt={live.performed_at}
+        userId={uid}
+        workoutId={live.id}
         sets={liveSets.map((s) => ({ id: s.id, exercise: s.exercise, weight: s.weight, reps: s.reps, set_index: s.set_index }))}
         plan={plan}
         onAddSet={(v) => addSet.mutate(v)}
         onDeleteSet={(id) => deleteSet.mutate(id)}
-        onFinish={() => { setSessionOpen(false); setActiveWorkout(null); setPlan([]); }}
+        onFinish={() => { void finishWorkout(); }}
         onClose={() => setSessionOpen(false)}
       />
     );
   }
+
+  if (summary) {
+    return (
+      <WorkoutComplete
+        title={summary.title}
+        durationMin={summary.durationMin}
+        sets={summary.sets}
+        prs={summary.prs}
+        pointsEarned={summary.points}
+        onClose={() => setSummary(null)}
+        onShare={() => {
+          const volume = summary.sets.reduce((a, s) => a + (s.weight ?? 0) * (s.reps ?? 0), 0);
+          const pr = summary.prs[0];
+          const body = pr
+            ? `New PR — ${pr.exercise} ${Math.round(pr.value)} lb. ${summary.sets.length} sets, ${Math.round(volume).toLocaleString()} lb moved.`
+            : `${summary.title} done. ${summary.sets.length} sets, ${Math.round(volume).toLocaleString()} lb moved.`;
+          setSummary(null);
+          navigate({ to: "/community", search: { draft: body } });
+        }}
+        onSaveTemplate={async () => {
+          if (!uid) return;
+          const counts = new Map<string, number>();
+          for (const s of summary.sets) counts.set(s.exercise, (counts.get(s.exercise) ?? 0) + 1);
+          await saveTemplate(uid, {
+            name: summary.title,
+            category: summary.category,
+            exercises: Array.from(counts.entries()).map(([exercise, n]) => ({
+              exercise, target_sets: n, target_reps: "8–12", rest_seconds: 90,
+            })),
+          });
+          invalidate("user-templates");
+        }}
+      />
+    );
+  }
+
 
   return (
     <AppShell>

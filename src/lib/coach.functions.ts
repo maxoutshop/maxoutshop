@@ -32,3 +32,35 @@ export const getCoachPlan = createServerFn({ method: "POST" })
       return { error: e instanceof Error ? e.message : "Trainer is unavailable right now." };
     }
   });
+
+type ChatMsg = { role: "user" | "assistant"; content: string };
+
+/**
+ * Chat with MAXOUT Coach. The athlete snapshot is assembled server-side from
+ * the caller's own RLS-scoped client, so no client-supplied "context" is trusted.
+ */
+export const askCoach = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { messages?: unknown }): { messages: ChatMsg[] } => {
+    const raw = Array.isArray(input?.messages) ? input.messages : [];
+    const messages = raw
+      .slice(-12)
+      .map((m) => m as Record<string, unknown>)
+      .filter((m) => typeof m["content"] === "string" && String(m["content"]).trim())
+      .map((m) => ({
+        role: m["role"] === "assistant" ? ("assistant" as const) : ("user" as const),
+        content: String(m["content"]).slice(0, 1200),
+      }));
+    if (!messages.length) throw new Error("Ask the coach something first.");
+    return { messages };
+  })
+  .handler(async ({ data, context }): Promise<{ reply?: string; error?: string }> => {
+    try {
+      const { buildCoachContext, runCoachChat } = await import("./coach-chat.server");
+      const snapshot = await buildCoachContext(context.supabase, context.userId);
+      const reply = await runCoachChat(snapshot, data.messages);
+      return { reply };
+    } catch (e) {
+      return { error: e instanceof Error ? e.message : "Coach is unavailable right now." };
+    }
+  });

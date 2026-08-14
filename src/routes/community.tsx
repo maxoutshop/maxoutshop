@@ -5,10 +5,14 @@ import { Trophy, X, Plus, Flame, Camera, TrendingUp, Dumbbell, Users, ImagePlus,
 import { useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession } from "@/lib/auth";
-import { usePosts, useChallenges, useMyChallenges, useMutate, uploadPostMedia, MAX_POST_MEDIA_MB } from "@/lib/db";
+import { usePosts, useMutate, uploadPostMedia, MAX_POST_MEDIA_MB } from "@/lib/db";
 import { useUnreadCount } from "@/lib/social";
+import { ChallengeBoard } from "@/components/ChallengeBoard";
 
 export const Route = createFileRoute("/community")({
+  // `draft` lets other screens (like the workout summary) hand a prefilled post over.
+  validateSearch: (search: Record<string, unknown>): { draft?: string } =>
+    typeof search["draft"] === "string" ? { draft: (search["draft"] as string).slice(0, 500) } : {},
   head: () => ({
     meta: [
       { title: "Community — MAXOUT Challenges & Feed" },
@@ -35,20 +39,13 @@ const FILTERS = ["All", "PR", "Fit Check", "Progress", "Workout", "Challenge"] a
 function Community() {
   const { user, loading: sessionLoading } = useSession();
   const uid = user?.id;
+  const { draft } = Route.useSearch();
   const [tab, setTab] = useState<"feed" | "challenges">("feed");
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("All");
-  const [composing, setComposing] = useState(false);
+  const [composing, setComposing] = useState(!!draft);
   const posts = usePosts(uid);
-  const challenges = useChallenges();
-  const mine = useMyChallenges(uid);
   const unread = useUnreadCount(uid);
 
-  const join = useMutate(async (challengeId: string) => {
-    const { error } = await supabase.from("challenge_participants").insert({ challenge_id: challengeId, user_id: uid! });
-    if (error) throw error;
-  }, ["my-challenges", "profile"]);
-
-  const joinedIds = new Set((mine.data ?? []).map((m) => m.challenge_id));
 
   const feed = useMemo(() => {
     const all = posts.data ?? [];
@@ -157,45 +154,9 @@ function Community() {
           </div>
         </>
       ) : (
-        <div className="mt-5 space-y-3">
-          {(challenges.data ?? []).map((c) => {
-            const joined = joinedIds.has(c.id);
-            return (
-              <div key={c.id} className="overflow-hidden rounded-3xl border border-border bg-surface">
-                {c.image_url && <img src={c.image_url} alt={c.title} className="h-32 w-full object-cover" loading="lazy" />}
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
-                        <Flame className="h-3 w-3" /> Live
-                      </p>
-                      <h3 className="mt-1 text-lg font-semibold">{c.title}</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">{c.description}</p>
-                    </div>
-                    <Trophy className="h-5 w-5 shrink-0 text-accent" />
-                  </div>
-                  <div className="mt-4 flex items-center justify-between text-xs">
-                    <span className="text-muted-foreground">{c.goal_label}</span>
-                    {user ? (
-                      <button
-                        disabled={joined}
-                        onClick={() => join.mutate(c.id)}
-                        className={`rounded-full px-4 py-1.5 font-semibold ${joined ? "border border-border text-muted-foreground" : "bg-primary text-primary-foreground"}`}
-                      >
-                        {joined ? "Joined" : "Join"}
-                      </button>
-                    ) : (
-                      <Link to="/auth" className="rounded-full bg-primary px-4 py-1.5 font-semibold text-primary-foreground">
-                        Join
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <ChallengeBoard uid={uid} />
       )}
+
 
       {user && tab === "feed" && (
         <button
@@ -207,13 +168,15 @@ function Community() {
         </button>
       )}
 
-      {composing && uid && <Composer uid={uid} onClose={() => setComposing(false)} />}
+      {composing && uid && (
+        <Composer uid={uid} initialBody={draft ?? ""} onClose={() => setComposing(false)} />
+      )}
     </AppShell>
   );
 }
 
-function Composer({ uid, onClose }: { uid: string; onClose: () => void }) {
-  const [body, setBody] = useState("");
+function Composer({ uid, initialBody, onClose }: { uid: string; initialBody?: string; onClose: () => void }) {
+  const [body, setBody] = useState(initialBody ?? "");
   const [tag, setTag] = useState<string>(TAGS[0].key);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string>("");
