@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Gift, Loader2, Sparkles, Check } from "lucide-react";
+import { ArrowLeft, Gift, Loader2, Sparkles, Check, Zap } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useSession } from "@/lib/auth";
+import { useElite } from "@/lib/subscription";
 import { useInvalidate } from "@/lib/db";
 import { usePointsSummary, useRewards, useRedemptions, redeemReward, EARN_RULES } from "@/lib/rewards";
 import { fmtNum } from "@/lib/workout-math";
@@ -29,6 +30,7 @@ function Rewards() {
   const { user, loading } = useSession();
   const uid = user?.id;
   const summary = usePointsSummary(uid);
+  const { isElite } = useElite(uid);
   const rewards = useRewards();
   const redemptions = useRedemptions(uid);
   const invalidate = useInvalidate();
@@ -63,6 +65,18 @@ function Rewards() {
           <p className="mt-1 text-xs text-muted-foreground">
             {summary.data ? `${fmtNum(summary.data.lifetime)} earned all time` : "Train to start earning"}
           </p>
+          {isElite ? (
+            <span className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-accent">
+              <Zap className="h-3 w-3" /> Elite 1.5x points
+            </span>
+          ) : (
+            <Link
+              to="/elite"
+              className="mt-4 inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              <Zap className="h-3 w-3" /> Earn 1.5x with ELITE
+            </Link>
+          )}
         </section>
 
         {loading && <div className="mt-10 grid place-items-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}

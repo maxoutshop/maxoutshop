@@ -3,8 +3,10 @@ import { useEffect, useMemo } from "react";
 import { AppShell } from "@/components/AppShell";
 import { useCatalog } from "@/lib/catalog";
 import { useSession } from "@/lib/auth";
+import { useElite } from "@/lib/subscription";
+import { usePointsSummary } from "@/lib/rewards";
 import { useChallenges, usePRs, useProfile, useTodayMeals, useWorkouts } from "@/lib/db";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Sparkles, Gift, Crown } from "lucide-react";
 import type { CatalogProduct } from "@/lib/catalog-meta";
 
 export const Route = createFileRoute("/")({
@@ -43,6 +45,8 @@ function Home() {
   const workouts = useWorkouts(uid);
   const prs = usePRs(uid);
   const challenges = useChallenges();
+  const { isElite } = useElite(uid);
+  const points = usePointsSummary(uid);
 
   const bestSellers = products.filter((p) => p.bestSeller).slice(0, 6);
   const latestDrops = products
@@ -168,6 +172,43 @@ function Home() {
             <p className="text-[8px] font-bold uppercase tracking-[0.2em] opacity-60">Goal</p>
           </div>
         </Link>
+
+        {/* Coach + Points */}
+        <div className="grid grid-cols-2 gap-4">
+          <Link to="/coach" className="rise tile flex flex-col justify-between p-4">
+            <div className="flex items-center justify-between">
+              <Sparkles className="h-4 w-4" />
+              {!isElite && (
+                <span className="inline-flex items-center gap-1 rounded-full border border-hairline px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                  <Crown className="h-2.5 w-2.5" /> Elite
+                </span>
+              )}
+            </div>
+            <div className="mt-6">
+              <p className="display text-2xl leading-none">Coach</p>
+              <p className="kicker mt-1.5 text-muted-foreground">
+                {isElite ? "Ask anything" : "Included with ELITE"}
+              </p>
+            </div>
+          </Link>
+
+          <Link to="/rewards" className="rise tile flex flex-col justify-between p-4">
+            <div className="flex items-center justify-between">
+              <Gift className="h-4 w-4" />
+              {isElite && (
+                <span className="rounded-full border border-hairline px-2 py-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                  1.5x
+                </span>
+              )}
+            </div>
+            <div className="mt-6">
+              <p className="display text-2xl leading-none tabular-nums">
+                {(points.data?.balance ?? 0).toLocaleString()}
+              </p>
+              <p className="kicker mt-1.5 text-muted-foreground">MAXOUT Points</p>
+            </div>
+          </Link>
+        </div>
 
         {/* Categories */}
         <div className="grid grid-cols-3 gap-4">

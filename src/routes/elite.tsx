@@ -175,11 +175,19 @@ function ElitePage() {
               <button
                 onClick={manage}
                 disabled={busy}
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-xs font-semibold disabled:opacity-50"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-3 text-xs font-semibold uppercase tracking-widest text-background disabled:opacity-50"
               >
-                {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />} Manage membership
+                {busy && <Loader2 className="h-3.5 w-3.5 animate-spin" />} MANAGE ELITE
               </button>
             )}
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Link to="/coach" className="rounded-full border border-border py-3 text-center text-[11px] font-semibold uppercase tracking-widest">
+                MAXOUT Coach
+              </Link>
+              <Link to="/rewards" className="rounded-full border border-border py-3 text-center text-[11px] font-semibold uppercase tracking-widest">
+                Points
+              </Link>
+            </div>
           </div>
         )}
 
