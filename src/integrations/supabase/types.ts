@@ -416,6 +416,30 @@ export type Database = {
         }
         Relationships: []
       }
+      points_settings: {
+        Row: {
+          created_at: string
+          id: boolean
+          pr_points: number
+          updated_at: string
+          workout_points: number
+        }
+        Insert: {
+          created_at?: string
+          id?: boolean
+          pr_points?: number
+          updated_at?: string
+          workout_points?: number
+        }
+        Update: {
+          created_at?: string
+          id?: boolean
+          pr_points?: number
+          updated_at?: string
+          workout_points?: number
+        }
+        Relationships: []
+      }
       post_comments: {
         Row: {
           body: string
