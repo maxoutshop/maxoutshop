@@ -10,9 +10,8 @@ import { useUnreadCount } from "@/lib/social";
 
 export const Route = createFileRoute("/community")({
   // `draft` lets other screens (like the workout summary) hand a prefilled post over.
-  validateSearch: (search: Record<string, unknown>) => ({
-    draft: typeof search["draft"] === "string" ? (search["draft"] as string).slice(0, 500) : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { draft?: string } =>
+    typeof search["draft"] === "string" ? { draft: (search["draft"] as string).slice(0, 500) } : {},
   head: () => ({
     meta: [
       { title: "Community — MAXOUT Challenges & Feed" },
