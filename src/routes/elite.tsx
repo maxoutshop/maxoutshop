@@ -5,10 +5,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { redeemPromoCode } from "@/lib/promo.functions";
 import { useSession } from "@/lib/auth";
 import { useElite } from "@/lib/subscription";
-import { ELITE_PRICES, getStripeEnvironment } from "@/lib/stripe";
-import { StripeEmbeddedCheckout } from "@/components/StripeEmbeddedCheckout";
+import { ELITE_PRICES } from "@/lib/stripe";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
-import { createPortalSession } from "@/utils/payments.functions";
+import { openEliteBillingPortal, startEliteCheckout } from "@/lib/elite-client";
 
 export const Route = createFileRoute("/elite")({
   head: () => ({
@@ -42,7 +41,6 @@ function ElitePage() {
   const navigate = useNavigate();
   const { isElite, subscription, comped, grant, lockedForPayment } = useElite(user?.id);
   const [plan, setPlan] = useState<"monthly" | "yearly">("monthly");
-  const [checkout, setCheckout] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const qc = useQueryClient();
@@ -75,13 +73,22 @@ function ElitePage() {
     setBusy(true);
     setError(null);
     try {
-      const res = await createPortalSession({
-        data: { returnUrl: window.location.href, environment: getStripeEnvironment() },
-      });
-      if ("error" in res) throw new Error(res.error);
-      window.open(res.url, "_blank");
+      await openEliteBillingPortal();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not open billing");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function join() {
+    setBusy(true);
+    setError(null);
+    try {
+      // Server decides: new checkout, or billing portal if already subscribed.
+      await startEliteCheckout(plan);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not start checkout");
     } finally {
       setBusy(false);
     }
@@ -170,7 +177,7 @@ function ElitePage() {
           </div>
         )}
 
-        {user && !isElite && !checkout && (
+        {user && !isElite && (
           <div className="mt-7">
             <div className="flex gap-2">
               {(["monthly", "yearly"] as const).map((p) => (
@@ -191,10 +198,11 @@ function ElitePage() {
               ))}
             </div>
             <button
-              onClick={() => setCheckout(true)}
-              className="mt-5 w-full rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground active:scale-[0.98] transition"
+              onClick={join}
+              disabled={busy}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-primary py-4 text-sm font-semibold text-primary-foreground transition active:scale-[0.98] disabled:opacity-50"
             >
-              Go ELITE
+              {busy && <Loader2 className="h-4 w-4 animate-spin" />} JOIN MAXOUT ELITE
             </button>
             <p className="mt-3 text-center text-[11px] text-muted-foreground">Cancel anytime — access runs to the end of your billing period.</p>
 
@@ -225,15 +233,6 @@ function ElitePage() {
           </div>
         )}
 
-
-        {user && !isElite && checkout && (
-          <div className="mt-7 overflow-hidden rounded-3xl bg-white">
-            <StripeEmbeddedCheckout
-              priceId={ELITE_PRICES[plan].id}
-              returnUrl={`${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`}
-            />
-          </div>
-        )}
 
         {error && (
           <p className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive">{error}</p>
