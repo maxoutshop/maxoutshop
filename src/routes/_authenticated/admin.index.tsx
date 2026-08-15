@@ -214,7 +214,10 @@ function PointsPanel() {
 
   return (
     <div className="mt-6 space-y-6">
+      <RedemptionRequests />
+
       {/* Earning rules */}
+
       <div className="rounded-3xl border border-border bg-surface p-4">
         <p className="flex items-center gap-1.5 text-[11px] uppercase tracking-widest text-muted-foreground">
           <Coins className="h-3.5 w-3.5" /> Point earnings
