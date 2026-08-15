@@ -16,7 +16,7 @@ import {
   adminOverview, setAdmin, addAdminByEmail, removeAccount, moderateMember,
   upsertChallenge, removeChallenge, adminMessages,
   adminPointsMembers, adjustMemberPoints, adminPointsConfig, savePointsRules,
-  upsertReward, removeReward,
+  upsertReward, removeReward, adminRedemptions, setRedemptionStatus,
 } from "@/lib/admin.functions";
 import { broadcastNotification } from "@/lib/push.functions";
 import type { AdminChallenge } from "@/lib/admin.types";
