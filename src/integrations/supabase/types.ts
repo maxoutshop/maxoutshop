@@ -349,6 +349,7 @@ export type Database = {
           achieved_at: string
           created_at: string
           exercise: string
+          featured: boolean
           id: string
           kind: string
           reps: number | null
@@ -361,6 +362,7 @@ export type Database = {
           achieved_at?: string
           created_at?: string
           exercise: string
+          featured?: boolean
           id?: string
           kind?: string
           reps?: number | null
@@ -373,6 +375,7 @@ export type Database = {
           achieved_at?: string
           created_at?: string
           exercise?: string
+          featured?: boolean
           id?: string
           kind?: string
           reps?: number | null
@@ -602,54 +605,72 @@ export type Database = {
       }
       profiles: {
         Row: {
+          about: string | null
           avatar_url: string | null
           bio: string | null
+          cover_url: string | null
           created_at: string
+          default_workout_public: boolean
           display_name: string | null
           goal_calories: number
           goal_carbs: number
           goal_fat: number
           goal_protein: number
           goal_weight: number | null
+          gym: string | null
           id: string
           is_ambassador: boolean
           is_elite: boolean
+          links: Json
+          location: string | null
           points: number
           updated_at: string
           username: string | null
           verified: boolean
         }
         Insert: {
+          about?: string | null
           avatar_url?: string | null
           bio?: string | null
+          cover_url?: string | null
           created_at?: string
+          default_workout_public?: boolean
           display_name?: string | null
           goal_calories?: number
           goal_carbs?: number
           goal_fat?: number
           goal_protein?: number
           goal_weight?: number | null
+          gym?: string | null
           id: string
           is_ambassador?: boolean
           is_elite?: boolean
+          links?: Json
+          location?: string | null
           points?: number
           updated_at?: string
           username?: string | null
           verified?: boolean
         }
         Update: {
+          about?: string | null
           avatar_url?: string | null
           bio?: string | null
+          cover_url?: string | null
           created_at?: string
+          default_workout_public?: boolean
           display_name?: string | null
           goal_calories?: number
           goal_carbs?: number
           goal_fat?: number
           goal_protein?: number
           goal_weight?: number | null
+          gym?: string | null
           id?: string
           is_ambassador?: boolean
           is_elite?: boolean
+          links?: Json
+          location?: string | null
           points?: number
           updated_at?: string
           username?: string | null
@@ -1186,6 +1207,74 @@ export type Database = {
         }
         Relationships: []
       }
+      workout_comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          user_id: string
+          workout_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          user_id: string
+          workout_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workout_comments_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_likes: {
+        Row: {
+          created_at: string
+          id: string
+          user_id: string
+          workout_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          user_id: string
+          workout_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          user_id?: string
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_likes_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workout_sets: {
         Row: {
           created_at: string
@@ -1311,6 +1400,7 @@ export type Database = {
           duration_min: number | null
           finished_at: string | null
           id: string
+          is_public: boolean
           notes: string | null
           performed_at: string
           title: string | null
@@ -1322,6 +1412,7 @@ export type Database = {
           duration_min?: number | null
           finished_at?: string | null
           id?: string
+          is_public?: boolean
           notes?: string | null
           performed_at?: string
           title?: string | null
@@ -1333,6 +1424,7 @@ export type Database = {
           duration_min?: number | null
           finished_at?: string | null
           id?: string
+          is_public?: boolean
           notes?: string | null
           performed_at?: string
           title?: string | null
