@@ -1,17 +1,29 @@
 import { MediaImage } from "@/components/Media";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone, Settings, Camera, X, Zap, Crown, Loader2, Sparkles, Gift } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, initials } from "@/lib/auth";
-import { useProfile, useMyChallenges, usePRs, useWorkouts, useRoles, uploadAvatar, useMutate } from "@/lib/db";
+import { useProfile, useMyChallenges, usePRs, useWorkouts, useRoles, uploadAvatar, useMutate, useUserPosts } from "@/lib/db";
 import { useElite, useMembershipSync } from "@/lib/subscription";
 import { usePointsSummary } from "@/lib/rewards";
 import { openEliteManagement } from "@/lib/elite-client";
+import { FeedPost } from "@/components/FeedPost";
+import { useFollowCounts } from "@/lib/social";
+import {
+  ProfileCover, ProfileIdentity, ProfileStats, ProfileTabs, ShareProfileButton, WorkoutCard, WorkoutSheet,
+} from "@/components/ProfileParts";
+import {
+  MAX_FEATURED_PRS, streakFromWorkouts, useProfileWorkouts, useToggleFeaturedPR, type ProfileLinks,
+} from "@/lib/profile";
+
+const PROFILE_TABS = ["Posts", "Workouts", "PRs", "About"] as const;
+type ProfileTab = (typeof PROFILE_TABS)[number];
+
 
 
 export const Route = createFileRoute("/profile")({
