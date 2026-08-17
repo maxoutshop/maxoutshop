@@ -430,31 +430,96 @@ function AvatarPicker({ userId, name, url }: { userId: string; name: string; url
   );
 }
 
-type ProfileRow = { username: string | null; display_name: string | null; bio: string | null } | null | undefined;
+function EmptyLine({ text }: { text: string }) {
+  return <p className="rounded-2xl border border-dashed border-border px-4 py-6 text-center text-xs text-muted-foreground">{text}</p>;
+}
+
+export function SocialLinks({ links }: { links: ProfileLinks }) {
+  const entries = (["instagram", "tiktok", "youtube", "website"] as const)
+    .map((k) => [k, links[k]] as const)
+    .filter(([, v]) => !!v && String(v).trim().length > 0);
+  if (!entries.length) return null;
+  return (
+    <div className="flex flex-wrap gap-2 pt-1">
+      {entries.map(([k, v]) => {
+        const raw = String(v).trim();
+        const href = k === "website"
+          ? (raw.startsWith("http") ? raw : `https://${raw}`)
+          : k === "instagram" ? `https://instagram.com/${raw.replace(/^@/, "")}`
+          : k === "tiktok" ? `https://tiktok.com/@${raw.replace(/^@/, "")}`
+          : `https://youtube.com/${raw.replace(/^@?/, "@")}`;
+        return (
+          <a
+            key={k}
+            href={href}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold capitalize"
+          >
+            {k}
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
+type ProfileRow = {
+  username: string | null;
+  display_name: string | null;
+  bio: string | null;
+  location?: string | null;
+  gym?: string | null;
+  about?: string | null;
+  links?: unknown;
+  default_workout_public?: boolean | null;
+} | null | undefined;
 
 function EditProfileSheet({ userId, profile, onClose }: { userId: string; profile: ProfileRow; onClose: () => void }) {
+  const initialLinks = (profile?.links ?? {}) as ProfileLinks;
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
   const [username, setUsername] = useState(profile?.username ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
+  const [location, setLocation] = useState(profile?.location ?? "");
+  const [gym, setGym] = useState(profile?.gym ?? "");
+  const [about, setAbout] = useState(profile?.about ?? "");
+  const [instagram, setInstagram] = useState(initialLinks.instagram ?? "");
+  const [tiktok, setTiktok] = useState(initialLinks.tiktok ?? "");
+  const [youtube, setYoutube] = useState(initialLinks.youtube ?? "");
+  const [website, setWebsite] = useState(initialLinks.website ?? "");
+  const [publicByDefault, setPublicByDefault] = useState(!!profile?.default_workout_public);
   const [error, setError] = useState("");
 
   const save = useMutate(async () => {
     const handle = username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, "");
+    const links: ProfileLinks = {};
+    if (instagram.trim()) links.instagram = instagram.trim();
+    if (tiktok.trim()) links.tiktok = tiktok.trim();
+    if (youtube.trim()) links.youtube = youtube.trim();
+    if (website.trim()) links.website = website.trim();
     const { error: err } = await supabase
       .from("profiles")
       .update({
         display_name: displayName.trim() || null,
         username: handle || null,
         bio: bio.trim() || null,
+        location: location.trim() || null,
+        gym: gym.trim() || null,
+        about: about.trim() || null,
+        links,
+        default_workout_public: publicByDefault,
       })
       .eq("id", userId);
     if (err) throw err;
   }, ["profile", "athletes", "posts", "profile-by-username"]);
 
+  const field = "mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30";
+  const label = "mt-3 block text-[11px] uppercase tracking-widest text-muted-foreground";
+
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-background/80 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="animate-in w-full rounded-t-3xl border-t border-border bg-surface p-5 pb-10 slide-in-from-bottom duration-200"
+        className="animate-in max-h-[88vh] w-full overflow-y-auto rounded-t-3xl border-t border-border bg-surface p-5 pb-10 slide-in-from-bottom duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
@@ -463,29 +528,62 @@ function EditProfileSheet({ userId, profile, onClose }: { userId: string; profil
           <button onClick={onClose} aria-label="Close"><X className="h-5 w-5 text-muted-foreground" /></button>
         </div>
 
-        <label className="mt-4 block text-[11px] uppercase tracking-widest text-muted-foreground">Display name</label>
-        <input
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value.slice(0, 40))}
-          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
-        />
+        <label className={label}>Display name</label>
+        <input value={displayName} onChange={(e) => setDisplayName(e.target.value.slice(0, 40))} className={field} />
 
-        <label className="mt-3 block text-[11px] uppercase tracking-widest text-muted-foreground">Username</label>
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value.slice(0, 24))}
-          placeholder="handle"
-          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
-        />
+        <label className={label}>Username</label>
+        <input value={username} onChange={(e) => setUsername(e.target.value.slice(0, 24))} placeholder="handle" className={field} />
 
-        <label className="mt-3 block text-[11px] uppercase tracking-widest text-muted-foreground">Bio</label>
+        <label className={label}>Bio</label>
         <textarea
           value={bio}
           onChange={(e) => setBio(e.target.value.slice(0, 160))}
-          rows={3}
+          rows={2}
           placeholder="Powerlifter. 5am club. MAXOUT athlete."
-          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
+          className={field}
         />
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={label}>Location</label>
+            <input value={location} onChange={(e) => setLocation(e.target.value.slice(0, 60))} placeholder="Chicago, IL" className={field} />
+          </div>
+          <div>
+            <label className={label}>Gym</label>
+            <input value={gym} onChange={(e) => setGym(e.target.value.slice(0, 60))} placeholder="Iron House" className={field} />
+          </div>
+        </div>
+
+        <label className={label}>About</label>
+        <textarea
+          value={about}
+          onChange={(e) => setAbout(e.target.value.slice(0, 600))}
+          rows={4}
+          placeholder="Your training story, goals and what you're chasing."
+          className={field}
+        />
+
+        <label className={label}>Instagram</label>
+        <input value={instagram} onChange={(e) => setInstagram(e.target.value.slice(0, 60))} placeholder="@handle" className={field} />
+        <label className={label}>TikTok</label>
+        <input value={tiktok} onChange={(e) => setTiktok(e.target.value.slice(0, 60))} placeholder="@handle" className={field} />
+        <label className={label}>YouTube</label>
+        <input value={youtube} onChange={(e) => setYoutube(e.target.value.slice(0, 60))} placeholder="@channel" className={field} />
+        <label className={label}>Website</label>
+        <input value={website} onChange={(e) => setWebsite(e.target.value.slice(0, 120))} placeholder="maxoutshop.com" className={field} />
+
+        <button
+          onClick={() => setPublicByDefault((v) => !v)}
+          className="mt-4 flex w-full items-center justify-between rounded-2xl border border-border bg-background px-4 py-3 text-left"
+        >
+          <span className="text-sm">
+            Share new workouts publicly
+            <span className="block text-[11px] text-muted-foreground">Default visibility for workouts you finish</span>
+          </span>
+          <span className={`h-6 w-11 shrink-0 rounded-full p-0.5 transition ${publicByDefault ? "bg-accent" : "bg-border"}`}>
+            <span className={`block h-5 w-5 rounded-full bg-background transition ${publicByDefault ? "translate-x-5" : ""}`} />
+          </span>
+        </button>
 
         {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
 
@@ -509,4 +607,5 @@ function EditProfileSheet({ userId, profile, onClose }: { userId: string; profil
       </div>
     </div>
   );
+
 }
