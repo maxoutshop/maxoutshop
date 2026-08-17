@@ -1,17 +1,29 @@
 import { MediaImage } from "@/components/Media";
 import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { ChevronRight, Package, Heart, Activity, Utensils, Flag, LogOut, Megaphone, Settings, Camera, X, Zap, Crown, Loader2, Sparkles, Gift } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useStore } from "@/lib/store";
 import { supabase } from "@/integrations/supabase/client";
 import { useSession, initials } from "@/lib/auth";
-import { useProfile, useMyChallenges, usePRs, useWorkouts, useRoles, uploadAvatar, useMutate } from "@/lib/db";
+import { useProfile, useMyChallenges, usePRs, useWorkouts, useRoles, uploadAvatar, useMutate, useUserPosts } from "@/lib/db";
 import { useElite, useMembershipSync } from "@/lib/subscription";
 import { usePointsSummary } from "@/lib/rewards";
 import { openEliteManagement } from "@/lib/elite-client";
+import { FeedPost } from "@/components/FeedPost";
+import { useFollowCounts } from "@/lib/social";
+import {
+  ProfileCover, ProfileIdentity, ProfileStats, ProfileTabs, ShareProfileButton, WorkoutCard, WorkoutSheet,
+} from "@/components/ProfileParts";
+import {
+  MAX_FEATURED_PRS, streakFromWorkouts, useProfileWorkouts, useToggleFeaturedPR, type ProfileLinks,
+} from "@/lib/profile";
+
+const PROFILE_TABS = ["Posts", "Workouts", "PRs", "About"] as const;
+type ProfileTab = (typeof PROFILE_TABS)[number];
+
 
 
 export const Route = createFileRoute("/profile")({
@@ -60,6 +72,21 @@ function Profile() {
   const prs = usePRs(user?.id);
   const workouts = useWorkouts(user?.id);
 
+  const [tab, setTab] = useState<ProfileTab>("Posts");
+  const [openWorkout, setOpenWorkout] = useState<string | null>(null);
+  const posts = useUserPosts(user?.id);
+  const counts = useFollowCounts(user?.id);
+  const myWorkouts = useProfileWorkouts(user?.id, true);
+  const toggleFeatured = useToggleFeaturedPR();
+  const streak = useMemo(
+    () => streakFromWorkouts((workouts.data ?? []).map((w) => w.performed_at as string)),
+    [workouts.data],
+  );
+  const featuredCount = (prs.data ?? []).filter((p) => (p as { featured?: boolean }).featured).length;
+  const openWorkoutRow = (myWorkouts.data ?? []).find((w) => w.id === openWorkout) ?? null;
+  const links = ((profile.data as { links?: ProfileLinks } | null | undefined)?.links ?? {}) as ProfileLinks;
+
+
   async function signOut() {
     await qc.cancelQueries();
     qc.clear();
@@ -106,45 +133,136 @@ function Profile() {
 
   return (
     <AppShell>
-      <div className="pt-2">
-        <div className="flex items-center gap-4">
-          <AvatarPicker userId={user.id} name={name} url={profile.data?.avatar_url ?? null} />
-          <div className="min-w-0">
-            <h1 className="flex items-center gap-1.5 text-xl font-semibold">
-              <span className="truncate">{name}</span>
-              {profile.data?.verified && <VerifiedBadge className="h-4 w-4" />}
-            </h1>
-            <p className="truncate text-xs text-muted-foreground">
-              {profile.data?.username ? `@${profile.data.username}` : user.email}
-            </p>
-            <div className="mt-2 flex gap-2">
-              <button
-                onClick={() => setEditing(true)}
-                className="rounded-full border border-border px-3 py-1 text-[11px] font-semibold"
-              >
-                Edit profile
-              </button>
-              {profile.data?.username && (
-                <Link
-                  to="/u/$handle"
-                  params={{ handle: profile.data.username }}
-                  className="rounded-full border border-border px-3 py-1 text-[11px] font-semibold"
-                >
-                  View public profile
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
+      <ProfileCover url={profile.data?.cover_url} editable userId={user.id} />
+      <ProfileIdentity
+        name={name}
+        handle={profile.data?.username}
+        avatarUrl={profile.data?.avatar_url}
+        verified={profile.data?.verified}
+        elite={isElite}
+        bio={profile.data?.bio}
+        meta={[profile.data?.location, profile.data?.gym].filter(Boolean) as string[]}
+        onAvatarPick={async (file) => {
+          await uploadAvatar(user.id, file);
+          await qc.invalidateQueries({ queryKey: ["profile"] });
+          await qc.invalidateQueries({ queryKey: ["athletes"] });
+          await qc.invalidateQueries({ queryKey: ["posts"] });
+        }}
+      />
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          onClick={() => setEditing(true)}
+          className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold"
+        >
+          Edit profile
+        </button>
+        <ShareProfileButton handle={profile.data?.username} name={name} />
+        {profile.data?.username && (
+          <Link
+            to="/u/$handle"
+            params={{ handle: profile.data.username }}
+            className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold"
+          >
+            View public
+          </Link>
+        )}
       </div>
+
+      <ProfileStats
+        userId={user.id}
+        followers={counts.data?.followers ?? 0}
+        following={counts.data?.following ?? 0}
+        streak={streak}
+      />
 
       {editing && <EditProfileSheet userId={user.id} profile={profile.data} onClose={() => setEditing(false)} />}
 
-      <div className="mt-6 grid grid-cols-3 gap-3">
+      <div className="mt-4 grid grid-cols-3 gap-3">
         <Stat value={String((workouts.data ?? []).length)} label="Workouts" />
         <Stat value={String((prs.data ?? []).length)} label="PRs" />
         <Stat value={String((challenges.data ?? []).length)} label="Challenges" />
       </div>
+
+      <ProfileTabs tabs={PROFILE_TABS} active={tab} onChange={setTab} />
+      <div className="mt-4 space-y-4">
+        {tab === "Posts" && (
+          (posts.data ?? []).length === 0
+            ? <EmptyLine text="Nothing posted yet — share a lift on The Floor." />
+            : (posts.data ?? []).map((p) => <FeedPost key={p.id} post={p} uid={user.id} />)
+        )}
+
+        {tab === "Workouts" && (
+          myWorkouts.isLoading
+            ? <div className="h-24 animate-pulse rounded-3xl bg-surface" />
+            : (myWorkouts.data ?? []).length === 0
+              ? <EmptyLine text="No workouts logged yet." />
+              : (myWorkouts.data ?? []).map((w) => (
+                  <WorkoutCard key={w.id} workout={w} uid={user.id} isMe onOpen={() => setOpenWorkout(w.id)} />
+                ))
+        )}
+
+        {tab === "PRs" && (
+          (prs.data ?? []).length === 0 ? (
+            <EmptyLine text="No personal records yet." />
+          ) : (
+            <>
+              <p className="text-[11px] text-muted-foreground">
+                Tap a record to feature it on your profile (up to {MAX_FEATURED_PRS}).
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {(prs.data ?? []).map((p) => {
+                  const isFeatured = !!(p as { featured?: boolean }).featured;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => {
+                        if (!isFeatured && featuredCount >= MAX_FEATURED_PRS) return;
+                        toggleFeatured.mutate({ prId: p.id, featured: !isFeatured });
+                      }}
+                      className={`rounded-2xl border bg-surface p-4 text-left transition ${
+                        isFeatured ? "border-accent/50" : "border-border"
+                      }`}
+                    >
+                      <p className="truncate text-[10px] uppercase tracking-widest text-muted-foreground">{p.exercise}</p>
+                      <p className="mt-1 text-xl font-semibold tabular-nums">
+                        {Number(p.value)}
+                        <span className="ml-1 text-xs font-normal text-muted-foreground">{p.unit}</span>
+                      </p>
+                      <p className="mt-1 text-[10px] text-muted-foreground">
+                        {isFeatured ? "Featured" : new Date(p.achieved_at).toLocaleDateString()}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )
+        )}
+
+        {tab === "About" && (
+          <div className="space-y-3 rounded-3xl border border-border bg-surface p-5 text-sm">
+            {profile.data?.about
+              ? <p className="leading-relaxed text-muted-foreground">{profile.data.about}</p>
+              : <p className="text-xs text-muted-foreground">Add an about section from Edit profile.</p>}
+            <div className="grid gap-1 text-xs text-muted-foreground">
+              {profile.data?.location && <p>Location · <span className="text-foreground">{profile.data.location}</span></p>}
+              {profile.data?.gym && <p>Gym · <span className="text-foreground">{profile.data.gym}</span></p>}
+            </div>
+            <SocialLinks links={links} />
+          </div>
+        )}
+      </div>
+
+      {openWorkoutRow && (
+        <WorkoutSheet
+          workout={openWorkoutRow}
+          uid={user.id}
+          athleteName={name}
+          onClose={() => setOpenWorkout(null)}
+        />
+      )}
+
 
       {/* MAXOUT Points wallet */}
       <Link
@@ -312,31 +430,96 @@ function AvatarPicker({ userId, name, url }: { userId: string; name: string; url
   );
 }
 
-type ProfileRow = { username: string | null; display_name: string | null; bio: string | null } | null | undefined;
+function EmptyLine({ text }: { text: string }) {
+  return <p className="rounded-2xl border border-dashed border-border px-4 py-6 text-center text-xs text-muted-foreground">{text}</p>;
+}
+
+export function SocialLinks({ links }: { links: ProfileLinks }) {
+  const entries = (["instagram", "tiktok", "youtube", "website"] as const)
+    .map((k) => [k, links[k]] as const)
+    .filter(([, v]) => !!v && String(v).trim().length > 0);
+  if (!entries.length) return null;
+  return (
+    <div className="flex flex-wrap gap-2 pt-1">
+      {entries.map(([k, v]) => {
+        const raw = String(v).trim();
+        const href = k === "website"
+          ? (raw.startsWith("http") ? raw : `https://${raw}`)
+          : k === "instagram" ? `https://instagram.com/${raw.replace(/^@/, "")}`
+          : k === "tiktok" ? `https://tiktok.com/@${raw.replace(/^@/, "")}`
+          : `https://youtube.com/${raw.replace(/^@?/, "@")}`;
+        return (
+          <a
+            key={k}
+            href={href}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold capitalize"
+          >
+            {k}
+          </a>
+        );
+      })}
+    </div>
+  );
+}
+
+type ProfileRow = {
+  username: string | null;
+  display_name: string | null;
+  bio: string | null;
+  location?: string | null;
+  gym?: string | null;
+  about?: string | null;
+  links?: unknown;
+  default_workout_public?: boolean | null;
+} | null | undefined;
 
 function EditProfileSheet({ userId, profile, onClose }: { userId: string; profile: ProfileRow; onClose: () => void }) {
+  const initialLinks = (profile?.links ?? {}) as ProfileLinks;
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
   const [username, setUsername] = useState(profile?.username ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
+  const [location, setLocation] = useState(profile?.location ?? "");
+  const [gym, setGym] = useState(profile?.gym ?? "");
+  const [about, setAbout] = useState(profile?.about ?? "");
+  const [instagram, setInstagram] = useState(initialLinks.instagram ?? "");
+  const [tiktok, setTiktok] = useState(initialLinks.tiktok ?? "");
+  const [youtube, setYoutube] = useState(initialLinks.youtube ?? "");
+  const [website, setWebsite] = useState(initialLinks.website ?? "");
+  const [publicByDefault, setPublicByDefault] = useState(!!profile?.default_workout_public);
   const [error, setError] = useState("");
 
   const save = useMutate(async () => {
     const handle = username.trim().toLowerCase().replace(/[^a-z0-9_.]/g, "");
+    const links: ProfileLinks = {};
+    if (instagram.trim()) links.instagram = instagram.trim();
+    if (tiktok.trim()) links.tiktok = tiktok.trim();
+    if (youtube.trim()) links.youtube = youtube.trim();
+    if (website.trim()) links.website = website.trim();
     const { error: err } = await supabase
       .from("profiles")
       .update({
         display_name: displayName.trim() || null,
         username: handle || null,
         bio: bio.trim() || null,
+        location: location.trim() || null,
+        gym: gym.trim() || null,
+        about: about.trim() || null,
+        links,
+        default_workout_public: publicByDefault,
       })
       .eq("id", userId);
     if (err) throw err;
   }, ["profile", "athletes", "posts", "profile-by-username"]);
 
+  const field = "mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30";
+  const label = "mt-3 block text-[11px] uppercase tracking-widest text-muted-foreground";
+
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-background/80 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="animate-in w-full rounded-t-3xl border-t border-border bg-surface p-5 pb-10 slide-in-from-bottom duration-200"
+        className="animate-in max-h-[88vh] w-full overflow-y-auto rounded-t-3xl border-t border-border bg-surface p-5 pb-10 slide-in-from-bottom duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
@@ -345,29 +528,62 @@ function EditProfileSheet({ userId, profile, onClose }: { userId: string; profil
           <button onClick={onClose} aria-label="Close"><X className="h-5 w-5 text-muted-foreground" /></button>
         </div>
 
-        <label className="mt-4 block text-[11px] uppercase tracking-widest text-muted-foreground">Display name</label>
-        <input
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value.slice(0, 40))}
-          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
-        />
+        <label className={label}>Display name</label>
+        <input value={displayName} onChange={(e) => setDisplayName(e.target.value.slice(0, 40))} className={field} />
 
-        <label className="mt-3 block text-[11px] uppercase tracking-widest text-muted-foreground">Username</label>
-        <input
-          value={username}
-          onChange={(e) => setUsername(e.target.value.slice(0, 24))}
-          placeholder="handle"
-          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
-        />
+        <label className={label}>Username</label>
+        <input value={username} onChange={(e) => setUsername(e.target.value.slice(0, 24))} placeholder="handle" className={field} />
 
-        <label className="mt-3 block text-[11px] uppercase tracking-widest text-muted-foreground">Bio</label>
+        <label className={label}>Bio</label>
         <textarea
           value={bio}
           onChange={(e) => setBio(e.target.value.slice(0, 160))}
-          rows={3}
+          rows={2}
           placeholder="Powerlifter. 5am club. MAXOUT athlete."
-          className="mt-1 w-full rounded-2xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-foreground/30"
+          className={field}
         />
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={label}>Location</label>
+            <input value={location} onChange={(e) => setLocation(e.target.value.slice(0, 60))} placeholder="Chicago, IL" className={field} />
+          </div>
+          <div>
+            <label className={label}>Gym</label>
+            <input value={gym} onChange={(e) => setGym(e.target.value.slice(0, 60))} placeholder="Iron House" className={field} />
+          </div>
+        </div>
+
+        <label className={label}>About</label>
+        <textarea
+          value={about}
+          onChange={(e) => setAbout(e.target.value.slice(0, 600))}
+          rows={4}
+          placeholder="Your training story, goals and what you're chasing."
+          className={field}
+        />
+
+        <label className={label}>Instagram</label>
+        <input value={instagram} onChange={(e) => setInstagram(e.target.value.slice(0, 60))} placeholder="@handle" className={field} />
+        <label className={label}>TikTok</label>
+        <input value={tiktok} onChange={(e) => setTiktok(e.target.value.slice(0, 60))} placeholder="@handle" className={field} />
+        <label className={label}>YouTube</label>
+        <input value={youtube} onChange={(e) => setYoutube(e.target.value.slice(0, 60))} placeholder="@channel" className={field} />
+        <label className={label}>Website</label>
+        <input value={website} onChange={(e) => setWebsite(e.target.value.slice(0, 120))} placeholder="maxoutshop.com" className={field} />
+
+        <button
+          onClick={() => setPublicByDefault((v) => !v)}
+          className="mt-4 flex w-full items-center justify-between rounded-2xl border border-border bg-background px-4 py-3 text-left"
+        >
+          <span className="text-sm">
+            Share new workouts publicly
+            <span className="block text-[11px] text-muted-foreground">Default visibility for workouts you finish</span>
+          </span>
+          <span className={`h-6 w-11 shrink-0 rounded-full p-0.5 transition ${publicByDefault ? "bg-accent" : "bg-border"}`}>
+            <span className={`block h-5 w-5 rounded-full bg-background transition ${publicByDefault ? "translate-x-5" : ""}`} />
+          </span>
+        </button>
 
         {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
 
@@ -391,4 +607,5 @@ function EditProfileSheet({ userId, profile, onClose }: { userId: string; profil
       </div>
     </div>
   );
+
 }
