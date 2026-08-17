@@ -72,6 +72,21 @@ function Profile() {
   const prs = usePRs(user?.id);
   const workouts = useWorkouts(user?.id);
 
+  const [tab, setTab] = useState<ProfileTab>("Posts");
+  const [openWorkout, setOpenWorkout] = useState<string | null>(null);
+  const posts = useUserPosts(user?.id);
+  const counts = useFollowCounts(user?.id);
+  const myWorkouts = useProfileWorkouts(user?.id, true);
+  const toggleFeatured = useToggleFeaturedPR();
+  const streak = useMemo(
+    () => streakFromWorkouts((workouts.data ?? []).map((w) => w.performed_at as string)),
+    [workouts.data],
+  );
+  const featuredCount = (prs.data ?? []).filter((p) => (p as { featured?: boolean }).featured).length;
+  const openWorkoutRow = (myWorkouts.data ?? []).find((w) => w.id === openWorkout) ?? null;
+  const links = ((profile.data as { links?: ProfileLinks } | null | undefined)?.links ?? {}) as ProfileLinks;
+
+
   async function signOut() {
     await qc.cancelQueries();
     qc.clear();
