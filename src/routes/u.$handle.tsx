@@ -89,37 +89,40 @@ function AthleteProfile() {
         <p className="truncate text-sm font-semibold">{profile.data?.username ? `@${profile.data.username}` : name}</p>
       </div>
 
-      <div className="mt-5 flex items-center gap-4">
-        <div className="rounded-full bg-gradient-to-br from-accent to-destructive p-[2px]">
-          <div className="grid h-20 w-20 place-items-center overflow-hidden rounded-full bg-surface text-lg font-semibold ring-2 ring-background">
-            <MediaImage
-              src={profile.data?.avatar_url}
-              alt={name}
-              className="h-full w-full object-cover"
-              fallback={initials(name)}
-            />
-          </div>
-        </div>
-        <div className="min-w-0">
-          <h1 className="flex items-center gap-1.5 text-xl font-semibold">
-            <span className="truncate">{name}</span>
-            {profile.data?.verified && <VerifiedBadge className="h-4 w-4" />}
-            {(profile.data as { is_elite?: boolean } | undefined)?.is_elite && <EliteBadge className="h-3.5 w-3.5" />}
-            {profile.data?.is_ambassador && <BadgeCheck className="h-4 w-4 shrink-0 text-accent" />}
-          </h1>
-          {profile.data?.bio && <p className="mt-1 text-xs text-muted-foreground">{profile.data.bio}</p>}
-          {isMe && (
-            <Link to="/profile" className="mt-2 inline-block rounded-full border border-border px-3 py-1 text-[11px] font-semibold">
-              Edit profile
-            </Link>
-          )}
-        </div>
+      <ProfileCover url={(profile.data as { cover_url?: string | null } | undefined)?.cover_url} />
+      <ProfileIdentity
+        name={name}
+        handle={profile.data?.username}
+        avatarUrl={profile.data?.avatar_url}
+        verified={profile.data?.verified}
+        elite={(profile.data as { is_elite?: boolean } | undefined)?.is_elite}
+        bio={profile.data?.bio}
+        meta={[
+          (profile.data as { location?: string | null } | undefined)?.location,
+          (profile.data as { gym?: string | null } | undefined)?.gym,
+        ].filter(Boolean) as string[]}
+      />
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        {profile.data?.is_ambassador && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest text-accent">
+            <BadgeCheck className="h-3 w-3" /> Ambassador
+          </span>
+        )}
+        <ShareProfileButton handle={profile.data?.username} name={name} />
+        {isMe && (
+          <Link to="/profile" className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold">
+            Edit profile
+          </Link>
+        )}
       </div>
 
-      <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
-        <span><span className="font-semibold text-foreground">{counts.data?.followers ?? 0}</span> followers</span>
-        <span><span className="font-semibold text-foreground">{counts.data?.following ?? 0}</span> following</span>
-      </div>
+      <ProfileStats
+        userId={athleteId}
+        followers={counts.data?.followers ?? 0}
+        following={counts.data?.following ?? 0}
+        streak={streak}
+      />
 
       {!isMe && uid && athleteId && (
         <div className="mt-4 flex gap-2">
@@ -143,91 +146,88 @@ function AthleteProfile() {
         </div>
       )}
 
-      <div className="mt-5 grid grid-cols-3 gap-3">
-        <Stat icon={<Dumbbell className="h-3.5 w-3.5" />} value={String((workouts.data ?? []).length)} label="Workouts" />
+      <div className="mt-4 grid grid-cols-3 gap-3">
+        <Stat icon={<Dumbbell className="h-3.5 w-3.5" />} value={String(publicWorkouts.length)} label="Workouts" />
         <Stat icon={<Trophy className="h-3.5 w-3.5" />} value={String((prs.data ?? []).length)} label="PRs" />
         <Stat icon={<Flame className="h-3.5 w-3.5" />} value={volume ? `${Math.round(volume / 1000)}k` : "0"} label="Volume lb" />
       </div>
 
+      {featured.length > 0 && <FeaturedPRs prs={featured} />}
+
       {!isMe && uid && athleteId && <CheerBar fromId={uid} toId={athleteId} name={name} />}
 
-      <Section title="Personal records">
-        {(prs.data ?? []).length === 0 ? (
-          <Empty text="No PRs logged yet." />
-        ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {(prs.data ?? []).slice(0, 6).map((p) => (
-              <div key={p.id} className="rounded-2xl border border-border bg-surface p-4">
-                <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{p.exercise}</p>
-                <p className="mt-1 text-xl font-semibold">
-                  {Number(p.value)}
-                  <span className="ml-1 text-xs text-muted-foreground">{p.unit}</span>
-                </p>
-                <p className="mt-1 text-[10px] text-muted-foreground">{new Date(p.achieved_at).toLocaleDateString()}</p>
-              </div>
-            ))}
-          </div>
+      <ProfileTabs tabs={PUBLIC_TABS} active={tab} onChange={setTab} />
+      <div className="mt-4 space-y-4">
+        {tab === "Posts" && (
+          (posts.data ?? []).length === 0
+            ? <Empty text="Nothing posted yet." />
+            : (posts.data ?? []).map((p) => <FeedPost key={p.id} post={p} uid={uid} />)
         )}
-      </Section>
 
-      <Section title="Recent workouts">
-        {(workouts.data ?? []).length === 0 ? (
-          <Empty text="No workouts logged yet." />
-        ) : (
-          <div className="space-y-2">
-            {(workouts.data ?? []).slice(0, 8).map((w) => {
-              const sets = (w as { workout_sets?: unknown[] }).workout_sets ?? [];
-              return (
-                <div key={w.id} className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
-                  <span className="grid h-9 w-9 place-items-center rounded-full bg-background/60">
-                    <Dumbbell className="h-4 w-4 text-accent" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{w.title ?? w.category}</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      {new Date(w.performed_at).toLocaleDateString()} · {sets.length} sets
-                      {w.duration_min ? ` · ${w.duration_min} min` : ""}
-                    </p>
-                  </div>
+        {tab === "Workouts" && (
+          athleteWorkouts.isLoading
+            ? <div className="h-24 animate-pulse rounded-3xl bg-surface" />
+            : publicWorkouts.length === 0
+              ? <Empty text={`${name.split(" ")[0]} hasn't shared any workouts yet.`} />
+              : publicWorkouts.map((w) => (
+                  <WorkoutCard key={w.id} workout={w} uid={uid} isMe={isMe} onOpen={() => setOpenWorkout(w.id)} />
+                ))
+        )}
+
+        {tab === "PRs" && (
+          (prs.data ?? []).length === 0 ? (
+            <Empty text="No PRs logged yet." />
+          ) : (
+            <div className="grid grid-cols-2 gap-3">
+              {(prs.data ?? []).map((p) => (
+                <div key={p.id} className="rounded-2xl border border-border bg-surface p-4">
+                  <p className="truncate text-[11px] uppercase tracking-widest text-muted-foreground">{p.exercise}</p>
+                  <p className="mt-1 text-xl font-semibold tabular-nums">
+                    {Number(p.value)}
+                    <span className="ml-1 text-xs font-normal text-muted-foreground">{p.unit}</span>
+                  </p>
+                  <p className="mt-1 text-[10px] text-muted-foreground">{new Date(p.achieved_at).toLocaleDateString()}</p>
                 </div>
-              );
-            })}
+              ))}
+            </div>
+          )
+        )}
+
+        {tab === "About" && (
+          <div className="space-y-3 rounded-3xl border border-border bg-surface p-5 text-sm">
+            {about
+              ? <p className="leading-relaxed text-muted-foreground">{about}</p>
+              : <p className="text-xs text-muted-foreground">No about section yet.</p>}
+            <SocialLinks links={links} />
           </div>
         )}
-      </Section>
 
-      <Section title={`Hype${(cheers.data ?? []).length ? ` · ${(cheers.data ?? []).length}` : ""}`}>
-        {(cheers.data ?? []).length === 0 ? (
-          <Empty text={isMe ? "No hype yet — go earn it." : `Be the first to hype ${name}.`} />
-        ) : (
-          <div className="space-y-2">
-            {(cheers.data ?? []).map((c) => {
-              const from = c.profiles?.display_name ?? c.profiles?.username ?? "Athlete";
-              return (
-                <div key={c.id} className="flex items-start gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
-                  <span className="text-lg leading-none">{c.emoji}</span>
-                  <div className="min-w-0">
-                    <p className="text-xs font-semibold">{from}</p>
-                    {c.message && <p className="text-sm leading-snug text-muted-foreground">{c.message}</p>}
+        {tab === "Hype" && (
+          (cheers.data ?? []).length === 0 ? (
+            <Empty text={isMe ? "No hype yet — go earn it." : `Be the first to hype ${name}.`} />
+          ) : (
+            <div className="space-y-2">
+              {(cheers.data ?? []).map((c) => {
+                const from = c.profiles?.display_name ?? c.profiles?.username ?? "Athlete";
+                return (
+                  <div key={c.id} className="flex items-start gap-3 rounded-2xl border border-border bg-surface px-4 py-3">
+                    <span className="text-lg leading-none">{c.emoji}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold">{from}</p>
+                      {c.message && <p className="text-sm leading-snug text-muted-foreground">{c.message}</p>}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )
         )}
-      </Section>
+      </div>
 
-      <Section title="Posts">
-        {(posts.data ?? []).length === 0 ? (
-          <Empty text="Nothing posted yet." />
-        ) : (
-          <div className="space-y-4">
-            {(posts.data ?? []).map((p) => (
-              <FeedPost key={p.id} post={p} uid={uid} />
-            ))}
-          </div>
-        )}
-      </Section>
+      {openWorkoutRow && (
+        <WorkoutSheet workout={openWorkoutRow} uid={uid} athleteName={name} onClose={() => setOpenWorkout(null)} />
+      )}
+
     </AppShell>
   );
 }
