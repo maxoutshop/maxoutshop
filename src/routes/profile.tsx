@@ -106,45 +106,136 @@ function Profile() {
 
   return (
     <AppShell>
-      <div className="pt-2">
-        <div className="flex items-center gap-4">
-          <AvatarPicker userId={user.id} name={name} url={profile.data?.avatar_url ?? null} />
-          <div className="min-w-0">
-            <h1 className="flex items-center gap-1.5 text-xl font-semibold">
-              <span className="truncate">{name}</span>
-              {profile.data?.verified && <VerifiedBadge className="h-4 w-4" />}
-            </h1>
-            <p className="truncate text-xs text-muted-foreground">
-              {profile.data?.username ? `@${profile.data.username}` : user.email}
-            </p>
-            <div className="mt-2 flex gap-2">
-              <button
-                onClick={() => setEditing(true)}
-                className="rounded-full border border-border px-3 py-1 text-[11px] font-semibold"
-              >
-                Edit profile
-              </button>
-              {profile.data?.username && (
-                <Link
-                  to="/u/$handle"
-                  params={{ handle: profile.data.username }}
-                  className="rounded-full border border-border px-3 py-1 text-[11px] font-semibold"
-                >
-                  View public profile
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
+      <ProfileCover url={profile.data?.cover_url} editable userId={user.id} />
+      <ProfileIdentity
+        name={name}
+        handle={profile.data?.username}
+        avatarUrl={profile.data?.avatar_url}
+        verified={profile.data?.verified}
+        elite={isElite}
+        bio={profile.data?.bio}
+        meta={[profile.data?.location, profile.data?.gym].filter(Boolean) as string[]}
+        onAvatarPick={async (file) => {
+          await uploadAvatar(user.id, file);
+          await qc.invalidateQueries({ queryKey: ["profile"] });
+          await qc.invalidateQueries({ queryKey: ["athletes"] });
+          await qc.invalidateQueries({ queryKey: ["posts"] });
+        }}
+      />
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          onClick={() => setEditing(true)}
+          className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold"
+        >
+          Edit profile
+        </button>
+        <ShareProfileButton handle={profile.data?.username} name={name} />
+        {profile.data?.username && (
+          <Link
+            to="/u/$handle"
+            params={{ handle: profile.data.username }}
+            className="rounded-full border border-border px-3 py-1.5 text-[11px] font-semibold"
+          >
+            View public
+          </Link>
+        )}
       </div>
+
+      <ProfileStats
+        userId={user.id}
+        followers={counts.data?.followers ?? 0}
+        following={counts.data?.following ?? 0}
+        streak={streak}
+      />
 
       {editing && <EditProfileSheet userId={user.id} profile={profile.data} onClose={() => setEditing(false)} />}
 
-      <div className="mt-6 grid grid-cols-3 gap-3">
+      <div className="mt-4 grid grid-cols-3 gap-3">
         <Stat value={String((workouts.data ?? []).length)} label="Workouts" />
         <Stat value={String((prs.data ?? []).length)} label="PRs" />
         <Stat value={String((challenges.data ?? []).length)} label="Challenges" />
       </div>
+
+      <ProfileTabs tabs={PROFILE_TABS} active={tab} onChange={setTab} />
+      <div className="mt-4 space-y-4">
+        {tab === "Posts" && (
+          (posts.data ?? []).length === 0
+            ? <EmptyLine text="Nothing posted yet — share a lift on The Floor." />
+            : (posts.data ?? []).map((p) => <FeedPost key={p.id} post={p} uid={user.id} />)
+        )}
+
+        {tab === "Workouts" && (
+          myWorkouts.isLoading
+            ? <div className="h-24 animate-pulse rounded-3xl bg-surface" />
+            : (myWorkouts.data ?? []).length === 0
+              ? <EmptyLine text="No workouts logged yet." />
+              : (myWorkouts.data ?? []).map((w) => (
+                  <WorkoutCard key={w.id} workout={w} uid={user.id} isMe onOpen={() => setOpenWorkout(w.id)} />
+                ))
+        )}
+
+        {tab === "PRs" && (
+          (prs.data ?? []).length === 0 ? (
+            <EmptyLine text="No personal records yet." />
+          ) : (
+            <>
+              <p className="text-[11px] text-muted-foreground">
+                Tap a record to feature it on your profile (up to {MAX_FEATURED_PRS}).
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                {(prs.data ?? []).map((p) => {
+                  const isFeatured = !!(p as { featured?: boolean }).featured;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => {
+                        if (!isFeatured && featuredCount >= MAX_FEATURED_PRS) return;
+                        toggleFeatured.mutate({ prId: p.id, featured: !isFeatured });
+                      }}
+                      className={`rounded-2xl border bg-surface p-4 text-left transition ${
+                        isFeatured ? "border-accent/50" : "border-border"
+                      }`}
+                    >
+                      <p className="truncate text-[10px] uppercase tracking-widest text-muted-foreground">{p.exercise}</p>
+                      <p className="mt-1 text-xl font-semibold tabular-nums">
+                        {Number(p.value)}
+                        <span className="ml-1 text-xs font-normal text-muted-foreground">{p.unit}</span>
+                      </p>
+                      <p className="mt-1 text-[10px] text-muted-foreground">
+                        {isFeatured ? "Featured" : new Date(p.achieved_at).toLocaleDateString()}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )
+        )}
+
+        {tab === "About" && (
+          <div className="space-y-3 rounded-3xl border border-border bg-surface p-5 text-sm">
+            {profile.data?.about
+              ? <p className="leading-relaxed text-muted-foreground">{profile.data.about}</p>
+              : <p className="text-xs text-muted-foreground">Add an about section from Edit profile.</p>}
+            <div className="grid gap-1 text-xs text-muted-foreground">
+              {profile.data?.location && <p>Location · <span className="text-foreground">{profile.data.location}</span></p>}
+              {profile.data?.gym && <p>Gym · <span className="text-foreground">{profile.data.gym}</span></p>}
+            </div>
+            <SocialLinks links={links} />
+          </div>
+        )}
+      </div>
+
+      {openWorkoutRow && (
+        <WorkoutSheet
+          workout={openWorkoutRow}
+          uid={user.id}
+          athleteName={name}
+          onClose={() => setOpenWorkout(null)}
+        />
+      )}
+
 
       {/* MAXOUT Points wallet */}
       <Link
