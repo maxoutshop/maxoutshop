@@ -130,8 +130,14 @@ function Track() {
   }, ["water"]);
 
   const startWorkout = useMutate(async (v: { category: string; title: string; exercises: TemplateExercise[] }) => {
-    const { data, error } = await supabase.from("workouts").insert({ user_id: uid!, category: v.category, title: v.title }).select().single();
+    const defaultPublic =
+      (profile.data as { default_workout_public?: boolean | null } | null)?.default_workout_public ?? false;
+    const { data, error } = await supabase
+      .from("workouts")
+      .insert({ user_id: uid!, category: v.category, title: v.title, is_public: defaultPublic })
+      .select().single();
     if (error) throw error;
+
     setPlan(v.exercises);
     setActiveWorkout(data.id);
     setSessionOpen(true);
