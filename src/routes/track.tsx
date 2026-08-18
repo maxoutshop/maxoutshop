@@ -269,7 +269,7 @@ function Track() {
         sets={summary.sets}
         prs={summary.prs}
         pointsEarned={summary.points}
-        isPublic={(live as { is_public?: boolean } | null)?.is_public ?? false}
+        isPublic={(profile.data as { default_workout_public?: boolean | null } | null)?.default_workout_public ?? false}
         onVisibilityChange={async (next) => {
           await supabase.from("workouts").update({ is_public: next }).eq("id", summary.workoutId).eq("user_id", uid!);
           invalidate("workouts", "profile-workouts");
