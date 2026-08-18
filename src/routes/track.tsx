@@ -269,6 +269,12 @@ function Track() {
         sets={summary.sets}
         prs={summary.prs}
         pointsEarned={summary.points}
+        isPublic={(live as { is_public?: boolean } | null)?.is_public ?? false}
+        onVisibilityChange={async (next) => {
+          await supabase.from("workouts").update({ is_public: next }).eq("id", summary.workoutId).eq("user_id", uid!);
+          invalidate("workouts", "profile-workouts");
+        }}
+
         onClose={() => setSummary(null)}
         onShare={() => {
           const volume = summary.sets.reduce((a, s) => a + (s.weight ?? 0) * (s.reps ?? 0), 0);
