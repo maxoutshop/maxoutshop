@@ -30,6 +30,8 @@ export const Route = createFileRoute("/u/$handle")({
 });
 
 const CHEER_EMOJIS = ["🔥", "💪", "👏", "🏆", "🚀"] as const;
+const PUBLIC_TABS = ["Posts", "Workouts", "PRs", "About", "Hype"] as const;
+type PublicTab = (typeof PUBLIC_TABS)[number];
 
 function AthleteProfile() {
   const { handle } = useParams({ from: "/u/$handle" });
@@ -48,6 +50,26 @@ function AthleteProfile() {
 
   const name = profile.data?.display_name ?? profile.data?.username ?? "MAXOUT athlete";
   const isMe = !!uid && uid === athleteId;
+
+  const [tab, setTab] = useState<PublicTab>("Posts");
+  const [openWorkout, setOpenWorkout] = useState<string | null>(null);
+  const athleteWorkouts = useProfileWorkouts(athleteId, isMe);
+  const publicWorkouts = useMemo(
+    () => (athleteWorkouts.data ?? []).filter((w) => isMe || w.is_public),
+    [athleteWorkouts.data, isMe],
+  );
+  const openWorkoutRow = publicWorkouts.find((w) => w.id === openWorkout) ?? null;
+  const featured = useMemo(
+    () => ((prs.data ?? []) as unknown as PRRow[]).filter((p) => p.featured).slice(0, 3),
+    [prs.data],
+  );
+  const streak = useMemo(
+    () => streakFromWorkouts((workouts.data ?? []).map((w) => w.performed_at as string)),
+    [workouts.data],
+  );
+  const about = (profile.data as { about?: string | null } | undefined)?.about ?? null;
+  const links = ((profile.data as { links?: ProfileLinks } | undefined)?.links ?? {}) as ProfileLinks;
+
 
   const volume = useMemo(() => {
     let total = 0;
