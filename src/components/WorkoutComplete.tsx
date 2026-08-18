@@ -15,6 +15,8 @@ export function WorkoutComplete({
   sets,
   prs,
   pointsEarned,
+  isPublic = false,
+  onVisibilityChange,
   onSaveTemplate,
   onShare,
   onClose,
@@ -24,13 +26,17 @@ export function WorkoutComplete({
   sets: SetRow[];
   prs: DetectedPR[];
   pointsEarned: number;
+  isPublic?: boolean;
+  onVisibilityChange?: (next: boolean) => Promise<void> | void;
   onSaveTemplate: () => Promise<void> | void;
   onShare: () => void;
   onClose: () => void;
 }) {
   const [savedTemplate, setSavedTemplate] = useState(false);
+  const [pub, setPub] = useState(isPublic);
   const volume = useMemo(() => totalVolume(sets), [sets]);
   const groups = useMemo(() => groupSetCounts(sets).slice(0, 4), [sets]);
+
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
