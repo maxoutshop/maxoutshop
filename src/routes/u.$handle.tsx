@@ -1,15 +1,19 @@
-import { MediaImage } from "@/components/Media";
-import { VerifiedBadge } from "@/components/VerifiedBadge";
-import { EliteBadge } from "@/components/EliteBadge";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { FeedPost } from "@/components/FeedPost";
 import { supabase } from "@/integrations/supabase/client";
-import { initials, useSession } from "@/lib/auth";
+import { useSession } from "@/lib/auth";
 import { useCheers, useMutate, useProfileByUsername, usePRs, useUserPosts, useWorkouts } from "@/lib/db";
 import { BadgeCheck, Dumbbell, Trophy, Flame, ArrowLeft, Send, UserPlus, UserCheck, MessageCircle } from "lucide-react";
 import { useFollowCounts, useFollowing, useToggleFollow } from "@/lib/social";
+import {
+  FeaturedPRs, ProfileCover, ProfileIdentity, ProfileStats, ProfileTabs,
+  ShareProfileButton, WorkoutCard, WorkoutSheet, type PRRow,
+} from "@/components/ProfileParts";
+import { SocialLinks } from "@/routes/profile";
+import { streakFromWorkouts, useProfileWorkouts, type ProfileLinks } from "@/lib/profile";
+
 
 export const Route = createFileRoute("/u/$handle")({
   head: () => ({
