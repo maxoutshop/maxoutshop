@@ -130,8 +130,14 @@ function Track() {
   }, ["water"]);
 
   const startWorkout = useMutate(async (v: { category: string; title: string; exercises: TemplateExercise[] }) => {
-    const { data, error } = await supabase.from("workouts").insert({ user_id: uid!, category: v.category, title: v.title }).select().single();
+    const defaultPublic =
+      (profile.data as { default_workout_public?: boolean | null } | null)?.default_workout_public ?? false;
+    const { data, error } = await supabase
+      .from("workouts")
+      .insert({ user_id: uid!, category: v.category, title: v.title, is_public: defaultPublic })
+      .select().single();
     if (error) throw error;
+
     setPlan(v.exercises);
     setActiveWorkout(data.id);
     setSessionOpen(true);
@@ -263,6 +269,12 @@ function Track() {
         sets={summary.sets}
         prs={summary.prs}
         pointsEarned={summary.points}
+        isPublic={(profile.data as { default_workout_public?: boolean | null } | null)?.default_workout_public ?? false}
+        onVisibilityChange={async (next) => {
+          await supabase.from("workouts").update({ is_public: next }).eq("id", summary.workoutId).eq("user_id", uid!);
+          invalidate("workouts", "profile-workouts");
+        }}
+
         onClose={() => setSummary(null)}
         onShare={() => {
           const volume = summary.sets.reduce((a, s) => a + (s.weight ?? 0) * (s.reps ?? 0), 0);

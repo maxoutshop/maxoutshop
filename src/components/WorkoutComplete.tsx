@@ -15,6 +15,8 @@ export function WorkoutComplete({
   sets,
   prs,
   pointsEarned,
+  isPublic = false,
+  onVisibilityChange,
   onSaveTemplate,
   onShare,
   onClose,
@@ -24,13 +26,17 @@ export function WorkoutComplete({
   sets: SetRow[];
   prs: DetectedPR[];
   pointsEarned: number;
+  isPublic?: boolean;
+  onVisibilityChange?: (next: boolean) => Promise<void> | void;
   onSaveTemplate: () => Promise<void> | void;
   onShare: () => void;
   onClose: () => void;
 }) {
   const [savedTemplate, setSavedTemplate] = useState(false);
+  const [pub, setPub] = useState(isPublic);
   const volume = useMemo(() => totalVolume(sets), [sets]);
   const groups = useMemo(() => groupSetCounts(sets).slice(0, 4), [sets]);
+
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -109,6 +115,27 @@ export function WorkoutComplete({
             <span className="text-muted-foreground"> added to your balance</span>
           </p>
         )}
+
+        {onVisibilityChange && (
+          <div className="mt-4 flex items-center justify-between gap-4 rounded-3xl border border-border bg-surface px-5 py-4">
+            <div className="min-w-0">
+              <p className="text-sm font-semibold">{pub ? "Visible on your profile" : "Private workout"}</p>
+              <p className="text-[11px] text-muted-foreground">
+                {pub ? "Anyone can see the sets, like and comment." : "Only you can see this workout."}
+              </p>
+            </div>
+            <button
+              role="switch"
+              aria-checked={pub}
+              aria-label="Share this workout publicly"
+              onClick={async () => { const next = !pub; setPub(next); await onVisibilityChange(next); }}
+              className={`relative h-7 w-12 shrink-0 rounded-full transition ${pub ? "bg-accent" : "bg-border"}`}
+            >
+              <span className={`absolute top-1 h-5 w-5 rounded-full bg-background transition-all ${pub ? "left-6" : "left-1"}`} />
+            </button>
+          </div>
+        )}
+
 
         <div className="mt-6 space-y-2">
           <button

@@ -1,15 +1,19 @@
-import { MediaImage } from "@/components/Media";
-import { VerifiedBadge } from "@/components/VerifiedBadge";
-import { EliteBadge } from "@/components/EliteBadge";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { FeedPost } from "@/components/FeedPost";
 import { supabase } from "@/integrations/supabase/client";
-import { initials, useSession } from "@/lib/auth";
+import { useSession } from "@/lib/auth";
 import { useCheers, useMutate, useProfileByUsername, usePRs, useUserPosts, useWorkouts } from "@/lib/db";
 import { BadgeCheck, Dumbbell, Trophy, Flame, ArrowLeft, Send, UserPlus, UserCheck, MessageCircle } from "lucide-react";
 import { useFollowCounts, useFollowing, useToggleFollow } from "@/lib/social";
+import {
+  FeaturedPRs, ProfileCover, ProfileIdentity, ProfileStats, ProfileTabs,
+  ShareProfileButton, WorkoutCard, WorkoutSheet, type PRRow,
+} from "@/components/ProfileParts";
+import { SocialLinks } from "@/routes/profile";
+import { streakFromWorkouts, useProfileWorkouts, type ProfileLinks } from "@/lib/profile";
+
 
 export const Route = createFileRoute("/u/$handle")({
   head: () => ({
@@ -26,6 +30,8 @@ export const Route = createFileRoute("/u/$handle")({
 });
 
 const CHEER_EMOJIS = ["🔥", "💪", "👏", "🏆", "🚀"] as const;
+const PUBLIC_TABS = ["Posts", "Workouts", "PRs", "About", "Hype"] as const;
+type PublicTab = (typeof PUBLIC_TABS)[number];
 
 function AthleteProfile() {
   const { handle } = useParams({ from: "/u/$handle" });
@@ -44,6 +50,26 @@ function AthleteProfile() {
 
   const name = profile.data?.display_name ?? profile.data?.username ?? "MAXOUT athlete";
   const isMe = !!uid && uid === athleteId;
+
+  const [tab, setTab] = useState<PublicTab>("Posts");
+  const [openWorkout, setOpenWorkout] = useState<string | null>(null);
+  const athleteWorkouts = useProfileWorkouts(athleteId, isMe);
+  const publicWorkouts = useMemo(
+    () => (athleteWorkouts.data ?? []).filter((w) => isMe || w.is_public),
+    [athleteWorkouts.data, isMe],
+  );
+  const openWorkoutRow = publicWorkouts.find((w) => w.id === openWorkout) ?? null;
+  const featured = useMemo(
+    () => ((prs.data ?? []) as unknown as PRRow[]).filter((p) => p.featured).slice(0, 3),
+    [prs.data],
+  );
+  const streak = useMemo(
+    () => streakFromWorkouts((workouts.data ?? []).map((w) => w.performed_at as string)),
+    [workouts.data],
+  );
+  const about = (profile.data as { about?: string | null } | undefined)?.about ?? null;
+  const links = ((profile.data as { links?: ProfileLinks } | undefined)?.links ?? {}) as ProfileLinks;
+
 
   const volume = useMemo(() => {
     let total = 0;
