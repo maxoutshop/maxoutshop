@@ -30,7 +30,7 @@ export const Route = createFileRoute("/u/$handle")({
 });
 
 const CHEER_EMOJIS = ["🔥", "💪", "👏", "🏆", "🚀"] as const;
-const PUBLIC_TABS = ["Posts", "Workouts", "PRs", "About", "Hype"] as const;
+const PUBLIC_TABS = ["Posts", "Training", "About"] as const;
 type PublicTab = (typeof PUBLIC_TABS)[number];
 
 function AthleteProfile() {
@@ -190,7 +190,7 @@ function AthleteProfile() {
             : (posts.data ?? []).map((p) => <FeedPost key={p.id} post={p} uid={uid} />)
         )}
 
-        {tab === "Workouts" && (
+        {tab === "Training" && (
           athleteWorkouts.isLoading
             ? <div className="h-24 animate-pulse rounded-3xl bg-surface" />
             : publicWorkouts.length === 0
@@ -200,10 +200,11 @@ function AthleteProfile() {
                 ))
         )}
 
-        {tab === "PRs" && (
-          (prs.data ?? []).length === 0 ? (
-            <Empty text="No PRs logged yet." />
-          ) : (
+        {tab === "Training" && (prs.data ?? []).length > 0 && (
+          <>
+            <h2 className="pt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              Personal records
+            </h2>
             <div className="grid grid-cols-2 gap-3">
               {(prs.data ?? []).map((p) => (
                 <div key={p.id} className="rounded-2xl border border-border bg-surface p-4">
@@ -216,7 +217,7 @@ function AthleteProfile() {
                 </div>
               ))}
             </div>
-          )
+          </>
         )}
 
         {tab === "About" && (
@@ -228,11 +229,12 @@ function AthleteProfile() {
           </div>
         )}
 
-        {tab === "Hype" && (
+        {tab === "About" && (
           (cheers.data ?? []).length === 0 ? (
             <Empty text={isMe ? "No hype yet — go earn it." : `Be the first to hype ${name}.`} />
           ) : (
             <div className="space-y-2">
+              <h2 className="pt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Hype</h2>
               {(cheers.data ?? []).map((c) => {
                 const from = c.profiles?.display_name ?? c.profiles?.username ?? "Athlete";
                 return (

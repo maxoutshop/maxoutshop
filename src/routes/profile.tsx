@@ -21,7 +21,7 @@ import {
   MAX_FEATURED_PRS, streakFromWorkouts, useProfileWorkouts, useToggleFeaturedPR, type ProfileLinks,
 } from "@/lib/profile";
 
-const PROFILE_TABS = ["Posts", "Workouts", "PRs", "About"] as const;
+const PROFILE_TABS = ["Posts", "Training", "About"] as const;
 type ProfileTab = (typeof PROFILE_TABS)[number];
 
 
@@ -192,7 +192,7 @@ function Profile() {
             : (posts.data ?? []).map((p) => <FeedPost key={p.id} post={p} uid={user.id} />)
         )}
 
-        {tab === "Workouts" && (
+        {tab === "Training" && (
           myWorkouts.isLoading
             ? <div className="h-24 animate-pulse rounded-3xl bg-surface" />
             : (myWorkouts.data ?? []).length === 0
@@ -202,11 +202,12 @@ function Profile() {
                 ))
         )}
 
-        {tab === "PRs" && (
-          (prs.data ?? []).length === 0 ? (
-            <EmptyLine text="No personal records yet." />
-          ) : (
+        {tab === "Training" && (
+          (prs.data ?? []).length === 0 ? null : (
             <>
+              <h2 className="pt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Personal records
+              </h2>
               <p className="text-[11px] text-muted-foreground">
                 Tap a record to feature it on your profile (up to {MAX_FEATURED_PRS}).
               </p>
