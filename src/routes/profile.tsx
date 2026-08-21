@@ -202,11 +202,12 @@ function Profile() {
                 ))
         )}
 
-        {tab === "PRs" && (
-          (prs.data ?? []).length === 0 ? (
-            <EmptyLine text="No personal records yet." />
-          ) : (
+        {tab === "Training" && (
+          (prs.data ?? []).length === 0 ? null : (
             <>
+              <h2 className="pt-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Personal records
+              </h2>
               <p className="text-[11px] text-muted-foreground">
                 Tap a record to feature it on your profile (up to {MAX_FEATURED_PRS}).
               </p>
