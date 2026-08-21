@@ -21,7 +21,7 @@ import {
   MAX_FEATURED_PRS, streakFromWorkouts, useProfileWorkouts, useToggleFeaturedPR, type ProfileLinks,
 } from "@/lib/profile";
 
-const PROFILE_TABS = ["Posts", "Workouts", "PRs", "About"] as const;
+const PROFILE_TABS = ["Posts", "Training", "About"] as const;
 type ProfileTab = (typeof PROFILE_TABS)[number];
 
 
