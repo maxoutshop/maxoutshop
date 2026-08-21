@@ -217,7 +217,7 @@ function AthleteProfile() {
                 </div>
               ))}
             </div>
-          )
+          </>
         )}
 
         {tab === "About" && (
@@ -229,11 +229,12 @@ function AthleteProfile() {
           </div>
         )}
 
-        {tab === "Hype" && (
+        {tab === "About" && (
           (cheers.data ?? []).length === 0 ? (
             <Empty text={isMe ? "No hype yet — go earn it." : `Be the first to hype ${name}.`} />
           ) : (
             <div className="space-y-2">
+              <h2 className="pt-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">Hype</h2>
               {(cheers.data ?? []).map((c) => {
                 const from = c.profiles?.display_name ?? c.profiles?.username ?? "Athlete";
                 return (
