@@ -192,7 +192,7 @@ function Profile() {
             : (posts.data ?? []).map((p) => <FeedPost key={p.id} post={p} uid={user.id} />)
         )}
 
-        {tab === "Workouts" && (
+        {tab === "Training" && (
           myWorkouts.isLoading
             ? <div className="h-24 animate-pulse rounded-3xl bg-surface" />
             : (myWorkouts.data ?? []).length === 0
