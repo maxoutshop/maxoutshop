@@ -257,7 +257,7 @@ export function useProfileByUsername(username?: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, username, display_name, avatar_url, bio, is_ambassador, verified, is_elite, created_at")
+        .select("id, username, display_name, avatar_url, bio, is_ambassador, verified, is_elite, created_at, cover_url, location, gym, about, links")
         .eq("username", username!)
         .maybeSingle();
       if (error) throw error;
