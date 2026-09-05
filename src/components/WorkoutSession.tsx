@@ -367,6 +367,13 @@ function ExerciseCard({
             <Dumbbell className="h-4 w-4" /> Log set {done + 1}
           </button>
 
+          <button
+            onClick={onAskCoach}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-xs font-semibold text-muted-foreground active:scale-[0.98] transition"
+          >
+            <Sparkles className="h-3.5 w-3.5" /> Ask Coach about {ex.name}
+          </button>
+
           <button onClick={onRemove} className="mt-2 w-full py-2 text-[11px] text-muted-foreground">
             Remove exercise
           </button>
