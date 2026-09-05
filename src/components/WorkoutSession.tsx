@@ -54,7 +54,9 @@ export function WorkoutSession({
   const [adding, setAdding] = useState(false);
   const [rest, setRest] = useState<number | null>(null);
   const [restLen, setRestLen] = useState(90);
+  const [coachOpen, setCoachOpen] = useState(false);
   const elapsed = useElapsed(startedAt);
+  const { isElite } = useElite(userId);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
