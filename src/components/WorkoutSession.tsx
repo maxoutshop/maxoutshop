@@ -121,6 +121,7 @@ export function WorkoutSession({
               onToggle={() => setOpenEx((o) => (o === ex.name ? null : ex.name))}
               onLog={(v) => { onAddSet({ exercise: ex.name, ...v }); setRest(restLen); }}
               onDeleteSet={onDeleteSet}
+              onAskCoach={() => { setOpenEx(ex.name); setCoachOpen(true); }}
               onRemove={() => setPlan((p) => p.filter((x) => x.name !== ex.name))}
             />
           ))}
