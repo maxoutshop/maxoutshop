@@ -223,6 +223,7 @@ function ExerciseCard({
   onToggle: () => void;
   onLog: (v: { weight: number; reps: number }) => void;
   onDeleteSet: (id: string) => void;
+  onAskCoach: () => void;
   onRemove: () => void;
 }) {
   const last = sets.at(-1);
