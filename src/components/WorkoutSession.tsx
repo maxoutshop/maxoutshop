@@ -91,9 +91,14 @@ export function WorkoutSession({
             <p className="text-[10px] uppercase tracking-[0.3em] text-accent">Live · {category}</p>
             <p className="text-sm font-semibold tracking-tight">{title}</p>
           </div>
-          <button onClick={onFinish} aria-label="Finish workout" className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-background active:scale-90 transition">
-            <Check className="h-4 w-4" />
-          </button>
+          <div className="flex gap-2">
+            <button onClick={() => setCoachOpen(true)} aria-label="Ask MAXOUT Coach" className="grid h-9 w-9 place-items-center rounded-full border border-border active:scale-90 transition">
+              <Sparkles className="h-4 w-4" />
+            </button>
+            <button onClick={onFinish} aria-label="Finish workout" className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-background active:scale-90 transition">
+              <Check className="h-4 w-4" />
+            </button>
+          </div>
         </div>
         <div className="mt-3 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-background py-2 text-center">
           <Metric label="Time" value={elapsed} />
