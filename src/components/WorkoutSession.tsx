@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  X, Check, Plus, Minus, Timer, Trash2, ChevronDown, ChevronUp, Dumbbell, Search,
+  X, Check, Plus, Minus, Timer, Trash2, ChevronDown, ChevronUp, Dumbbell, Search, Sparkles,
 } from "lucide-react";
 import { EXERCISE_LIBRARY, type TemplateExercise } from "@/lib/workout-templates";
 import { usePreviousPerformance } from "@/lib/analytics";
+import { useElite } from "@/lib/subscription";
+import { WorkoutCoachSheet } from "./WorkoutCoachSheet";
 
 export type LiveSet = {
   id: string;
