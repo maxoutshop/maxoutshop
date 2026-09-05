@@ -180,8 +180,25 @@ export function WorkoutSession({
           <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-border">
             <div className="h-full bg-accent transition-all duration-1000 ease-linear" style={{ width: `${(rest / restLen) * 100}%` }} />
           </div>
+          <button
+            onClick={() => setCoachOpen(true)}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-xs font-semibold text-muted-foreground active:scale-[0.98] transition"
+          >
+            <Sparkles className="h-3.5 w-3.5" /> Ask Coach while you rest
+          </button>
         </div>
       )}
+
+      <WorkoutCoachSheet
+        open={coachOpen}
+        onClose={() => setCoachOpen(false)}
+        isElite={!!isElite}
+        title={title}
+        category={category}
+        elapsed={elapsed}
+        exercise={openEx}
+        sets={sets}
+      />
     </div>
   );
 }
