@@ -213,7 +213,7 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function ExerciseCard({
-  ex, sets, open, userId, workoutId, onToggle, onLog, onDeleteSet, onRemove,
+  ex, sets, open, userId, workoutId, onToggle, onLog, onDeleteSet, onAskCoach, onRemove,
 }: {
   ex: TemplateExercise;
   sets: LiveSet[];
