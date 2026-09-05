@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  X, Check, Plus, Minus, Timer, Trash2, ChevronDown, ChevronUp, Dumbbell, Search,
+  X, Check, Plus, Minus, Timer, Trash2, ChevronDown, ChevronUp, Dumbbell, Search, Sparkles,
 } from "lucide-react";
 import { EXERCISE_LIBRARY, type TemplateExercise } from "@/lib/workout-templates";
 import { usePreviousPerformance } from "@/lib/analytics";
+import { useElite } from "@/lib/subscription";
+import { WorkoutCoachSheet } from "./WorkoutCoachSheet";
 
 export type LiveSet = {
   id: string;
@@ -52,7 +54,9 @@ export function WorkoutSession({
   const [adding, setAdding] = useState(false);
   const [rest, setRest] = useState<number | null>(null);
   const [restLen, setRestLen] = useState(90);
+  const [coachOpen, setCoachOpen] = useState(false);
   const elapsed = useElapsed(startedAt);
+  const { isElite } = useElite(userId);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -87,9 +91,14 @@ export function WorkoutSession({
             <p className="text-[10px] uppercase tracking-[0.3em] text-accent">Live · {category}</p>
             <p className="text-sm font-semibold tracking-tight">{title}</p>
           </div>
-          <button onClick={onFinish} aria-label="Finish workout" className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-background active:scale-90 transition">
-            <Check className="h-4 w-4" />
-          </button>
+          <div className="flex gap-2">
+            <button onClick={() => setCoachOpen(true)} aria-label="Ask MAXOUT Coach" className="grid h-9 w-9 place-items-center rounded-full border border-border active:scale-90 transition">
+              <Sparkles className="h-4 w-4" />
+            </button>
+            <button onClick={onFinish} aria-label="Finish workout" className="grid h-9 w-9 place-items-center rounded-full bg-foreground text-background active:scale-90 transition">
+              <Check className="h-4 w-4" />
+            </button>
+          </div>
         </div>
         <div className="mt-3 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-background py-2 text-center">
           <Metric label="Time" value={elapsed} />
@@ -112,6 +121,7 @@ export function WorkoutSession({
               onToggle={() => setOpenEx((o) => (o === ex.name ? null : ex.name))}
               onLog={(v) => { onAddSet({ exercise: ex.name, ...v }); setRest(restLen); }}
               onDeleteSet={onDeleteSet}
+              onAskCoach={() => { setOpenEx(ex.name); setCoachOpen(true); }}
               onRemove={() => setPlan((p) => p.filter((x) => x.name !== ex.name))}
             />
           ))}
@@ -170,8 +180,25 @@ export function WorkoutSession({
           <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-border">
             <div className="h-full bg-accent transition-all duration-1000 ease-linear" style={{ width: `${(rest / restLen) * 100}%` }} />
           </div>
+          <button
+            onClick={() => setCoachOpen(true)}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-xs font-semibold text-muted-foreground active:scale-[0.98] transition"
+          >
+            <Sparkles className="h-3.5 w-3.5" /> Ask Coach while you rest
+          </button>
         </div>
       )}
+
+      <WorkoutCoachSheet
+        open={coachOpen}
+        onClose={() => setCoachOpen(false)}
+        isElite={!!isElite}
+        title={title}
+        category={category}
+        elapsed={elapsed}
+        exercise={openEx}
+        sets={sets}
+      />
     </div>
   );
 }
@@ -186,7 +213,7 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function ExerciseCard({
-  ex, sets, open, userId, workoutId, onToggle, onLog, onDeleteSet, onRemove,
+  ex, sets, open, userId, workoutId, onToggle, onLog, onDeleteSet, onAskCoach, onRemove,
 }: {
   ex: TemplateExercise;
   sets: LiveSet[];
@@ -196,6 +223,7 @@ function ExerciseCard({
   onToggle: () => void;
   onLog: (v: { weight: number; reps: number }) => void;
   onDeleteSet: (id: string) => void;
+  onAskCoach: () => void;
   onRemove: () => void;
 }) {
   const last = sets.at(-1);
@@ -337,6 +365,13 @@ function ExerciseCard({
             className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-foreground py-4 text-sm font-semibold text-background active:scale-[0.98] transition"
           >
             <Dumbbell className="h-4 w-4" /> Log set {done + 1}
+          </button>
+
+          <button
+            onClick={onAskCoach}
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-xs font-semibold text-muted-foreground active:scale-[0.98] transition"
+          >
+            <Sparkles className="h-3.5 w-3.5" /> Ask Coach about {ex.name}
           </button>
 
           <button onClick={onRemove} className="mt-2 w-full py-2 text-[11px] text-muted-foreground">
