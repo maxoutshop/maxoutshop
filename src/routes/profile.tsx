@@ -353,9 +353,9 @@ function Profile() {
         <Row icon={<Gift className="h-4 w-4" />} label="MAXOUT Points & rewards" hint={String(points.data?.balance ?? 0)} to="/rewards" />
         <Row icon={<Package className="h-4 w-4" />} label="Orders" to="/orders" />
         <Row icon={<Heart className="h-4 w-4" />} label="Wishlist" hint={String(wishlistCount)} to="/shop" />
-        <Row icon={<Activity className="h-4 w-4" />} label="Fitness progress" to="/track" />
+        <Row icon={<Activity className="h-4 w-4" />} label="Fitness progress" to="/progress" />
         <Row icon={<Utensils className="h-4 w-4" />} label="Meal history" to="/meals" />
-        <Row icon={<Flag className="h-4 w-4" />} label="Challenges" to="/community" />
+        <Row icon={<Flag className="h-4 w-4" />} label="Challenges" to="/challenges" />
       </div>
 
 
