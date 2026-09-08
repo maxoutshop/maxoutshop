@@ -30,6 +30,11 @@ const RANGES = [
   { key: 90, label: "90 days" },
 ] as const;
 
+type MealRow = {
+  id: string; name: string; meal_type: string; calories: number;
+  protein: number; carbs: number; fat: number; logged_at: string;
+};
+
 const dayKey = (iso: string) => new Date(iso).toISOString().slice(0, 10);
 
 function labelFor(key: string) {
@@ -51,12 +56,12 @@ function MealHistory() {
   const del = useDeleteMeal();
 
   const groups = useMemo(() => {
-    const map = new Map<string, typeof rowsType>();
-    const rows = meals.data ?? [];
+    const rows = (meals.data ?? []) as MealRow[];
+    const map = new Map<string, MealRow[]>();
     for (const m of rows) {
-      const k = dayKey(m.logged_at as string);
-      if (!map.has(k)) map.set(k, [] as never);
-      map.get(k)!.push(m as never);
+      const k = dayKey(m.logged_at);
+      if (!map.has(k)) map.set(k, []);
+      map.get(k)!.push(m);
     }
     return [...map.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1));
   }, [meals.data]);
@@ -138,7 +143,7 @@ function MealHistory() {
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-medium">{m.name}</p>
                             <p className="mt-0.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-                              {m.meal_type} · {new Date(m.logged_at as string).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+                              {m.meal_type} · {new Date(m.logged_at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
                             </p>
                           </div>
                           <div className="shrink-0 text-right">
@@ -166,7 +171,3 @@ function MealHistory() {
   );
 }
 
-declare const rowsType: Array<{
-  id: string; name: string; meal_type: string; calories: number;
-  protein: number; carbs: number; fat: number; logged_at: string;
-}>;
