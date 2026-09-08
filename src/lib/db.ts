@@ -67,6 +67,39 @@ export function useRecentMeals(userId?: string) {
 }
 
 
+/** Full meal history for the signed-in user over the last N days. */
+export function useMealHistory(userId?: string, days = 30) {
+  return useQuery({
+    queryKey: ["meals", userId, "history", days, today()],
+    enabled: !!userId,
+    queryFn: async () => {
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+      start.setDate(start.getDate() - (days - 1));
+      const { data, error } = await supabase
+        .from("meals")
+        .select("*")
+        .eq("user_id", userId!)
+        .gte("logged_at", start.toISOString())
+        .order("logged_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}
+
+/** Removes one logged meal. */
+export function useDeleteMeal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("meals").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["meals"] }),
+  });
+}
+
 export function useWater(userId?: string) {
   return useQuery({
     queryKey: ["water", userId, today()],
