@@ -17,6 +17,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as MealsRouteImport } from './routes/meals'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as EliteRouteImport } from './routes/elite'
 import { Route as CommunityRouteImport } from './routes/community'
@@ -84,6 +85,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const OrdersRoute = OrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealsRoute = MealsRouteImport.update({
+  id: '/meals',
+  path: '/meals',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -243,6 +249,7 @@ export interface FileRoutesByFullPath {
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
   '/mcp': typeof McpRoute
+  '/meals': typeof MealsRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -280,6 +287,7 @@ export interface FileRoutesByTo {
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
   '/mcp': typeof McpRoute
+  '/meals': typeof MealsRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -319,6 +327,7 @@ export interface FileRoutesById {
   '/community': typeof CommunityRoute
   '/elite': typeof EliteRoute
   '/mcp': typeof McpRoute
+  '/meals': typeof MealsRoute
   '/orders': typeof OrdersRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
@@ -358,6 +367,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/elite'
     | '/mcp'
+    | '/meals'
     | '/orders'
     | '/profile'
     | '/progress'
@@ -395,6 +405,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/elite'
     | '/mcp'
+    | '/meals'
     | '/orders'
     | '/profile'
     | '/progress'
@@ -433,6 +444,7 @@ export interface FileRouteTypes {
     | '/community'
     | '/elite'
     | '/mcp'
+    | '/meals'
     | '/orders'
     | '/profile'
     | '/progress'
@@ -472,6 +484,7 @@ export interface RootRouteChildren {
   CommunityRoute: typeof CommunityRoute
   EliteRoute: typeof EliteRoute
   McpRoute: typeof McpRoute
+  MealsRoute: typeof MealsRoute
   OrdersRoute: typeof OrdersRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
@@ -557,6 +570,13 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders'
       preLoaderRoute: typeof OrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meals': {
+      id: '/meals'
+      path: '/meals'
+      fullPath: '/meals'
+      preLoaderRoute: typeof MealsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -778,6 +798,7 @@ const rootRouteChildren: RootRouteChildren = {
   CommunityRoute: CommunityRoute,
   EliteRoute: EliteRoute,
   McpRoute: McpRoute,
+  MealsRoute: MealsRoute,
   OrdersRoute: OrdersRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
